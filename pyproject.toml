@@ -1,0 +1,65 @@
+[tool.poetry]
+name = "kiez"
+version = "0.1.0"
+description = "Hubness reduced nearest neighbor search for entity alignment with knowledge graph embeddings"
+authors = ["Daniel Obraczka <obraczka@informatik.uni-leipzig.de>"]
+license = "BSD3"
+
+[tool.poetry.dependencies]
+python = "^3.7.1"
+annoy = "^1.17.0"
+scikit-learn = "^0.24.1"
+pandas = "^1.2.1"
+joblib = "^1.0.0"
+numpy = "^1.20.0"
+nmslib = "^2.1.1"
+tqdm = "^4.56.0"
+scipy = "^1.6.0"
+ngt = "^1.12.2"
+
+[tool.poetry.dev-dependencies]
+ipdb = "^0.13.4"
+mypy = "^0.800"
+black = "^20.8b1"
+isort = "^5.7.0"
+darglint = "^1.6.0"
+pytest = "^6.2.2"
+pytest-cov = "^2.11.1"
+tox = "^3.21.4"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[flake8]
+ignore = "E203, E266, E501, W503, F403, F401"
+max-line-length = 80
+max-complexity = 18
+select = "B,C,E,F,W,T4,B9"
+
+[tool.black]
+line-length = 80
+include = '\.pyi?$'
+exclude = '''
+/(
+    \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | _build
+  | buck-out
+  | build
+  | dist
+)/
+'''
+
+[tool.flakehell]
+format = "grouped"
+extended_default_ignore=[]
+
+[tool.flakehell.plugins]
+pyflakes = ["+*"]
+flake8-bugbear = ["+*"]
+flake8-simplify = ["+*"]
+pep8-naming = ["+*"]

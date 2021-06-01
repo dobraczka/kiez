@@ -145,7 +145,8 @@ def test_alignment(
                 assert_array_almost_equal(results[i][0], results[i + 1][0])
                 assert_array_almost_equal(results[i][1], results[i + 1][1])
             except AssertionError as error:
-                # empiric mp with ball tree can give slightly different results because slight differences in distance provided by ball_tree
+                # empiric mp with ball tree can give slightly different results
+                # because slight differences in distance provided by ball_tree
                 if i != 3 and hubness != "mp" and "empiric" not in hub_params:
                     raise error
     # Test approximate NN against exact NN with Euclidean distances

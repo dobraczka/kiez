@@ -147,7 +147,7 @@ def test_alignment(
                 # because slight differences in distance provided by ball_tree
                 if not (
                     isinstance(hubness, MutualProximity)
-                    and hubness.method == "mp"
+                    and hubness.method == "empiric"
                 ):
                     raise error
     # Test approximate NN against exact NN with Euclidean distances
@@ -157,8 +157,6 @@ def test_alignment(
         for algo_cls in APPROXIMATE_ALGORITHMS
     ]
     for algo in ann_algos:
-        if isinstance(algo, Annoy):
-            continue
         align = Kiez(
             n_neighbors=n_neighbors,
             algorithm=algo,

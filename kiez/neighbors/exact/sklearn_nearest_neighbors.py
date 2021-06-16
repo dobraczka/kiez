@@ -23,6 +23,25 @@ class SklearnNN(NNAlgorithm):
         self.p = p
         self.metric_params = metric_params
 
+    def __repr__(self):
+        ret_str = (
+            f"{self.__class__.__name__}(n_candidates={self.n_candidates},"
+            + f"algorithm={self.algorithm},"
+            + f"leaf_size={self.leaf_size},"
+            + f"metric={self.metric},"
+            + f"n_jobs={self.n_jobs}) "
+            + f"{self._describe_source_target_fitted()}"
+        )
+        if (
+            hasattr(self, "source_index")
+            and self.source_index._fit_method != self.algorithm
+        ):
+            return (
+                ret_str
+                + f" and effective algo is {self.source_index._fit_method}"
+            )
+        return ret_str
+
     def _fit(self, data, is_source: bool):
         nn = NearestNeighbors(
             n_neighbors=self.n_candidates,

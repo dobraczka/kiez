@@ -15,6 +15,11 @@ class NNAlgorithm(ABC):
         self.metric = metric
         self.n_jobs = n_jobs
 
+    def _describe_source_target_fitted(self):
+        if hasattr(self, "source_"):
+            return f" is fitted with: source.shape={self.source_.shape} and target.shape={self.target_.shape}"
+        return " is unfitted"
+
     @property
     def valid_metrics(self):
         pass
@@ -24,11 +29,15 @@ class NNAlgorithm(ABC):
         pass
 
     def fit(self, source, target):
-        self.source_index = self._fit(source, True)
-        self.target_index = self._fit(target, False)
+        self.source_equals_target = np.array_equal(source, target)
+        if self.source_equals_target:
+            self.source_index = self._fit(source, True)
+            self.target_index = self.source_index
+        else:
+            self.source_index = self._fit(source, True)
+            self.target_index = self._fit(target, False)
         self.source_ = source
         self.target_ = target
-        self.source_equals_target = np.array_equal(source, target)
 
     def _check_k_value(self, k, needed_space):
         if k <= 0:

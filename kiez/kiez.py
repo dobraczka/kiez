@@ -17,9 +17,7 @@ class Kiez:
     ):
         self.n_neighbors = n_neighbors
         self.algorithm = (
-            SklearnNN(n_candidates=n_neighbors)
-            if algorithm is None
-            else algorithm
+            SklearnNN(n_candidates=n_neighbors) if algorithm is None else algorithm
         )
         self.hubness = NoHubnessReduction() if hubness is None else hubness
         self._check_algorithm_hubness_compatibility()
@@ -47,13 +45,16 @@ class Kiez:
                 if hasattr(self.algorithm, "p"):
                     if self.algorithm.p != 2:
                         raise ValueError(
-                            f"DisSimLocal only supports squared Euclidean distances. If the provided NNAlgorithm has a `p` parameter it must be set to p=2. Now it is p={self.algorithm.p}"
+                            "DisSimLocal only supports squared Euclidean distances. If"
+                            " the provided NNAlgorithm has a `p` parameter it must be"
+                            f" set to p=2. Now it is p={self.algorithm.p}"
                         )
             elif self.algorithm.metric in ["sqeuclidean"]:
                 self.hubness.squared = True
             else:
                 raise ValueError(
-                    f"DisSimLocal only supports squared Euclidean distances, not metric={self.algorithm.metric}."
+                    "DisSimLocal only supports squared Euclidean distances, not"
+                    f" metric={self.algorithm.metric}."
                 )
 
     def fit(self, source, target):
@@ -88,7 +89,8 @@ class Kiez:
         else:
             if not np.issubdtype(type(self.n_neighbors), np.integer):
                 raise TypeError(
-                    f"n_neighbors does not take {type(n_neighbors)} value, enter integer value"
+                    f"n_neighbors does not take {type(n_neighbors)} value, enter"
+                    " integer value"
                 )
             n_neighbors = k
         # First obtain candidate neighbors
@@ -107,9 +109,7 @@ class Kiez:
         )
         # Third, sort hubness reduced candidate neighbors to get the final k neighbors
         kth = np.arange(n_neighbors)
-        mask = np.argpartition(hubness_reduced_query_dist, kth=kth)[
-            :, :n_neighbors
-        ]
+        mask = np.argpartition(hubness_reduced_query_dist, kth=kth)[:, :n_neighbors]
         hubness_reduced_query_dist = np.take_along_axis(
             hubness_reduced_query_dist, mask, axis=1
         )

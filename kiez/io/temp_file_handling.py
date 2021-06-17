@@ -33,7 +33,6 @@ def create_tempfile_preferably_in_dir(
 
     if warn:
         logging.warning(
-            f"Could not create temp file in {directory}. "
-            f"Instead, the path is {path}."
+            f"Could not create temp file in {directory}. Instead, the path is {path}."
         )
     return path

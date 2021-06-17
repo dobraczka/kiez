@@ -15,9 +15,7 @@ class SklearnNN(NNAlgorithm):
         metric_params=None,
         n_jobs=None,
     ):
-        super().__init__(
-            n_candidates=n_candidates, metric=metric, n_jobs=n_jobs
-        )
+        super().__init__(n_candidates=n_candidates, metric=metric, n_jobs=n_jobs)
         self.algorithm = algorithm
         self.leaf_size = leaf_size
         self.p = p
@@ -36,10 +34,7 @@ class SklearnNN(NNAlgorithm):
             hasattr(self, "source_index")
             and self.source_index._fit_method != self.algorithm
         ):
-            return (
-                ret_str
-                + f" and effective algo is {self.source_index._fit_method}"
-            )
+            return ret_str + f" and effective algo is {self.source_index._fit_method}"
         return ret_str
 
     def _fit(self, data, is_source: bool):
@@ -60,6 +55,4 @@ class SklearnNN(NNAlgorithm):
             return index.kneighbors(
                 X=None, n_neighbors=k, return_distance=return_distance
             )
-        return index.kneighbors(
-            X=query, n_neighbors=k, return_distance=return_distance
-        )
+        return index.kneighbors(X=query, n_neighbors=k, return_distance=return_distance)

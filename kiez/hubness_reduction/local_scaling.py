@@ -169,9 +169,7 @@ class LocalScaling(HubnessReduction):
             r_s_to_t = r_dist_s_to_t[:, -1]
             for i in range_n_test:
                 hub_reduced_dist[i, :] = 1.0 - np.exp(
-                    -1
-                    * neigh_dist[i] ** 2
-                    / (r_s_to_t[i] * r_t_to_s[neigh_ind[i]])
+                    -1 * neigh_dist[i] ** 2 / (r_s_to_t[i] * r_t_to_s[neigh_ind[i]])
                 )
         # ...or use non-iterative contextual dissimilarity measure
         elif self.method == "nicdm":

@@ -68,9 +68,7 @@ class NNG(NNAlgorithmWithJoblib):
                 "Please install the `ngt` package, before using this class.\n"
                 "$ pip3 install ngt"
             ) from None
-        super().__init__(
-            n_candidates=n_candidates, metric=metric, n_jobs=n_jobs
-        )
+        super().__init__(n_candidates=n_candidates, metric=metric, n_jobs=n_jobs)
         # Map common distance names to names used by ngt
         try:
             self.effective_metric_ = NNG.internal_distance_type[self.metric]
@@ -111,17 +109,15 @@ class NNG(NNAlgorithmWithJoblib):
                 prefix=prefix, suffix=suffix, directory="/dev/shm"
             )
             logging.warning(
-                f"The index will be stored in {index_path}. "
-                f"It will NOT be deleted automatically, when this instance is destructed."
+                f"The index will be stored in {index_path}. It will NOT be deleted"
+                " automatically, when this instance is destructed."
             )
         elif isinstance(self.index_dir, str):
             index_path = create_tempfile_preferably_in_dir(
                 prefix=prefix, suffix=suffix, directory=self.index_dir
             )
         elif self.index_dir is None:
-            index_path = create_tempfile_preferably_in_dir(
-                prefix=prefix, suffix=suffix
-            )
+            index_path = create_tempfile_preferably_in_dir(prefix=prefix, suffix=suffix)
 
         # Create the ANNG index, insert data
         ngtpy.create(
@@ -151,13 +147,9 @@ class NNG(NNAlgorithmWithJoblib):
             return index_obj
         return index_path
 
-    def _kneighbors_part(
-        self, k, query, index, return_distance, is_self_querying
-    ):
+    def _kneighbors_part(self, k, query, index, return_distance, is_self_querying):
         index = (
-            ngtpy.Index(index)  # load if is path
-            if isinstance(index, str)
-            else index
+            ngtpy.Index(index) if isinstance(index, str) else index  # load if is path
         )
         n_query = query.shape[0]
         query_dtype = query.dtype

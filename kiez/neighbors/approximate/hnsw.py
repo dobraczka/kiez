@@ -46,9 +46,7 @@ class HNSW(NNAlgorithm):
                 "$ pip install nmslib"
             )
 
-        super().__init__(
-            n_candidates=n_candidates, metric=metric, n_jobs=n_jobs
-        )
+        super().__init__(n_candidates=n_candidates, metric=metric, n_jobs=n_jobs)
         self.verbose = verbose
         self.method = method
         self.M = M  # noqa: N803
@@ -100,9 +98,7 @@ class HNSW(NNAlgorithm):
 
     def _kneighbors(self, k, query, index, return_distance, is_self_querying):
         # Fetch the neighbor candidates
-        neigh_ind_dist = index.knnQueryBatch(
-            query, k=k, num_threads=self.n_jobs
-        )
+        neigh_ind_dist = index.knnQueryBatch(query, k=k, num_threads=self.n_jobs)
 
         # If fewer candidates than required are found for a query,
         # we save index=-1 and distance=NaN

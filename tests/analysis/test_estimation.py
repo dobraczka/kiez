@@ -41,9 +41,7 @@ def test_hubness(verbose):
     hubness_true = 0.9128709291752769
     neighbors = np.array([[0, 2], [1, 0], [2, 0], [3, 1], [4, 0]])
     score = hubness_score(neighbors, 5, 5)
-    np.testing.assert_almost_equal(
-        score["k_skewness"], hubness_true, decimal=10
-    )
+    np.testing.assert_almost_equal(score["k_skewness"], hubness_true, decimal=10)
 
 
 def test_limiting_factor():

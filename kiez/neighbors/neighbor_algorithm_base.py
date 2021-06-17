@@ -17,7 +17,10 @@ class NNAlgorithm(ABC):
 
     def _describe_source_target_fitted(self):
         if hasattr(self, "source_"):
-            return f" is fitted with: source.shape={self.source_.shape} and target.shape={self.target_.shape}"
+            return (
+                f" is fitted with: source.shape={self.source_.shape} and"
+                f" target.shape={self.target_.shape}"
+            )
         return " is unfitted"
 
     @property
@@ -43,9 +46,7 @@ class NNAlgorithm(ABC):
         if k <= 0:
             raise ValueError(f"Expected k > 0. Got {k}")
         if not np.issubdtype(type(k), np.integer):
-            raise TypeError(
-                f"k does not take {type(k)} value, enter integer value"
-            )
+            raise TypeError(f"k does not take {type(k)} value, enter integer value")
         if k > needed_space:
             warnings.warn(
                 f"k={k} is larger than number of samples in indexed space.\n"
@@ -83,9 +84,7 @@ class NNAlgorithm(ABC):
 
 class NNAlgorithmWithJoblib(NNAlgorithm):
     @abstractmethod
-    def _kneighbors_part(
-        self, k, query, index, return_distance, is_self_querying
-    ):
+    def _kneighbors_part(self, k, query, index, return_distance, is_self_querying):
         pass
 
     def _kneighbors(self, k, query, index, return_distance, is_self_querying):
@@ -106,8 +105,7 @@ class NNAlgorithmWithJoblib(NNAlgorithm):
         if return_distance:
             dist, neigh_ind = zip(*result)
             result = [
-                np.atleast_2d(arr)
-                for arr in [np.vstack(dist), np.vstack(neigh_ind)]
+                np.atleast_2d(arr) for arr in [np.vstack(dist), np.vstack(neigh_ind)]
             ]
         else:
             result = np.atleast_2d(np.vstack(result))

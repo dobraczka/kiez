@@ -49,7 +49,4 @@ def hits(
         hits_counter = _hits_from_ndarray(nn_ind, gold, k, hits_counter)
     elif isinstance(nn_ind, Dict):
         hits_counter = _hits_from_dict(nn_ind, gold, k, hits_counter)
-    return {
-        hits_at_k: k_val / len(gold)
-        for hits_at_k, k_val in hits_counter.items()
-    }
+    return {hits_at_k: k_val / len(gold) for hits_at_k, k_val in hits_counter.items()}

@@ -94,8 +94,8 @@ class DisSimLocal(HubnessReduction):
         k = self.k
         if k > neigh_ind.shape[1]:
             warnings.warn(
-                f"Neighborhood parameter k larger than provided neighbors in neigh_dist, neigh_ind. "
-                f"Will reduce to k={neigh_ind.shape[1]}."
+                "Neighborhood parameter k larger than provided neighbors in"
+                f" neigh_dist, neigh_ind. Will reduce to k={neigh_ind.shape[1]}."
             )
             k = neigh_ind.shape[1]
 
@@ -165,8 +165,8 @@ class DisSimLocal(HubnessReduction):
         k = self.k
         if k > neigh_ind.shape[1]:
             warnings.warn(
-                f"Neighborhood parameter k larger than provided neighbors in neigh_dist, neigh_ind. "
-                f"Will reduce to k={neigh_ind.shape[1]}."
+                "Neighborhood parameter k larger than provided neighbors in"
+                f" neigh_dist, neigh_ind. Will reduce to k={neigh_ind.shape[1]}."
             )
             k = neigh_ind.shape[1]
 

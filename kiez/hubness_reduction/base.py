@@ -14,14 +14,7 @@ class HubnessReduction(ABC):
 
     @abstractmethod
     def fit(
-        self,
-        neigh_dist,
-        neigh_ind,
-        source,
-        target,
-        assume_sorted,
-        *args,
-        **kwargs
+        self, neigh_dist, neigh_ind, source, target, assume_sorted, *args, **kwargs
     ):
         pass  # pragma: no cover
 

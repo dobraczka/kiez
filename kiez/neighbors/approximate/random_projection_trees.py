@@ -71,16 +71,14 @@ class Annoy(NNAlgorithmWithJoblib):
             self._target = data
             prefix = "kiez_target"
         suffix = ".annoy"
-        annoy_index = annoy.AnnoyIndex(
-            data.shape[1], metric=self.effective_metric_
-        )
+        annoy_index = annoy.AnnoyIndex(data.shape[1], metric=self.effective_metric_)
         if self.mmap_dir == "auto":
             index_path = create_tempfile_preferably_in_dir(
                 prefix=prefix, suffix=suffix, directory="/dev/shm"
             )
             logging.warning(
-                f"The index will be stored in {index_path}. "
-                f"It will NOT be deleted automatically, when this instance is destructed."
+                f"The index will be stored in {index_path}. It will NOT be deleted"
+                " automatically, when this instance is destructed."
             )
         elif isinstance(self.mmap_dir, str):
             index_path = create_tempfile_preferably_in_dir(
@@ -104,9 +102,7 @@ class Annoy(NNAlgorithmWithJoblib):
 
         return annoy_index
 
-    def _kneighbors_part(
-        self, k, query, index, return_distance, is_self_querying
-    ):
+    def _kneighbors_part(self, k, query, index, return_distance, is_self_querying):
         n_query = query.shape[0]
         query_dtype = query.dtype
 
@@ -130,9 +126,7 @@ class Annoy(NNAlgorithmWithJoblib):
             )
             try:
                 index, n_features = index
-                if not isinstance(index, str) or not isinstance(
-                    n_features, int
-                ):
+                if not isinstance(index, str) or not isinstance(n_features, int):
                     raise ValueError(err_msg)
             except ValueError:
                 raise ValueError(err_msg)

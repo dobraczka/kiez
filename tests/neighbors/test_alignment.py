@@ -48,19 +48,13 @@ def test_alignment_source_equals_target(
                         n_neighbors=n_neighbors, algorithm=algo, hubness=hubness
                     )
                     continue
-            align = Kiez(
-                n_neighbors=n_neighbors, algorithm=algo, hubness=hubness
-            )
+            align = Kiez(n_neighbors=n_neighbors, algorithm=algo, hubness=hubness)
             align.fit(source, source)
             results.append(
-                align.kneighbors(
-                    source_query_points=query, return_distance=True
-                )
+                align.kneighbors(source_query_points=query, return_distance=True)
             )
             results_nodist.append(
-                align.kneighbors(
-                    source_query_points=query, return_distance=False
-                )
+                align.kneighbors(source_query_points=query, return_distance=False)
             )
         for i in range(len(results) - 1):
             assert_array_almost_equal(results_nodist[i], results[i][1])
@@ -70,8 +64,7 @@ def test_alignment_source_equals_target(
     assert p == 2, f"Internal: last parameter p={p}, should have been 2"
 
     ann_algos = [
-        algo_cls(n_candidates=n_neighbors)
-        for algo_cls in APPROXIMATE_ALGORITHMS
+        algo_cls(n_candidates=n_neighbors) for algo_cls in APPROXIMATE_ALGORITHMS
     ]
     for algo in ann_algos:
         align = Kiez(
@@ -88,14 +81,9 @@ def test_alignment_source_equals_target(
         )
         assert_array_equal(results_approx_nodist, results_approx[1])
         if isinstance(algo, Annoy):  # quite imprecise
-            assert_array_almost_equal(
-                results_approx[0], results[1][0], decimal=0
-            )
+            assert_array_almost_equal(results_approx[0], results[1][0], decimal=0)
             for i in range(len(results_approx[1])):
-                assert (
-                    np.intersect1d(results_approx[1][i], results[1][1][i]).size
-                    >= 1
-                )
+                assert np.intersect1d(results_approx[1][i], results[1][1][i]).size >= 1
         else:
             # assert_array_almost_equal(
             #     results_approx[0], results[1][0], decimal=6
@@ -131,9 +119,7 @@ def test_alignment(
                         n_neighbors=n_neighbors, algorithm=algo, hubness=hubness
                     )
                     continue
-            align = Kiez(
-                n_neighbors=n_neighbors, algorithm=algo, hubness=hubness
-            )
+            align = Kiez(n_neighbors=n_neighbors, algorithm=algo, hubness=hubness)
             align.fit(source, target)
             results.append(align.kneighbors(return_distance=True))
             results_nodist.append(align.kneighbors(return_distance=False))
@@ -146,15 +132,13 @@ def test_alignment(
                 # empiric mp with ball tree can give slightly different results
                 # because slight differences in distance provided by ball_tree
                 if not (
-                    isinstance(hubness, MutualProximity)
-                    and hubness.method == "empiric"
+                    isinstance(hubness, MutualProximity) and hubness.method == "empiric"
                 ):
                     raise error
     # Test approximate NN against exact NN with Euclidean distances
     assert p == 2, f"Internal: last parameter p={p}, should have been 2"
     ann_algos = [
-        algo_cls(n_candidates=n_neighbors)
-        for algo_cls in APPROXIMATE_ALGORITHMS
+        algo_cls(n_candidates=n_neighbors) for algo_cls in APPROXIMATE_ALGORITHMS
     ]
     for algo in ann_algos:
         align = Kiez(
@@ -171,16 +155,11 @@ def test_alignment(
         )
         assert_array_equal(results_approx_nodist, results_approx[1])
         if isinstance(algo, Annoy):  # quite imprecise
-            assert_array_almost_equal(
-                results_approx[0], results[1][0], decimal=0
-            )
+            assert_array_almost_equal(results_approx[0], results[1][0], decimal=0)
             for i in range(len(results_approx[1])):
                 try:
                     assert (
-                        np.intersect1d(
-                            results_approx[1][i], results[1][1][i]
-                        ).size
-                        >= 1
+                        np.intersect1d(results_approx[1][i], results[1][1][i]).size >= 1
                     ), f"{algo} failed with {hubness}"
                 except AssertionError as error:
                     # empiric mp with ball tree can give slightly different results

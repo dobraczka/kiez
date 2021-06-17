@@ -309,13 +309,9 @@ def hubness_score(
         del mask
 
     try:
-        k_occurrence = np.bincount(
-            k_neighbors.astype(int).ravel(), minlength=n_train
-        )
+        k_occurrence = np.bincount(k_neighbors.astype(int).ravel(), minlength=n_train)
     except ValueError as e:
-        logging.info(
-            f"k_occurence failed with the following neighbors: {k_neighbors}"
-        )
+        logging.info(f"k_occurence failed with the following neighbors: {k_neighbors}")
         raise e
 
     # traditional skewness measure

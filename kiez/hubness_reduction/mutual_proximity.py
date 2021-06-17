@@ -76,7 +76,8 @@ class MutualProximity(HubnessReduction):
 
         if self.method not in ["exact", "empiric", "normal", "gaussi"]:
             raise ValueError(
-                f'Mutual proximity method "{self.method}" not recognized. Try "normal" or "empiric".'
+                f'Mutual proximity method "{self.method}" not recognized. Try "normal"'
+                ' or "empiric".'
             )
         elif self.method in ["exact", "empiric"]:
             self.method = "empiric"

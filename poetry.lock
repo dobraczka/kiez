@@ -727,10 +727,13 @@ python-versions = ">=3.6"
 docs = ["sphinx", "jaraco.packaging (>=8.2)", "rst.linker (>=1.9)"]
 testing = ["pytest (>=4.6)", "pytest-checkdocs (>=1.2.3)", "pytest-flake8", "pytest-cov", "pytest-enabler", "jaraco.itertools", "func-timeout", "pytest-black (>=0.3.7)", "pytest-mypy"]
 
+[extras]
+ann = ["ngt", "annoy", "nmslib"]
+
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7.1"
-content-hash = "9c75d91718ecad07f2f97b76f7820cdccc2f458eb8f1dc2558d6bb7a41d0c158"
+content-hash = "cd3c7e0ef8638d959ab3e06dff2d88ee65e016a34db70f7cfa8c8157c8c327aa"
 
 [metadata.files]
 annoy = [

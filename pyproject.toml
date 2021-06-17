@@ -27,6 +27,9 @@ tox = "^3.21.4"
 black = "^21.6b0"
 pyproject-flake8 = "^0.0.1-alpha.2"
 
+[tool.poetry.extras]
+ann = ["ngt","annoy","nmslib"]
+
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"

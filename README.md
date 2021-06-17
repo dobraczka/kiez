@@ -1,5 +1,5 @@
 # kiez
-![badge](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/7c57dda3b055c972a06f0f076df46196/raw/test.json)
+![testcoverage](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/dobraczka/7c57dda3b055c972a06f0f076df46196/raw/test.json)
 A Python library for hubness reduced nearest neighbor search for the task of entity alignment with knowledge graph embeddings. The term kiez is a [german word](https://en.wikipedia.org/wiki/Kiez) that refers to a city neighborhood.
 
 ## Hubness Reduction

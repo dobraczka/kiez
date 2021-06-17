@@ -83,8 +83,8 @@ class DisSimLocal(HubnessReduction):
         # Check equal number of rows and columns
         check_consistent_length(neigh_ind, neigh_dist)
         check_consistent_length(neigh_ind.T, neigh_dist.T)
-        source = check_array(source)
-        target = check_array(target)
+        # source = check_array(source)
+        # target = check_array(target)
         try:
             if self.k <= 0:
                 raise ValueError(f"Expected k > 0. Got {self.k}")
@@ -108,6 +108,7 @@ class DisSimLocal(HubnessReduction):
         centroids = source[knn].mean(axis=1)
         dist_to_cent = row_norms(target - centroids, squared=True)
 
+        self.source_ = source
         self.target_ = target
         self.target_centroids_ = centroids
         self.target_dist_to_centroids_ = dist_to_cent
@@ -148,7 +149,9 @@ class DisSimLocal(HubnessReduction):
             self,
             ["target_", "target_centroids_", "target_dist_to_centroids_"],
         )
-        query = check_array(query)
+        # query = check_array(query)
+        if query is None:
+            query = self.source_
 
         n_test, n_indexed = neigh_dist.shape
 

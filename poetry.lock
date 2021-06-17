@@ -157,7 +157,7 @@ pyflakes = ">=2.3.0,<2.4.0"
 name = "importlib-metadata"
 version = "4.5.0"
 description = "Read metadata from Python packages"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.6"
 
@@ -684,7 +684,7 @@ python-versions = "*"
 name = "typing-extensions"
 version = "3.10.0.0"
 description = "Backported and Experimental Type Hints for Python 3.5+"
-category = "dev"
+category = "main"
 optional = false
 python-versions = "*"
 
@@ -719,7 +719,7 @@ python-versions = "*"
 name = "zipp"
 version = "3.4.1"
 description = "Backport of pathlib-compatible object wrapper for zip files"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.6"
 
@@ -727,10 +727,13 @@ python-versions = ">=3.6"
 docs = ["sphinx", "jaraco.packaging (>=8.2)", "rst.linker (>=1.9)"]
 testing = ["pytest (>=4.6)", "pytest-checkdocs (>=1.2.3)", "pytest-flake8", "pytest-cov", "pytest-enabler", "jaraco.itertools", "func-timeout", "pytest-black (>=0.3.7)", "pytest-mypy"]
 
+[extras]
+ann = ["ngt", "annoy", "nmslib"]
+
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7.1"
-content-hash = "9c75d91718ecad07f2f97b76f7820cdccc2f458eb8f1dc2558d6bb7a41d0c158"
+content-hash = "c2c56df22f3130f51cdc2228f93d9886afd75d8cdb5366f929ff87b1c0901943"
 
 [metadata.files]
 annoy = [

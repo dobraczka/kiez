@@ -46,4 +46,36 @@ jobs:
     - name: Lint with flake8
       run: poetry run pflake8
     - name: Test with tox
-      run: tox
+      run: tox | tee report.txt
+    - name: Get coverage
+      run: |
+        echo "cov=$(grep 'TOTAL' report.txt | tail -1 | sed 's/\s\+/,/g' | cut -d',' -f 4 | sed 's/%//g' )" >> $GITHUB_ENV
+        rm report.txt
+    - name: Get badge color
+      if: ${{ env.cov < 51 }}
+      run: |
+        echo "cov_color=red"
+      if: ${{ env.cov < 71 && env.cov > 50}}
+      run: |
+        echo "cov_color=orange"
+      if: ${{ env.cov < 81 && env.cov > 70}}
+      run: |
+        echo "cov_color=yellow"
+      if: ${{ env.cov < 86 && env.cov > 80}}
+      run: |
+        echo "cov_color=yellowgreen"
+      if: ${{ env.cov < 95 && env.cov > 85}}
+      run: |
+        echo "cov_color=green"
+      if: ${{ env.cov > 94}}
+      run: |
+        echo "cov_color=brightgreen"
+    - name: Create test badge
+      uses: schneegans/dynamic-badges-action@v1.1.0
+      with:
+        auth: ${{ secrets.GIST_SECRET }}
+        gistID: 7c57dda3b055c972a06f0f076df46196
+        filename: test.json
+        label: coverage
+        message: ${{ env.cov }} %
+        color: ${{ env.cov_color }}

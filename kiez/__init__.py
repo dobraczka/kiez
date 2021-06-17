@@ -1,5 +1,7 @@
+from importlib.metadata import version
+
 from kiez.kiez import Kiez
 
-__version__ = "0.1.0"
+__version__ = version(__package__)
 
 __all__ = ["Kiez"]

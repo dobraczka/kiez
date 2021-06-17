@@ -170,7 +170,7 @@ def test_alignment(
             source_query_points=source, return_distance=False
         )
         assert_array_equal(results_approx_nodist, results_approx[1])
-        if algo in ["rptree"]:  # quite imprecise
+        if isinstance(algo, Annoy):  # quite imprecise
             assert_array_almost_equal(
                 results_approx[0], results[1][0], decimal=0
             )
@@ -183,7 +183,12 @@ def test_alignment(
                         >= 1
                     ), f"{algo} failed with {hubness}"
                 except AssertionError as error:
-                    if hubness != "mp":
+                    # empiric mp with ball tree can give slightly different results
+                    # because slight differences in distance provided by ball_tree
+                    if not (
+                        isinstance(hubness, MutualProximity)
+                        and hubness.method == "empiric"
+                    ):
                         raise error
         else:
             # assert_array_almost_equal(

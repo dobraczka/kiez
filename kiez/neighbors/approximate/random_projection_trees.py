@@ -91,7 +91,7 @@ class Annoy(NNAlgorithmWithJoblib):
 
         for i, x in tqdm(
             enumerate(data),
-            desc="Build RPtree",
+            desc="Build Annoy",
             disable=not self.verbose,
         ):
             annoy_index.add_item(i, x.tolist())
@@ -154,7 +154,7 @@ class Annoy(NNAlgorithmWithJoblib):
 
             for i in tqdm(
                 range(n_items),
-                desc="Query RPtree",
+                desc="Query Annoy",
                 disable=disable_tqdm,
             ):
                 ind, dist = annoy_index.get_nns_by_item(
@@ -170,7 +170,7 @@ class Annoy(NNAlgorithmWithJoblib):
         else:  # if query was provided
             for i, x in tqdm(
                 enumerate(query),
-                desc="Query RPtree",
+                desc="Query Annoy",
                 disable=disable_tqdm,
             ):
                 ind, dist = annoy_index.get_nns_by_vector(

@@ -157,7 +157,7 @@ pyflakes = ">=2.3.0,<2.4.0"
 name = "importlib-metadata"
 version = "4.5.0"
 description = "Read metadata from Python packages"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.6"
 
@@ -684,7 +684,7 @@ python-versions = "*"
 name = "typing-extensions"
 version = "3.10.0.0"
 description = "Backported and Experimental Type Hints for Python 3.5+"
-category = "dev"
+category = "main"
 optional = false
 python-versions = "*"
 
@@ -719,7 +719,7 @@ python-versions = "*"
 name = "zipp"
 version = "3.4.1"
 description = "Backport of pathlib-compatible object wrapper for zip files"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.6"
 
@@ -733,7 +733,7 @@ ann = ["ngt", "annoy", "nmslib"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7.1"
-content-hash = "cd3c7e0ef8638d959ab3e06dff2d88ee65e016a34db70f7cfa8c8157c8c327aa"
+content-hash = "c2c56df22f3130f51cdc2228f93d9886afd75d8cdb5366f929ff87b1c0901943"
 
 [metadata.files]
 annoy = [

@@ -17,8 +17,8 @@ from tqdm.auto import tqdm
 try:
     import ngtpy  # noqa: autoimport
 
-except ImportError:
-    ngtpy = None  # pragma: no cover
+except ImportError:  # pragma: no cover
+    ngtpy = None
 
 
 __all__ = [
@@ -53,7 +53,6 @@ class NNG(NNAlgorithmWithJoblib):
         n_candidates: int = 5,
         metric: str = "euclidean",
         index_dir: str = "auto",
-        optimize: bool = False,
         edge_size_for_creation: int = 80,
         edge_size_for_search: int = 40,
         num_incoming: int = -1,
@@ -82,12 +81,35 @@ class NNG(NNAlgorithmWithJoblib):
         self.verbose = verbose
         self.index_dir = index_dir
         self._index_dir_plausibility_check()
-        self.optimize = optimize
         self.edge_size_for_creation = edge_size_for_creation
         self.edge_size_for_search = edge_size_for_search
         self.num_incoming = num_incoming
         self.num_outgoing = num_outgoing
         self.epsilon = epsilon
+        self.index_path_source = None
+        self.index_path_target = None
+
+    def __repr__(self):
+        ret_str = (
+            f"{self.__class__.__name__}(n_candidates={self.n_candidates},"
+            + f"index_dir = {self.index_dir}"
+            + f"edge_size_for_creation = {self.edge_size_for_creation}"
+            + f"edge_size_for_search = {self.edge_size_for_search}"
+            + f"num_incoming = {self.num_incoming}"
+            + f"num_outgoing = {self.num_outgoing}"
+            + f"epsilon = {self.epsilon}"
+            + f"n_jobs = {self.n_jobs}"
+            + f"verbose = {self.verbose}"
+            + f"{self._describe_source_target_fitted()}"
+        )
+        if self.index_path_source is not None:
+            ret_str += (
+                f" source index path={self.index_path_source} and target index"
+                f" path={self.index_path_target}"
+            )
+        if self.metric != self.effective_metric_:
+            return ret_str + f" and effective algo is {self.effective_metric_}"
+        return ret_str
 
     def _index_dir_plausibility_check(self):
         if not (self.index_dir is None or isinstance(self.index_dir, str)):
@@ -102,6 +124,7 @@ class NNG(NNAlgorithmWithJoblib):
         else:
             prefix = "kiez_target"
 
+        index_path = None
         # Set up a directory to save the index to
         suffix = ".anng"
         if self.index_dir in ["auto"]:
@@ -131,16 +154,11 @@ class NNG(NNAlgorithmWithJoblib):
         index_obj.batch_insert(data, num_threads=self.n_jobs)
         index_obj.save()
 
-        # Convert ANNG to ONNG
-        if self.optimize:
-            optimizer = ngtpy.Optimizer()
-            optimizer.set(
-                num_of_outgoings=self.num_outgoing,
-                num_of_incomings=self.num_incoming,
-            )
-            index_path_onng = str(pathlib.Path(index_path).with_suffix(".onng"))
-            optimizer.execute(index_path, index_path_onng)
-            index_path = index_path_onng
+        if index_path is not None:
+            if is_source:
+                self.index_path_source = index_path
+            else:
+                self.index_path_target = index_path
 
         # Keep index in memory or store in path
         if self.index_dir is None:

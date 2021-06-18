@@ -25,11 +25,11 @@ class NNAlgorithm(ABC):
 
     @property
     def valid_metrics(self):
-        pass
+        pass  # pragma: no cover
 
     @abstractmethod
     def _fit(self, data, is_source: bool):
-        pass
+        pass  # pragma: no cover
 
     def fit(self, source, target):
         self.source_equals_target = np.array_equal(source, target)
@@ -43,23 +43,23 @@ class NNAlgorithm(ABC):
         self.target_ = target
 
     def _check_k_value(self, k, needed_space):
-        if k <= 0:
-            raise ValueError(f"Expected k > 0. Got {k}")
         if not np.issubdtype(type(k), np.integer):
             raise TypeError(f"k does not take {type(k)} value, enter integer value")
+        if k <= 0:
+            raise ValueError(f"Expected k > 0. Got {k}")
         if k > needed_space:
             warnings.warn(
                 f"k={k} is larger than number of samples in indexed space.\n"
-                + "Setting to k={target_space_size}"
+                + f"Setting to k={needed_space}"
             )
             return needed_space
         return k
 
     @abstractmethod
-    def _kneighbors(self, k, query, index, return_distance, is_self_querying):
-        pass
+    def _kneighbors(self, query, k, index, return_distance, is_self_querying):
+        pass  # pragma: no cover
 
-    def kneighbors(self, k=None, query=None, s_to_t=True, return_distance=True):
+    def kneighbors(self, query=None, k=None, s_to_t=True, return_distance=True):
         check_is_fitted(self, ["source_index", "target_index"])
         k = self.n_candidates if k is None else k
         is_self_querying = query is None and self.source_equals_target
@@ -85,7 +85,7 @@ class NNAlgorithm(ABC):
 class NNAlgorithmWithJoblib(NNAlgorithm):
     @abstractmethod
     def _kneighbors_part(self, k, query, index, return_distance, is_self_querying):
-        pass
+        pass  # pragma: no cover
 
     def _kneighbors(self, k, query, index, return_distance, is_self_querying):
         n_jobs = effective_n_jobs(self.n_jobs)

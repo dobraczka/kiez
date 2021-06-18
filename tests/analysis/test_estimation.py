@@ -118,3 +118,21 @@ def test_hubness_return_values_are_self_consistent(k):
     m3 = (x0 ** 3).mean()
     skew_true = m3 / (s2 ** 1.5)
     np.testing.assert_equal(skew, skew_true)
+
+
+def test_negative_indices():
+    neighbors = np.array([[1, 2, 3], [-1, 4, 5]])
+    score = hubness_score(neighbors, 2, 5)
+    assert score is not None
+
+
+def test_k_too_large():
+    neighbors = np.array([[1, 2, 3], [-1, 4, 5]])
+    with pytest.warns(None, match="k > nn_ind.shape[1], k will be set to 3"):
+        score = hubness_score(neighbors, 2, 5, k=10)
+        assert score is not None
+
+
+def test_wrong_neighbors():
+    with pytest.raises(ValueError):
+        hubness_score(np.array([[np.inf], [0]]), 1, 1)

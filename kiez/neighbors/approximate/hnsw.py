@@ -15,8 +15,8 @@ class HNSW(NNAlgorithm):
     # when importing kiez
     try:
         import nmslib
-    except ImportError:
-        nmslib = None  # pragma: no cover
+    except ImportError:  # pragma: no cover
+        nmslib = None
 
     valid_metrics = [
         "euclidean",
@@ -40,48 +40,60 @@ class HNSW(NNAlgorithm):
         verbose: int = 0,
     ):
 
+        self.space = None
         if HNSW.nmslib is None:  # pragma: no cover
             raise ImportError(
                 "Please install the `nmslib` package, before using this class.\n"
                 "$ pip install nmslib"
             )
 
-        super().__init__(n_candidates=n_candidates, metric=metric, n_jobs=n_jobs)
-        self.verbose = verbose
-        self.method = method
-        self.M = M  # noqa: N803
-        self.post_processing = post_processing
-        self.ef_construction = ef_construction
-        self.space = None
-
-    def _fit(self, data, is_source: bool):
-        method = self.method
-        post_processing = self.post_processing
-        big_m = self.M
-        ef_construction = self.ef_construction
-
-        if self.metric not in self.valid_metrics:
-            raise ValueError(
-                f'Invalid metric "{self.metric}". Please try "euclidean" or "cosine".'
-            )
-        elif self.metric in [
+        if metric in [
             "euclidean",
             "l2",
             "minkowski",
             "squared_euclidean",
             "sqeuclidean",
         ]:
-            if self.metric in ["squared_euclidean", "sqeuclidean"]:
-                self.metric = "sqeuclidean"
+            if metric in ["squared_euclidean", "sqeuclidean"]:
+                metric = "sqeuclidean"
             else:
-                self.metric = "euclidean"
+                metric = "euclidean"
             self.space = "l2"
-        elif self.metric in ["cosine", "cosinesimil"]:
+        elif metric in ["cosine", "cosinesimil"]:
             self.space = "cosinesimil"
+        elif metric not in self.__class__.valid_metrics:
+            raise ValueError(
+                f"Unknown metric please try one of {self.__class__.valid_metrics}"
+            )
         assert self.space in [
             "l2",
             "cosinesimil",
         ], f"Internal: self.space={self.space} not allowed"
+        super().__init__(n_candidates=n_candidates, metric=metric, n_jobs=n_jobs)
+        self.verbose = verbose
+        self.method = method
+        self.M = M  # noqa: N803
+        self.post_processing = post_processing
+        self.ef_construction = ef_construction
+
+    def __repr__(self):
+        return (
+            f"{self.__class__.__name__}(n_candidates={self.n_candidates},"
+            + f"verbose = {self.verbose}"
+            + f"method = {self.method}"
+            + f"M = {self.M}"
+            + f"space = {self.space}"
+            + f"post_processing = {self.post_processing}"
+            + f"ef_construction = {self.ef_construction}"
+            + f"n_jobs = {self.n_jobs}"
+            + f"{self._describe_source_target_fitted()}"
+        )
+
+    def _fit(self, data, is_source: bool):
+        method = self.method
+        post_processing = self.post_processing
+        big_m = self.M
+        ef_construction = self.ef_construction
 
         hnsw_index = HNSW.nmslib.init(method=method, space=self.space)
         hnsw_index.addDataPointBatch(data)

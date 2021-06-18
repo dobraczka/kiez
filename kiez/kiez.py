@@ -15,6 +15,13 @@ class Kiez:
         algorithm=None,
         hubness: str = None,
     ):
+        if not np.issubdtype(type(n_neighbors), np.integer):
+            raise TypeError(
+                f"n_neighbors does not take {type(n_neighbors)} value, enter"
+                " integer value"
+            )
+        elif n_neighbors <= 0:
+            raise ValueError(f"Expected n_neighbors > 0. Got {n_neighbors}")
         self.n_neighbors = n_neighbors
         self.algorithm = (
             SklearnNN(n_candidates=n_neighbors) if algorithm is None else algorithm
@@ -76,22 +83,15 @@ class Kiez:
 
     def kneighbors(
         self,
-        k=None,
         source_query_points=None,
+        k=None,
         return_distance=True,
     ):
         # function loosely adapted from skhubness: https://github.com/VarIr/scikit-hubness
 
         if k is None:
             n_neighbors = self.n_neighbors
-        elif self.n_neighbors <= 0:
-            raise ValueError(f"Expected n_neighbors > 0. Got {n_neighbors}")
         else:
-            if not np.issubdtype(type(self.n_neighbors), np.integer):
-                raise TypeError(
-                    f"n_neighbors does not take {type(n_neighbors)} value, enter"
-                    " integer value"
-                )
             n_neighbors = k
         # First obtain candidate neighbors
         query_dist, query_ind = self.kcandidates(

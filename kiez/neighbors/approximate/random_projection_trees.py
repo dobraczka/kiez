@@ -18,8 +18,8 @@ from tqdm.auto import tqdm
 try:
     import annoy  # noqa: autoimport
 
-except ImportError:
-    annoy = None  # pragma: no cover
+except ImportError:  # pragma: no cover
+    annoy = None
 
 
 class Annoy(NNAlgorithmWithJoblib):
@@ -49,19 +49,42 @@ class Annoy(NNAlgorithmWithJoblib):
                 "$ pip install annoy"
             ) from None
 
+        if metric not in self.__class__.valid_metrics:
+            raise ValueError(
+                f"Unknown metric please try one of {self.__class__.valid_metrics}"
+            )
+        if metric == "minkowski":  # for compatibility
+            metric = "euclidean"
         super().__init__(
             n_candidates=n_candidates,
             metric=metric,
             n_jobs=n_jobs,
         )
-        if self.metric == "minkowski":  # for compatibility
-            self.metric = "euclidean"
-        metric = self.metric if self.metric != "sqeuclidean" else "euclidean"
         self.effective_metric_ = metric
         self.verbose = verbose
         self.n_trees = n_trees
         self.search_k = search_k
         self.mmap_dir = mmap_dir
+        self.index_path_source = None
+        self.index_path_target = None
+
+    def __repr__(self):
+        ret_str = (
+            f"{self.__class__.__name__}(n_candidates={self.n_candidates},"
+            + f"effective_metric_ = {self.effective_metric_}"
+            + f"verbose = {self.verbose}"
+            + f"n_trees = {self.n_trees}"
+            + f"search_k = {self.search_k}"
+            + f"mmap_dir = {self.mmap_dir}"
+            + f"n_jobs = {self.n_jobs}"
+            + f"{self._describe_source_target_fitted()}"
+        )
+        if self.index_path_source is not None:
+            ret_str += (
+                f" source index path={self.index_path_source} and target index"
+                f" path={self.index_path_target}"
+            )
+        return ret_str
 
     def _fit(self, data, is_source: bool):
         if is_source:
@@ -72,6 +95,8 @@ class Annoy(NNAlgorithmWithJoblib):
             prefix = "kiez_target"
         suffix = ".annoy"
         annoy_index = annoy.AnnoyIndex(data.shape[1], metric=self.effective_metric_)
+
+        index_path = None
         if self.mmap_dir == "auto":
             index_path = create_tempfile_preferably_in_dir(
                 prefix=prefix, suffix=suffix, directory="/dev/shm"
@@ -95,10 +120,13 @@ class Annoy(NNAlgorithmWithJoblib):
             annoy_index.add_item(i, x.tolist())
         annoy_index.build(self.n_trees)
 
-        if self.mmap_dir is not None:
+        if index_path is not None:
+            if is_source:
+                self.index_path_source = index_path
+            else:
+                self.index_path_target = index_path
             annoy_index.save(index_path)
-        else:
-            annoy_index = (index_path, data.shape[1])
+            return index_path, data.shape[1]
 
         return annoy_index
 
@@ -119,6 +147,7 @@ class Annoy(NNAlgorithmWithJoblib):
         neigh_ind = -np.ones((n_query, k), dtype=np.int32)
         neigh_dist = np.empty_like(neigh_ind, dtype=query_dtype) * np.nan
 
+        annoy_index = None
         if isinstance(index, Tuple):
             err_msg = (
                 "Internal error: annoy index must be either annoy.AnnoyIndex"
@@ -139,8 +168,8 @@ class Annoy(NNAlgorithmWithJoblib):
         elif isinstance(index, annoy.AnnoyIndex):
             annoy_index = index
         assert isinstance(
-            index, annoy.AnnoyIndex
-        ), "Internal error: unexpected type for annoy index"
+            annoy_index, annoy.AnnoyIndex
+        ), f"Internal error: unexpected type ({type(index)} for annoy index"
 
         disable_tqdm = not self.verbose
         if is_self_querying:
@@ -177,9 +206,6 @@ class Annoy(NNAlgorithmWithJoblib):
                 dist = dist[start:]
                 neigh_ind[i, : len(ind)] = ind
                 neigh_dist[i, : len(dist)] = dist
-
-        if self.metric == "sqeuclidean":
-            neigh_dist **= 2
 
         if return_distance:
             return neigh_dist, neigh_ind

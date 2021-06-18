@@ -37,7 +37,15 @@ class MutualProximity(HubnessReduction):
 
     def __init__(self, method: str = "normal", verbose: int = 0, **kwargs):
         super().__init__(**kwargs)
-        self.method = method
+        if method not in ["exact", "empiric", "normal", "gaussi"]:
+            raise ValueError(
+                f'Mutual proximity method "{method}" not recognized. Try "normal"'
+                ' or "empiric".'
+            )
+        if method in ["exact", "empiric"]:
+            self.method = "empiric"
+        elif method in ["normal", "gaussi"]:
+            self.method = "normal"
         self.verbose = verbose
 
     def fit(
@@ -74,17 +82,12 @@ class MutualProximity(HubnessReduction):
 
         self.n_train = neigh_dist.shape[0]
 
-        if self.method not in ["exact", "empiric", "normal", "gaussi"]:
-            raise ValueError(
-                f'Mutual proximity method "{self.method}" not recognized. Try "normal"'
-                ' or "empiric".'
-            )
-        elif self.method in ["exact", "empiric"]:
-            self.method = "empiric"
+        if self.method not in ["normal", "empiric"]:
+            raise ValueError(f"Internal: Invalid method {self.method}.")
+        elif self.method == "empiric":
             self.neigh_dist_t_to_s_ = neigh_dist
             self.neigh_ind_t_to_s_ = neigh_ind
-        elif self.method in ["normal", "gaussi"]:
-            self.method = "normal"
+        elif self.method == "normal":
             self.mu_t_to_s_ = np.nanmean(neigh_dist, axis=1)
             self.sd_t_to_s_ = np.nanstd(neigh_dist, axis=1, ddof=0)
         return self

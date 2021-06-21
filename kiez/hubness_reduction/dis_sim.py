@@ -59,6 +59,9 @@ class DisSimLocal(HubnessReduction):
             individual k nearest neighbors (colums).
         neigh_ind: np.ndarray, shape (n_samples, n_neighbors)
             Neighbor indices corresponding to the values in neigh_dist.
+        source: np.ndarray, shape (n_samples, n_features)
+            source embedding, where n_samples is the number of vectors,
+            and n_features their dimensionality (number of features).
         target: np.ndarray, shape (n_samples, n_features)
             Target embedding, where n_samples is the number of vectors,
             and n_features their dimensionality (number of features).
@@ -128,9 +131,9 @@ class DisSimLocal(HubnessReduction):
             k nearest neighbors among the training data (columns).
         neigh_ind: np.ndarray, shape (n_query, n_neighbors)
             Neighbor indices corresponding to the values in neigh_dist
-        source: np.ndarray, shape (n_query, n_features)
-            Test data, where n_query is the number of vectors,
-            and n_features their dimensionality (number of features).
+        query: np.ndarray, shape (n_query, n_features)
+            Query entities that were used to obtain neighbors
+            If none is provided use source that was provided in fit step
         assume_sorted: bool
             ignored
 

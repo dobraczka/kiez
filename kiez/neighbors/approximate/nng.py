@@ -7,7 +7,6 @@
 from __future__ import annotations
 
 import logging
-import pathlib
 
 import numpy as np
 from kiez.io.temp_file_handling import create_tempfile_preferably_in_dir

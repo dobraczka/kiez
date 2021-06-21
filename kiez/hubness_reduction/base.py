@@ -39,6 +39,9 @@ class NoHubnessReduction(HubnessReduction):
     def fit(self, *args, **kwargs):
         pass  # pragma: no cover
 
+    def __repr__(self):
+        return "NoHubnessReduction"
+
     def transform(
         self,
         neigh_dist,

@@ -1,5 +1,5 @@
 import pytest
-from kiez.evaluate.eval_metrics import hits
+from kiez.evaluate import hits
 
 
 @pytest.mark.parametrize(

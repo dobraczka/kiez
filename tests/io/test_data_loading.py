@@ -1,6 +1,6 @@
 import numpy as np
 import pytest
-from kiez.io.data_loading import seperate_common_embedding
+from kiez.io.data_loading import _seperate_common_embedding
 from numpy.testing import assert_array_equal
 
 
@@ -40,7 +40,7 @@ from numpy.testing import assert_array_equal
     ],
 )
 def test_seperate_common_embedding(input, expected):
-    emb1, emb2, ids1, ids2, ent_links = seperate_common_embedding(*input)
+    emb1, emb2, ids1, ids2, ent_links = _seperate_common_embedding(*input)
     assert_array_equal(expected[0], emb1)
     assert_array_equal(expected[1], emb2)
     assert expected[2] == ids1

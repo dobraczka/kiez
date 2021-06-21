@@ -40,6 +40,14 @@ def hits(
     hits: dict
         k: relative hits@k values
 
+    Examples
+    --------
+    >>> from kiez.evaluate import hits
+    >>> import numpy as np
+    >>> nn_ind = np.array([[1, 2, 3], [2, 3, 4], [3, 4, 5], [4, 5, 6]])
+    >>> gold = {0: 2, 1: 4, 2: 3, 3: 4}
+    >>> hits(nn_ind, gold)
+    {1: 0.5, 5: 1.0, 10: 1.0}
     """
     if k is None:
         k = [1, 5, 10]

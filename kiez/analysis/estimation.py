@@ -187,9 +187,9 @@ def _calc_hub_occurrence(
 
 def hubness_score(
     nn_ind: np.ndarray,
-    query_samples: int,
     target_samples: int,
-    k=None,
+    *,
+    k: int = None,
     hub_size: float = 2.0,
     shuffle_equal: bool = True,
     random_state=None,
@@ -198,10 +198,13 @@ def hubness_score(
     store_k_occurrence: bool = False,
 ) -> Union[float, dict]:
     """Calculates hubness scores from given neighbor indices
+
     Parameters
     ----------
-    nn_dist : np.ndarray
-        Distance matrix
+    nn_ind : np.ndarray
+       Neighbor index matrix
+    target_samples: int
+        number of entities in the target space
     k : int
         number of k for k-nearest neighbor
     hub_size : float
@@ -232,6 +235,13 @@ def hubness_score(
     hubness_measure: float or dict
             Return the hubness measure as indicated by `return_value`.
             if return_value is 'all', a dict of all hubness measures is returned.
+
+    # noqa: DAR002
+    Raises
+    ------
+    ValueError
+        If nn_ind has wrong type
+
     References
     ----------
     .. [1] `Radovanović, M.; Nanopoulos, A. & Ivanovic, M.
@@ -241,8 +251,24 @@ def hubness_score(
             Fast approximate hubness reduction for large high-dimensional data.
             IEEE International Conference of Big Knowledge (2018).`
 
+    Examples
+    --------
+    >>> from kiez import Kiez
+    >>> from kiez.analysis import hubness_score
+    >>> import numpy as np
+    >>> # create example data
+    >>> rng = np.random.RandomState(0)
+    >>> source = rng.rand(100,50)
+    >>> target = rng.rand(100,50)
+    >>> # fit and get neighbors
+    >>> k_inst = Kiez()
+    >>> k_inst.fit(source, target)
+    >>> nn_ind = k_inst.kneighbors(return_distance=False)
+    >>> # get hubness
+    >>> hubness_score(nn_ind, target.shape[1])
+    {'k_skewness': 1.0243818877407802, 'k_skewness_truncnorm': 0.705309555084711, 'atkinson': 0.1846908928840305, 'robinhood': 0.31, 'antihubs': array([14, 34, 37, 45, 54, 57, 67, 74]), 'antihub_occurrence': 0.08, 'hubs': array([31, 39, 46, 56, 62, 66, 68, 70]), 'hub_occurrence': 0.436, 'groupie_ratio': 0.076}
     """
-    n_train = query_samples
+    n_train = nn_ind.shape[0]
     n_test = target_samples
     k_neighbors = nn_ind.copy()
     if k is None:

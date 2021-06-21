@@ -9,14 +9,13 @@ from __future__ import annotations
 import numpy as np
 from kiez.neighbors.neighbor_algorithm_base import NNAlgorithm
 
+try:
+    import nmslib
+except ImportError:  # pragma: no cover
+    nmslib = None
+
 
 class HNSW(NNAlgorithm):
-    # put import here to avoid displaying nmslib info message
-    # when importing kiez
-    try:
-        import nmslib
-    except ImportError:  # pragma: no cover
-        nmslib = None
 
     valid_metrics = [
         "euclidean",
@@ -41,7 +40,7 @@ class HNSW(NNAlgorithm):
     ):
 
         self.space = None
-        if HNSW.nmslib is None:  # pragma: no cover
+        if nmslib is None:  # pragma: no cover
             raise ImportError(
                 "Please install the `nmslib` package, before using this class.\n"
                 "$ pip install nmslib"
@@ -95,7 +94,7 @@ class HNSW(NNAlgorithm):
         big_m = self.M
         ef_construction = self.ef_construction
 
-        hnsw_index = HNSW.nmslib.init(method=method, space=self.space)
+        hnsw_index = nmslib.init(method=method, space=self.space)
         hnsw_index.addDataPointBatch(data)
         hnsw_index.createIndex(
             {

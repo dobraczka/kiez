@@ -9,13 +9,29 @@ __all__ = ["create_tempfile_preferably_in_dir"]
 
 
 def create_tempfile_preferably_in_dir(
-    suffix=None,
-    prefix=None,
-    directory=None,
+    suffix: str = None,
+    prefix: str = None,
+    directory: str = None,
     persistent: bool = False,
 ):
     """Create a temporary file with precedence for directory if possible, in TMP otherwise.
     For example, this is useful to try to save into /dev/shm.
+
+    Parameters
+    ---------
+    suffix: str
+        suffix of tempfile
+    prefix: str
+        prefix of tempfile
+    directory: str
+        directory where tempfile should preferably be created
+    persistent: bool
+        If True create a persistent file
+
+    Returns
+    -------
+    path
+        string path of tempfile
     """
     temp_file = mkstemp if persistent else NamedTemporaryFile
     try:

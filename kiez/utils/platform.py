@@ -27,7 +27,7 @@ def available_ann_algorithms_on_current_platform():
             "rptree",
             "nng",
         )
-    # others: undefined
+    # others undefined
     else:  # pragma: no cover
         algorithms = ()
 

@@ -62,8 +62,6 @@ class CSLS(HubnessReduction):
             )
             return neigh_dist, neigh_ind
 
-        # increment to include the k-th element in slicing
-        # k = self.k + 1
         k = self.k
 
         # Find average distances to the k nearest neighbors

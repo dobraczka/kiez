@@ -83,8 +83,6 @@ class DisSimLocal(HubnessReduction):
         # Check equal number of rows and columns
         check_consistent_length(neigh_ind, neigh_dist)
         check_consistent_length(neigh_ind.T, neigh_dist.T)
-        # source = check_array(source)
-        # target = check_array(target)
         try:
             if self.k <= 0:
                 raise ValueError(f"Expected k > 0. Got {self.k}")
@@ -149,7 +147,6 @@ class DisSimLocal(HubnessReduction):
             self,
             ["target_", "target_centroids_", "target_dist_to_centroids_"],
         )
-        # query = check_array(query)
         if query is None:
             query = self.source_
 

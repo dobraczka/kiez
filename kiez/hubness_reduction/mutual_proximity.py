@@ -179,7 +179,6 @@ class MutualProximity(HubnessReduction):
                         self.neigh_ind_t_to_s_[neigh_ind[i, j]]
                     ] = self.neigh_dist_t_to_s_[neigh_ind[i, j]]
                     d_j[j, :] = tmp[neigh_ind[i]]
-                # dJ = self.neigh_dist_t_to_s_[neigh_ind[i], :n_indexed]
                 d = d_i.T
                 hub_reduced_dist[i, :] = 1.0 - (
                     np.sum((d_i > d) & (d_j > d), axis=1) / n_indexed

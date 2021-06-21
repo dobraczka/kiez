@@ -13,7 +13,7 @@ import numpy as np
 from scipy import stats
 from tqdm.auto import tqdm
 
-#: Available hubness measures
+# Available hubness measures
 VALID_HUBNESS_MEASURES = [
     "all",
     "all_but_gini",
@@ -29,49 +29,6 @@ VALID_HUBNESS_MEASURES = [
     "groupie_ratio",
     "k_occurrence",
 ]
-
-
-# def _k_neighbors_precomputed(
-#     dist_mat: np.ndarray,
-#     k: int,
-#     kth: np.ndarray,
-#     start: int,
-#     end: int,
-#     shuffle_equal: bool,
-#     random_state,
-#     verbose: int,
-# ) -> np.ndarray:
-#     """Return indices of nearest neighbors in precomputed distance matrix.
-#     Returns
-#     -------
-#     kneighbor_indices
-
-#     Notes
-#     -----
-#     Parameters kth, start, end are used to ensure that objects are
-#     not returned as their own nearest neighbors.
-#     """
-#     n_test, m_test = dist_mat.shape
-#     indices = np.zeros((n_test, k), dtype=np.int32)
-#     for i in tqdm(
-#         range(n_test),
-#         disable=not verbose,
-#         desc="k_neighbors",
-#     ):
-#         d = dist_mat[i, :].copy()
-#         d[~np.isfinite(d)] = np.inf
-#         if shuffle_equal:
-#             # Randomize equal values in the distance matrix rows to avoid
-#             # the problem case if all numbers to sort are the same,
-#             # which would yield high hubness, even if there is none.
-#             rp = random_state.permutation(m_test)
-#             d2 = d[rp]
-#             d2idx = np.argpartition(d2, kth=kth)
-#             indices[i, :] = rp[d2idx[start:end]]
-#         else:
-#             d_idx = np.argpartition(d, kth=kth)
-#             indices[i, :] = d_idx[start:end]
-#     return indices
 
 
 def _calc_skewness_truncnorm(k_occurrence: np.ndarray) -> float:
@@ -296,10 +253,6 @@ def hubness_score(
         elif k > k_neighbors.shape[1]:
             k = nn_ind.shape[1]
             warnings.warn(f"k > nn_ind.shape[1], k will be set to {k}")
-    # random_state = check_random_state(random_state)
-    # k_neighbors = _k_neighbors_precomputed(
-    #     nn_ind, k, kth, start, end, shuffle_equal, random_state, verbose
-    # )
 
     # Negative indices can occur, when ANN does not find enough neighbors,
     # and must be removed

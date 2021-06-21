@@ -29,7 +29,13 @@ class Kiez:
         self.hubness = NoHubnessReduction() if hubness is None else hubness
         self._check_algorithm_hubness_compatibility()
 
-    def kcandidates(
+    def __repr__(self):
+        return (
+            f"Kiez(n_neighbors: {self.n_neighbors}, algorithm: {self.algorithm},"
+            f" hubness: {self.hubness}"
+        )
+
+    def _kcandidates(
         self, query_points, *, s_to_t=True, k=None, return_distance=True
     ) -> np.ndarray or (np.ndarray, np.ndarray):
         if k is None:
@@ -66,7 +72,7 @@ class Kiez:
 
     def fit(self, source, target):
         self.algorithm.fit(source, target)
-        neigh_dist_t_to_s, neigh_ind_t_to_s = self.kcandidates(
+        neigh_dist_t_to_s, neigh_ind_t_to_s = self._kcandidates(
             target,
             s_to_t=False,
             k=self.algorithm.n_candidates,
@@ -94,7 +100,7 @@ class Kiez:
         else:
             n_neighbors = k
         # First obtain candidate neighbors
-        query_dist, query_ind = self.kcandidates(
+        query_dist, query_ind = self._kcandidates(
             source_query_points, return_distance=True
         )
         query_dist = np.atleast_2d(query_dist)

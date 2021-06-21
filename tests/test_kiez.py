@@ -12,7 +12,7 @@ def test_wrong_kcandidates(n_samples=20, n_features=5):
     target = rng.rand(n_samples, n_features)
     k_inst = Kiez()
     k_inst.fit(source, target)
-    nn_ind = k_inst.kcandidates(source, k=1, return_distance=False)
+    nn_ind = k_inst._kcandidates(source, k=1, return_distance=False)
     assert nn_ind.shape == (20, 5)
 
 

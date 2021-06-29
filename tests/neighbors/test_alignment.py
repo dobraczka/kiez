@@ -1,12 +1,7 @@
 import numpy as np
 import pytest
 from kiez import Kiez
-from kiez.hubness_reduction import (
-    CSLS,
-    DisSimLocal,
-    LocalScaling,
-    MutualProximity,
-)
+from kiez.hubness_reduction import CSLS, DisSimLocal, LocalScaling, MutualProximity
 from kiez.neighbors import HNSW, NNG, Annoy, SklearnNN
 from kiez.utils.platform import available_ann_algorithms_on_current_platform
 from numpy.testing import assert_array_almost_equal, assert_array_equal

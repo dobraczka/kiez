@@ -1,19 +1,72 @@
 # -*- coding: utf-8 -*-
 # SPDX-License-Identifier: BSD-3-Clause
+from __future__ import annotations
+
+from typing import Tuple, Union
 
 import numpy as np
 
 from kiez.hubness_reduction import DisSimLocal
-from kiez.hubness_reduction.base import NoHubnessReduction
-from kiez.neighbors import SklearnNN
+from kiez.hubness_reduction.base import HubnessReduction, NoHubnessReduction
+from kiez.neighbors import NNAlgorithm, SklearnNN
 
 
 class Kiez:
+    """Performs hubness reduced nearest neighbor search for entity alignment
+
+    Use the given algorithm to :meth:`fit` the data and calculate the
+    :meth:`kneighbors`.
+
+    Parameters
+    ----------
+    n_neighbors : int, default=5
+        number of nearest neighbors used in search
+    algorithm : :obj:`~kiez.neighbors.NNAlgorithm`, default = None
+        initialised `NNAlgorithm` object that will be used for neighbor search
+        If no algorithm is provided :obj:`~kiez.neighbors.SklearnNN`
+        is used with default values
+
+    hubness : :obj:`~kiez.hubness_reduction.base.HubnessReduction`, default = None
+        initialised `HubnessReduction` object
+        If no hubness is provided no hubness reduction will be performed
+
+    Examples
+    --------
+    >>> from kiez import Kiez
+    >>> import numpy as np
+    >>> # create example data
+    >>> rng = np.random.RandomState(0)
+    >>> source = rng.rand(100,50)
+    >>> target = rng.rand(100,50)
+    >>> # fit and get neighbors
+    >>> k_inst = Kiez()
+    >>> k_inst.fit(source, target)
+    >>> nn_dist, nn_ind = k_inst.kneighbors()
+
+    Using a specific algorithm and hubness reduction
+
+    >>> from kiez import Kiez
+    >>> import numpy as np
+    >>> # create example data
+    >>> rng = np.random.RandomState(0)
+    >>> source = rng.rand(100,50)
+    >>> target = rng.rand(100,50)
+    >>> # prepare algorithm and hubness reduction
+    >>> from kiez.neighbors import HNSW
+    >>> hnsw = HNSW(n_candidates=10)
+    >>> from kiez.hubness_reduction import CSLS
+    >>> hr = CSLS()
+    >>> # fit and get neighbors
+    >>> k_inst = Kiez(n_neighbors=5, algorithm=hnsw, hubness=hr)
+    >>> k_inst.fit(source, target)
+    >>> nn_dist, nn_ind = k_inst.kneighbors()
+    """
+
     def __init__(
         self,
-        n_neighbors=5,
-        algorithm=None,
-        hubness: str = None,
+        n_neighbors: int = 5,
+        algorithm: NNAlgorithm = None,
+        hubness: HubnessReduction = None,
     ):
         if not np.issubdtype(type(n_neighbors), np.integer):
             raise TypeError(
@@ -70,7 +123,21 @@ class Kiez:
                     f" metric={self.algorithm.metric}."
                 )
 
-    def fit(self, source, target):
+    def fit(self, source, target) -> Kiez:
+        """Fits the algorithm and hubness reduction method
+
+        Parameters
+        ----------
+        source : matrix of shape (n_samples, n_features)
+            embeddings of source entities
+        target : matrix of shape (m_samples, n_features)
+            embeddings of target entities
+
+        Returns
+        -------
+        Kiez
+            Fitted kiez instance
+        """
         self.algorithm.fit(source, target)
         neigh_dist_t_to_s, neigh_ind_t_to_s = self._kcandidates(
             target,
@@ -92,7 +159,28 @@ class Kiez:
         source_query_points=None,
         k=None,
         return_distance=True,
-    ):
+    ) -> Union[np.ndarray, Tuple(np.ndarray, np.ndarray)]:
+        """kneighbors.
+
+        Parameters
+        ----------
+        source_query_points : matrix of shape (n_samples, n_features), default = None
+            subset of source entity embeddings
+            if `None` all source entities are used for querying
+        k : int, default = None
+            number of nearest neighbors to search for
+        return_distance : bool, default = True
+            Whether to return distances
+            If `False` only indices are returned
+
+        Returns
+        -------
+        neigh_dist : ndarray of shape (n_queries, n_neighbors)
+            Array representing the distance between source and target entities
+            only present if return_distance=True.
+        neigh_ind : ndarray of shape (n_queries, n_neighbors)
+            Indices of the nearest points in the population matrix.
+        """
         # function loosely adapted from skhubness: https://github.com/VarIr/scikit-hubness
 
         if k is None:

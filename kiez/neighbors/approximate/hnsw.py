@@ -16,6 +16,34 @@ except ImportError:  # pragma: no cover
 
 
 class HNSW(NNAlgorithm):
+    """
+    Wrapper for hierarchical navigable small world graphs based approximate nearest neighbor search
+
+    Parameters
+    ----------
+    n_candidates: int
+        number of nearest neighbors used in search
+    metric: str, default = euclidean'
+        distance measure used in search
+        possible measures are found in :obj:`HNSW.valid_metrics`
+    method: str, default = 'hnsw',
+        ANN method to use. Currently, only 'hnsw' is supported.
+    M: int, default = 16
+        maximum number of neighbors in zero or above layers of hierarchical graph
+    post_processing: int, default = 2
+        More post processing means longer index creation,
+        and higher retrieval accuracy.
+    ef_construction: int, default = 200
+        higher value improves quality of constructed graph but leads to longer indexing times
+    n_jobs: int, default = 1
+        Number of parallel jobs
+    verbose: int, default = 0
+        Verbosity level. If verbose > 0, show tqdm progress bar on indexing and querying.
+
+    Notes
+    -----
+    See the nmslib documentation for more details: https://github.com/nmslib/nmslib/blob/master/manual/methods.md
+    """
 
     valid_metrics = [
         "euclidean",
@@ -77,15 +105,15 @@ class HNSW(NNAlgorithm):
 
     def __repr__(self):
         return (
-            f"{self.__class__.__name__}(n_candidates={self.n_candidates},"
-            + f"verbose = {self.verbose}"
-            + f"method = {self.method}"
-            + f"M = {self.M}"
-            + f"space = {self.space}"
-            + f"post_processing = {self.post_processing}"
-            + f"ef_construction = {self.ef_construction}"
-            + f"n_jobs = {self.n_jobs}"
-            + f"{self._describe_source_target_fitted()}"
+            f"{self.__class__.__name__}(n_candidates={self.n_candidates}, "
+            + f"verbose = {self.verbose}, "
+            + f"method = {self.method}, "
+            + f"M = {self.M}, "
+            + f"space = {self.space}, "
+            + f"post_processing = {self.post_processing}, "
+            + f"ef_construction = {self.ef_construction}, "
+            + f"n_jobs = {self.n_jobs}, "
+            + f"{self._describe_source_target_fitted()}, "
         )
 
     def _fit(self, data, is_source: bool):

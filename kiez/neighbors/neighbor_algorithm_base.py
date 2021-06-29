@@ -8,6 +8,8 @@ from sklearn.utils.validation import check_is_fitted
 
 
 class NNAlgorithm(ABC):
+    """Base class for nearest neighbor algorithms"""
+
     valid_metrics = []
 
     def __init__(self, n_candidates, metric, n_jobs):
@@ -31,7 +33,26 @@ class NNAlgorithm(ABC):
     def _fit(self, data, is_source: bool):
         pass  # pragma: no cover
 
-    def fit(self, source, target):
+    def fit(self, source: np.ndarray, target: np.ndarray):
+        """Indexes the given data using the underlying algorithm
+
+        Parameters
+        ----------
+        source : matrix of shape (n_samples, n_features)
+            embeddings of source entities
+        target : matrix of shape (m_samples, n_features)
+            embeddings of target entities
+
+        Raises
+        ------
+        ValueError
+            If source and target have a different number of features
+        """
+        if source.shape[1] != target.shape[1]:
+            raise ValueError(
+                "Expected source and target to have the same number of features, but"
+                f" got source.shape: {source.shape} and target.shape: {target.shape}"
+            )
         self.source_equals_target = np.array_equal(source, target)
         if self.source_equals_target:
             self.source_index = self._fit(source, True)

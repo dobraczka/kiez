@@ -26,6 +26,43 @@ __all__ = [
 
 
 class NNG(NNAlgorithmWithJoblib):
+    """
+    Wrapper for NGT's graph based approximate nearest neighbor search
+
+    Parameters
+    ----------
+    n_candidates: int
+        number of nearest neighbors used in search
+    metric: str, default = 'euclidean'
+        distance measure used in search
+        possible measures are found in :obj:`NNG.valid_metrics`
+    index_dir: str default = 'auto'
+        Store the index in the given directory.
+        If None, keep the index in main memory (NON pickleable index),
+        If index_dir is a string, it is interpreted as a directory to store the index into,
+        if 'auto', create a temp dir for the index, preferably in /dev/shm on Linux.
+        Note: The directory/the index will NOT be deleted automatically.
+    edge_size_for_creation: int, default = 80
+        Increasing ANNG edge size improves retrieval accuracy at the cost of more time
+    edge_size_for_search: int, default = 40
+        Increasing ANNG edge size improves retrieval accuracy at the cost of more time
+    epsilon: float, default 0.1
+        Trade-off in ANNG between higher accuracy (larger epsilon) and shorter query time (smaller epsilon)
+    n_jobs: int, default = 1
+        Number of parallel jobs
+    verbose: int, default = 0
+        Verbosity level. If verbose > 0, show tqdm progress bar on indexing and querying.
+
+    Notes
+    -----
+    See the NGT documentation for more details: https://github.com/yahoojapan/NGT/blob/master/python/README-ngtpy.md
+
+    NNG stores the index to a directory specified in `index_dir`.
+    The index is persistent, and will NOT be deleted automatically.
+    It is the user's responsibility to take care of deletion,
+    when required.
+    """
+
     valid_metrics = [
         "manhattan",
         "L1",
@@ -40,7 +77,7 @@ class NNG(NNAlgorithmWithJoblib):
         "Hamming",
         "Jaccard",
     ]
-    internal_distance_type = {
+    _internal_distance_type = {
         "manhattan": "L1",
         "euclidean": "L2",
         "minkowski": "L2",
@@ -54,8 +91,6 @@ class NNG(NNAlgorithmWithJoblib):
         index_dir: str = "auto",
         edge_size_for_creation: int = 80,
         edge_size_for_search: int = 40,
-        num_incoming: int = -1,
-        num_outgoing: int = -1,
         epsilon: float = 0.1,
         n_jobs: int = 1,
         verbose: int = 0,
@@ -69,7 +104,7 @@ class NNG(NNAlgorithmWithJoblib):
         super().__init__(n_candidates=n_candidates, metric=metric, n_jobs=n_jobs)
         # Map common distance names to names used by ngt
         try:
-            self.effective_metric_ = NNG.internal_distance_type[self.metric]
+            self.effective_metric_ = NNG._internal_distance_type[self.metric]
         except KeyError:
             self.effective_metric_ = self.metric
         if self.effective_metric_ not in NNG.valid_metrics:
@@ -82,8 +117,6 @@ class NNG(NNAlgorithmWithJoblib):
         self._index_dir_plausibility_check()
         self.edge_size_for_creation = edge_size_for_creation
         self.edge_size_for_search = edge_size_for_search
-        self.num_incoming = num_incoming
-        self.num_outgoing = num_outgoing
         self.epsilon = epsilon
         self.index_path_source = None
         self.index_path_target = None
@@ -94,8 +127,6 @@ class NNG(NNAlgorithmWithJoblib):
             + f"index_dir = {self.index_dir}"
             + f"edge_size_for_creation = {self.edge_size_for_creation}"
             + f"edge_size_for_search = {self.edge_size_for_search}"
-            + f"num_incoming = {self.num_incoming}"
-            + f"num_outgoing = {self.num_outgoing}"
             + f"epsilon = {self.epsilon}"
             + f"n_jobs = {self.n_jobs}"
             + f"verbose = {self.verbose}"

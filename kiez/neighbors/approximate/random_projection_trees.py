@@ -23,6 +23,38 @@ except ImportError:  # pragma: no cover
 
 
 class Annoy(NNAlgorithmWithJoblib):
+    """
+    Wrapper for Spotify's approximate nearest neighbor library
+
+    Parameters
+    ----------
+    n_candidates: int
+        number of nearest neighbors used in search
+    metric: str, default = 'euclidean'
+        distance measure used in search
+        possible measures are found in :obj:`Annoy.valid_metrics`
+    n_trees: int, default = 10
+        Build a forest of n_trees trees. More trees gives higher precision when querying,
+        but are more expensive in terms of build time and index size.
+    search_k: int, default = -1
+        Query will inspect search_k nodes. A larger value will give more accurate results,
+        but will take longer time.
+    mmap_dir: str, default = 'auto'
+        Memory-map the index to the given directory.
+        This is required to make the the class pickleable.
+        If None, keep everything in main memory (NON pickleable index),
+        if mmap_dir is a string, it is interpreted as a directory to store the index into,
+        if 'auto', create a temp dir for the index, preferably in /dev/shm on Linux.
+    n_jobs: int, default = 1
+        Number of parallel jobs
+    verbose: int, default = 0
+        Verbosity level. If verbose > 0, show tqdm progress bar on indexing and querying.
+
+    Notes
+    -----
+    See more details in the annoy documentation: https://github.com/spotify/annoy#full-python-api
+    """
+
     valid_metrics = [
         "angular",
         "euclidean",

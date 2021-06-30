@@ -20,6 +20,7 @@ from .base import HubnessReduction
 
 class MutualProximity(HubnessReduction):
     """Hubness reduction with Mutual Proximity [1]_.
+
     Parameters
     ----------
     method: 'normal' or 'empiric', default = 'normal'

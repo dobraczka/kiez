@@ -13,6 +13,8 @@
 import os
 import sys
 
+from kiez import __version__
+
 sys.path.insert(0, os.path.abspath("."))
 
 
@@ -23,7 +25,7 @@ copyright = "2021, Daniel Obraczka"
 author = "Daniel Obraczka"
 
 # The full version, including alpha/beta/rc tags
-release = "0.1.0"
+release = __version__
 
 
 # -- General configuration ---------------------------------------------------
@@ -42,6 +44,13 @@ extensions = [
 ]
 
 intersphinx_mapping = {"sklearn": ("http://scikit-learn.org/stable", None)}
+numpydoc_show_class_members = False
+
+# Napoleon settings
+napoleon_include_init_with_doc = False
+
+# autodoc options
+autodoc_default_options = {"members": True, "inherited-members": True}
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
@@ -51,7 +60,10 @@ templates_path = ["_templates"]
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 
+# The master toctree document. (see https://stackoverflow.com/a/56859983/6555620)
+master_doc = "index"
 
+autosummary_generate = True
 # -- Options for HTML output -------------------------------------------------
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for

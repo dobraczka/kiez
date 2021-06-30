@@ -3,8 +3,8 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-kiez
-====
+Overview
+========
 
 The kiez library is intended to make hubness reduction methods easily usable for the purpose of entity alignment via (knowledge graph) embeddings.
 
@@ -45,13 +45,12 @@ The main feature of kiez lies in the ability to use hubness reduction methods an
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :caption: Contents
 
 
+.. toctree::
+   :maxdepth: 3
+   :hidden:
+   :caption: Documentation
 
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+   kiez API <source/apidoc>

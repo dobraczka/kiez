@@ -15,6 +15,7 @@ from .base import HubnessReduction
 
 class LocalScaling(HubnessReduction):
     """Hubness reduction with Local Scaling [1]_.
+
     Parameters
     ----------
     k: int, default = 5

@@ -11,12 +11,14 @@ from .base import HubnessReduction
 
 class CSLS(HubnessReduction):
     """Hubness reduction with Cross-domain similarity local scaling [1]_.
+
     Parameters
     ----------
     k: int, default = 5
         Number of neighbors to consider for mean distance of k-nearest neighbors
     verbose: int, default= 0
         Verbosity level
+
     References
     ----------
     .. [1] Lample, G., Conneau, A., Ranzato, M., Denoyer, L., & Jégou, H. (2018)

@@ -236,7 +236,6 @@ def hubness_score(
             Return the hubness measure as indicated by `return_value`.
             if return_value is 'all', a dict of all hubness measures is returned.
 
-    # noqa: DAR002
     Raises
     ------
     ValueError
@@ -266,7 +265,17 @@ def hubness_score(
     >>> nn_ind = k_inst.kneighbors(return_distance=False)
     >>> # get hubness
     >>> hubness_score(nn_ind, target.shape[1])
-    {'k_skewness': 1.0243818877407802, 'k_skewness_truncnorm': 0.705309555084711, 'atkinson': 0.1846908928840305, 'robinhood': 0.31, 'antihubs': array([14, 34, 37, 45, 54, 57, 67, 74]), 'antihub_occurrence': 0.08, 'hubs': array([31, 39, 46, 56, 62, 66, 68, 70]), 'hub_occurrence': 0.436, 'groupie_ratio': 0.076}
+        {
+            "k_skewness": 1.0243818877407802,
+            "k_skewness_truncnorm": 0.705309555084711,
+            "atkinson": 0.1846908928840305,
+            "robinhood": 0.31,
+            "antihubs": array([14, 34, 37, 45, 54, 57, 67, 74]),
+            "antihub_occurrence": 0.08,
+            "hubs": array([31, 39, 46, 56, 62, 66, 68, 70]),
+            "hub_occurrence": 0.436,
+            "groupie_ratio": 0.076,
+        }
     """
     n_train = nn_ind.shape[0]
     n_test = target_samples
@@ -290,6 +299,7 @@ def hubness_score(
     try:
         k_occurrence = np.bincount(k_neighbors.astype(int).ravel(), minlength=n_train)
     except ValueError as e:
+        # noqa: DAR002
         logging.info(f"k_occurence failed with the following neighbors: {k_neighbors}")
         raise e
 

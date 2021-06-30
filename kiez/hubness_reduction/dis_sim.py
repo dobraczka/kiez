@@ -16,6 +16,7 @@ from .base import HubnessReduction
 
 class DisSimLocal(HubnessReduction):
     """Hubness reduction with DisSimLocal [1]_.
+
     Parameters
     ----------
     k: int, default = 5

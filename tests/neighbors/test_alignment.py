@@ -80,9 +80,6 @@ def test_alignment_source_equals_target(
             for i in range(len(results_approx[1])):
                 assert np.intersect1d(results_approx[1][i], results[1][1][i]).size >= 1
         else:
-            # assert_array_almost_equal(
-            #     results_approx[0], results[1][0], decimal=6
-            # )
             for ra, r in zip(results_approx[1], results[1][1]):
                 assert set(ra) == set(r)
 
@@ -165,8 +162,5 @@ def test_alignment(
                     ):
                         raise error
         else:
-            # assert_array_almost_equal(
-            #     results_approx[0], results[1][0], decimal=6
-            # )
             for ra, r in zip(results_approx[1], results[1][1]):
                 assert set(ra) == set(r), f"{algo} failed with {hubness}"

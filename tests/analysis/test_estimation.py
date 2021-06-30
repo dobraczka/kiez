@@ -10,8 +10,6 @@ from kiez.analysis import hubness_score
 from kiez.analysis.estimation import _calc_atkinson_index, _calc_gini_index
 from numpy.testing import assert_array_equal
 
-# DIST = squareform(np.array([0.2, 0.1, 0.8, 0.4, 0.3, 0.5, 0.7, 1.0, 0.6, 0.9]))
-
 PRE_CALC_NEIGHBORS = np.load("tests/nn_ind.npy")
 
 

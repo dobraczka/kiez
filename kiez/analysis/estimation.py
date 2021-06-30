@@ -223,7 +223,8 @@ def hubness_score(
         Level of output messages
     return_value : str
         Hubness measure to return
-        By default, return all but gini, because gini is slow on large datasets
+        By default, return all but gini,
+        because gini is slow on large datasets
         Use "all" to return a dict of all available measures,
         or check `kiez.analysis.VALID_HUBNESS_MEASURE`
         for available measures.
@@ -234,7 +235,8 @@ def hubness_score(
     -------
     hubness_measure: float or dict
             Return the hubness measure as indicated by `return_value`.
-            if return_value is 'all', a dict of all hubness measures is returned.
+            if return_value is 'all',
+            a dict of all hubness measures is returned.
 
     Raises
     ------

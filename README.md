@@ -1,5 +1,5 @@
 <p align="center">
-<img src="https://raw.githubusercontent.com/dobraczka/kiez/develop/docs/kiezlogo.png?token=ADNF5WZK7SJW7N2FXI3J5OTA53OR6" alt="kiez logo", width=200/>
+<img src="https://github.com/dobraczka/kiez/raw/develop/docs/kiezlogo.png" alt="kiez logo", width=200/>
 </p>
 
 <h2 align="center"> kiez</h2>

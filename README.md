@@ -1,4 +1,6 @@
-# kiez
+![kiez logo](https://raw.githubusercontent.com/dobraczka/kiez/develop/docs/kiezlogo.png)
+<h2 align="center"> kiez</h2>
+
 [![CI](https://github.com/dobraczka/kiez/actions/workflows/main.yml/badge.svg?branch=develop)](https://github.com/dobraczka/kiez/actions/workflows/main.yml)
 ![testcoverage](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/dobraczka/7c57dda3b055c972a06f0f076df46196/raw/test.json)
 [![license](https://img.shields.io/badge/license-BSD--3--Clause-blue)](https://github.com/dobraczka/kiez/blob/main/LICENSE)

@@ -14,8 +14,17 @@ import os
 import sys
 
 from kiez import __version__
+from sphinx.ext.autodoc import between
 
 sys.path.insert(0, os.path.abspath("."))
+
+
+# -- use IGNORE for noqa in docstrings
+def setup(app):
+    # Register a sphinx.ext.autodoc.between listener to ignore everything
+    # between lines that contain the word IGNORE
+    app.connect("autodoc-process-docstring", between("^.*IGNORE.*$", exclude=True))
+    return app
 
 
 # -- Project information -----------------------------------------------------

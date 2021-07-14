@@ -2,6 +2,10 @@
 # -*- coding: utf-8 -*-
 # SPDX-License-Identifier: BSD-3-Clause
 # adapted from skhubness: https://github.com/VarIr/scikit-hubness/
+"""
+Estimate hubness in datasets
+"""
+
 
 from __future__ import annotations
 
@@ -199,6 +203,8 @@ def hubness_score(
 ) -> Union[float, dict]:
     """Calculates hubness scores from given neighbor indices
 
+    Utilizes findings from [1]_ and [2]_.
+
     Parameters
     ----------
     nn_ind : np.ndarray
@@ -278,6 +284,9 @@ def hubness_score(
             "hub_occurrence": 0.436,
             "groupie_ratio": 0.076,
         }
+    IGNORE:
+    # noqa: DAR002
+    IGNORE
     """
     n_train = nn_ind.shape[0]
     n_test = target_samples
@@ -301,7 +310,6 @@ def hubness_score(
     try:
         k_occurrence = np.bincount(k_neighbors.astype(int).ravel(), minlength=n_train)
     except ValueError as e:
-        # noqa: DAR002
         logging.info(f"k_occurence failed with the following neighbors: {k_neighbors}")
         raise e
 

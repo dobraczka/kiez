@@ -14,7 +14,9 @@ from .base import HubnessReduction
 
 
 class LocalScaling(HubnessReduction):
-    """Hubness reduction with Local Scaling [1]_.
+    """Hubness reduction with Local Scaling.
+
+    Uses the formula presented in [1]_.
 
     Parameters
     ----------
@@ -52,6 +54,7 @@ class LocalScaling(HubnessReduction):
         **kwargs,
     ) -> LocalScaling:
         """Fit the model using neigh_dist and neigh_ind as training data.
+
         Parameters
         ----------
         neigh_dist: np.ndarray, shape (n_samples, n_neighbors)
@@ -101,6 +104,7 @@ class LocalScaling(HubnessReduction):
         assume_sorted: bool = True,
     ) -> (np.ndarray, np.ndarray):
         """Transform distance between test and training data with Mutual Proximity.
+
         Parameters
         ----------
         neigh_dist: np.ndarray, shape (n_query, n_neighbors)

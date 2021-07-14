@@ -6,7 +6,7 @@ This is the API documentation for ``kiez``.
 
 .. _data_ref:
 
-Kiez: :class:`kiez.Kiez`
+Kiez: :class:`Kiez`
 ===================================
 .. automodule:: kiez.kiez
     :no-members:
@@ -18,7 +18,7 @@ Kiez: :class:`kiez.Kiez`
    :nosignatures:
    :toctree: _autosummary
 
-   kiez.kiez
+   Kiez
 
 Analysis: :mod:`kiez.analysis`
 ===================================

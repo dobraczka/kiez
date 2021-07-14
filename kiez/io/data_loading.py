@@ -1,3 +1,6 @@
+"""
+Convenience methods for loading entity embeddings from knowledge graph embeddings
+"""
 import os
 from typing import Dict, Tuple
 

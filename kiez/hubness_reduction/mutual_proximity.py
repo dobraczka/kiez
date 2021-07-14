@@ -19,7 +19,9 @@ from .base import HubnessReduction
 
 
 class MutualProximity(HubnessReduction):
-    """Hubness reduction with Mutual Proximity [1]_.
+    """Hubness reduction with Mutual Proximity.
+
+    Uses the formula presented in [1]_.
 
     Parameters
     ----------
@@ -53,6 +55,7 @@ class MutualProximity(HubnessReduction):
         self, neigh_dist, neigh_ind, source, target, assume_sorted=None
     ) -> MutualProximity:
         """Fit the model using neigh_dist and neigh_ind as training data.
+
         Parameters
         ----------
         neigh_dist: np.ndarray, shape (n_samples, n_neighbors)
@@ -95,6 +98,7 @@ class MutualProximity(HubnessReduction):
 
     def transform(self, neigh_dist, neigh_ind, query, assume_sorted=None):
         """Transform distance between test and training data with Mutual Proximity.
+
         Parameters
         ----------
         neigh_dist: np.ndarray

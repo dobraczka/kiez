@@ -15,7 +15,9 @@ from .base import HubnessReduction
 
 
 class DisSimLocal(HubnessReduction):
-    """Hubness reduction with DisSimLocal [1]_.
+    """Hubness reduction with DisSimLocal.
+
+    Uses the formula presented in [1]_.
 
     Parameters
     ----------
@@ -49,6 +51,7 @@ class DisSimLocal(HubnessReduction):
         **kwargs,
     ) -> DisSimLocal:
         """Fit the model using target, neigh_dist, and neigh_ind as training data.
+
         Parameters
         ----------
         neigh_dist: np.ndarray, shape (n_samples, n_neighbors)
@@ -121,6 +124,7 @@ class DisSimLocal(HubnessReduction):
         assume_sorted: bool = True,
     ) -> (np.ndarray, np.ndarray):
         """Transform distance between test and training data with DisSimLocal.
+
         Parameters
         ----------
         neigh_dist: np.ndarray, shape (n_query, n_neighbors)

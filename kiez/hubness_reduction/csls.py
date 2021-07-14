@@ -10,7 +10,9 @@ from .base import HubnessReduction
 
 
 class CSLS(HubnessReduction):
-    """Hubness reduction with Cross-domain similarity local scaling [1]_.
+    """Hubness reduction with Cross-domain similarity local scaling.
+
+    Uses the formula presented in [1]_.
 
     Parameters
     ----------
@@ -44,6 +46,7 @@ class CSLS(HubnessReduction):
         **kwargs,
     ) -> CSLS:
         """Fit the model using target, neigh_dist, and neigh_ind as training data.
+
         Parameters
         ----------
         neigh_dist: np.ndarray, shape (n_samples, n_neighbors)
@@ -105,6 +108,7 @@ class CSLS(HubnessReduction):
         **kwargs,
     ) -> (np.ndarray, np.ndarray):
         """Transform distance between test and training data with CSLS.
+
         Parameters
         ----------
         neigh_dist: np.ndarray, shape (n_query, n_neighbors)

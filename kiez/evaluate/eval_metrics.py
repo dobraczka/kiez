@@ -1,3 +1,6 @@
+"""
+Calculate evaluation metrics such as hits@k
+"""
 from typing import Any, Dict, List, Union
 
 import numpy as np

@@ -68,14 +68,14 @@ class SklearnNN(NNAlgorithm):
             + f"algorithm={self.algorithm},"
             + f"leaf_size={self.leaf_size},"
             + f"metric={self.metric},"
-            + f"n_jobs={self.n_jobs}) "
-            + f"{self._describe_source_target_fitted()}"
+            + f"n_jobs={self.n_jobs} "
         )
         if (
             hasattr(self, "source_index")
             and self.source_index._fit_method != self.algorithm
         ):
             return ret_str + f" and effective algo is {self.source_index._fit_method}"
+        ret_str += ")"
         return ret_str
 
     def _fit(self, data, is_source: bool):

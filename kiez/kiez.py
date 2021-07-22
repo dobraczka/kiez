@@ -85,7 +85,8 @@ class Kiez:
     def __repr__(self):
         return (
             f"Kiez(n_neighbors: {self.n_neighbors}, algorithm: {self.algorithm},"
-            f" hubness: {self.hubness}"
+            f" hubness: {self.hubness})"
+            f" {self.algorithm._describe_source_target_fitted()}"
         )
 
     def _kcandidates(

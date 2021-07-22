@@ -129,8 +129,7 @@ class NNG(NNAlgorithmWithJoblib):
             + f"edge_size_for_search = {self.edge_size_for_search},"
             + f"epsilon = {self.epsilon},"
             + f"n_jobs = {self.n_jobs},"
-            + f"verbose = {self.verbose})"
-            + f"{self._describe_source_target_fitted()}"
+            + f"verbose = {self.verbose}"
         )
         if self.index_path_source is not None:
             ret_str += (
@@ -139,6 +138,7 @@ class NNG(NNAlgorithmWithJoblib):
             )
         if self.metric != self.effective_metric_:
             return ret_str + f" and effective algo is {self.effective_metric_}"
+        ret_str += ")"
         return ret_str
 
     def _index_dir_plausibility_check(self):

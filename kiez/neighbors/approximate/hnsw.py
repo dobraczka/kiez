@@ -112,8 +112,7 @@ class HNSW(NNAlgorithm):
             + f"space = {self.space}, "
             + f"post_processing = {self.post_processing}, "
             + f"ef_construction = {self.ef_construction}, "
-            + f"n_jobs = {self.n_jobs}), "
-            + f"{self._describe_source_target_fitted()}, "
+            + f"n_jobs = {self.n_jobs}) "
         )
 
     def _fit(self, data, is_source: bool):

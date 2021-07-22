@@ -108,14 +108,14 @@ class Annoy(NNAlgorithmWithJoblib):
             + f"n_trees = {self.n_trees},"
             + f"search_k = {self.search_k},"
             + f"mmap_dir = {self.mmap_dir},"
-            + f"n_jobs = {self.n_jobs})"
-            + f"{self._describe_source_target_fitted()}"
+            + f"n_jobs = {self.n_jobs}"
         )
         if self.index_path_source is not None:
             ret_str += (
                 f" source index path={self.index_path_source} and target index"
                 f" path={self.index_path_target}"
             )
+        ret_str += ")"
         return ret_str
 
     def _fit(self, data, is_source: bool):

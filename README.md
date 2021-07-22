@@ -16,10 +16,10 @@ A Python library for hubness reduced nearest neighbor search for the task of ent
 ## Hubness Reduction
 Hubness is a phenomenon that arises in high-dimensional data and describes the fact that a couple of entities are nearest neighbors (NN) of many other entities, while a lot of entities are NN to no one.
 For entity alignment with knowledge graph embeddings we rely on NN search. Hubness therefore is detrimental to our matching results.
-This library is intended to make hubness reduction techniques available to data integration projects that rely on knowledge graph embeddings in their alignment process. Furthermore kiez optionally incorporates several approximate nearest neighbor (ANN) libraries, to pair the speed advantage of approximate neighbor search with increased accuracy of hubness reduction.
+This library is intended to make hubness reduction techniques available to data integration projects that rely on (knowledge graph) embeddings in their alignment process. Furthermore kiez incorporates several approximate nearest neighbor (ANN) libraries, to pair the speed advantage of approximate neighbor search with increased accuracy of hubness reduction.
 
 ## Installation
-To install the base package without ANN libraries
+You can install kiez via pip:
 ``` bash
 pip install kiez
 ```

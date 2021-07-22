@@ -10,6 +10,7 @@ documentation = "https://kiez.readthedocs.io/"
 keywords = ["embedding","hubness", "knowledge graph", "entity resolution", "approximate nearest neighbor search", "nearest neighbors", "knowledge graph embedding"]
 classifiers = [
     "Development Status :: 4 - Beta",
+    "License :: OSI Approved :: BSD License",
     "Intended Audience :: Science/Research",
     "Intended Audience :: Developers",
     "Topic :: Scientific/Engineering",

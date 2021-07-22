@@ -43,6 +43,13 @@ The main feature of kiez lies in the ability to use hubness reduction methods an
     k_inst.fit(source, target)
     nn_dist, nn_ind = k_inst.kneighbors()
 
+You can install kiez via pip:
+
+.. code-block:: bash
+  
+  pip install kiez
+
+
 .. toctree::
    :maxdepth: 2
    :caption: Contents
@@ -53,4 +60,6 @@ The main feature of kiez lies in the ability to use hubness reduction methods an
    :hidden:
    :caption: Documentation
 
+   Installation <source/installation>
+   Using your own X <source/using_your_own>
    kiez API <source/apidoc>

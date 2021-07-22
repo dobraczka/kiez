@@ -23,10 +23,6 @@ To install the base package without ANN libraries
 ``` bash
 pip install kiez
 ```
-To install kiez with ANN libraries
-``` bash
-pip install kiez[ann]
-```
 
 ## Usage
 Simple nearest neighbor search for source entities in target space:

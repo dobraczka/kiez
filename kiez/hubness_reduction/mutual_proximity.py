@@ -51,6 +51,12 @@ class MutualProximity(HubnessReduction):
             self.method = "normal"
         self.verbose = verbose
 
+    def __repr__(self):
+        return (
+            f"{self.__class__.__name__}(method = {self.method}, verbose ="
+            f" {self.verbose})"
+        )
+
     def fit(
         self, neigh_dist, neigh_ind, source, target, assume_sorted=None
     ) -> MutualProximity:

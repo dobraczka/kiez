@@ -103,12 +103,12 @@ class Annoy(NNAlgorithmWithJoblib):
     def __repr__(self):
         ret_str = (
             f"{self.__class__.__name__}(n_candidates={self.n_candidates},"
-            + f"effective_metric_ = {self.effective_metric_}"
-            + f"verbose = {self.verbose}"
-            + f"n_trees = {self.n_trees}"
-            + f"search_k = {self.search_k}"
-            + f"mmap_dir = {self.mmap_dir}"
-            + f"n_jobs = {self.n_jobs}"
+            + f"effective_metric_ = {self.effective_metric_},"
+            + f"verbose = {self.verbose},"
+            + f"n_trees = {self.n_trees},"
+            + f"search_k = {self.search_k},"
+            + f"mmap_dir = {self.mmap_dir},"
+            + f"n_jobs = {self.n_jobs})"
             + f"{self._describe_source_target_fitted()}"
         )
         if self.index_path_source is not None:

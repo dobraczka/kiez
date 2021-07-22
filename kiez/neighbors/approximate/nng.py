@@ -124,12 +124,12 @@ class NNG(NNAlgorithmWithJoblib):
     def __repr__(self):
         ret_str = (
             f"{self.__class__.__name__}(n_candidates={self.n_candidates},"
-            + f"index_dir = {self.index_dir}"
-            + f"edge_size_for_creation = {self.edge_size_for_creation}"
-            + f"edge_size_for_search = {self.edge_size_for_search}"
-            + f"epsilon = {self.epsilon}"
-            + f"n_jobs = {self.n_jobs}"
-            + f"verbose = {self.verbose}"
+            + f"index_dir = {self.index_dir},"
+            + f"edge_size_for_creation = {self.edge_size_for_creation},"
+            + f"edge_size_for_search = {self.edge_size_for_search},"
+            + f"epsilon = {self.epsilon},"
+            + f"n_jobs = {self.n_jobs},"
+            + f"verbose = {self.verbose})"
             + f"{self._describe_source_target_fitted()}"
         )
         if self.index_path_source is not None:

@@ -35,6 +35,9 @@ class CSLS(HubnessReduction):
         self.k = k
         self.verbose = verbose
 
+    def __repr__(self):
+        return f"{self.__class__.__name__}(k={self.k}, verbose = {self.verbose})"
+
     def fit(
         self,
         neigh_dist,

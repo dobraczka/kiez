@@ -40,6 +40,9 @@ class DisSimLocal(HubnessReduction):
         self.k = k
         self.squared = squared
 
+    def __repr__(self):
+        return f"{self.__class__.__name__}(k={self.k}, squared = {self.squared})"
+
     def fit(
         self,
         neigh_dist: np.ndarray,

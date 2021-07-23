@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: BSD-3-Clause
 from __future__ import annotations
 
-from typing import Dict, Optional, Union
+from typing import Any, Dict, Optional, Tuple, Union
 
 import numpy as np
 from class_resolver import HintOrType

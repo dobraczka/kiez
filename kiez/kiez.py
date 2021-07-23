@@ -167,7 +167,7 @@ class Kiez:
         source_query_points=None,
         k=None,
         return_distance=True,
-    ) -> Union[np.ndarray, Tuple(np.ndarray, np.ndarray)]:
+    ) -> Union[np.ndarray, Tuple[np.ndarray, np.ndarray]]:
         """Retrieves the k-nearest neighbors using the supplied nearest neighbor algorithm and hubness reduction method.
 
         Parameters

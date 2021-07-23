@@ -9,7 +9,7 @@ from class_resolver import HintOrType
 
 from kiez.hubness_reduction import DisSimLocal, hubness_reduction_resolver
 from kiez.hubness_reduction.base import HubnessReduction
-from kiez.neighbors import NNAlgorithm, SklearnNN
+from kiez.neighbors import NNAlgorithm, SklearnNN, nn_algorithm_resolver
 
 
 class Kiez:
@@ -26,6 +26,9 @@ class Kiez:
         initialised `NNAlgorithm` object that will be used for neighbor search
         If no algorithm is provided :obj:`~kiez.neighbors.SklearnNN`
         is used with default values
+    algorithm_kwargs :
+        A dictionary of keyword arguments to pass to the :obj:`~kiez.neighbors.NNAlgorithm`
+        if given as a class in the ``algorithm`` argument.
 
     hubness :
         Either an instance of a :obj:`~kiez.hubness_reduction.base.HubnessReduction`,
@@ -71,7 +74,8 @@ class Kiez:
     def __init__(
         self,
         n_neighbors: int = 5,
-        algorithm: NNAlgorithm = None,
+        algorithm: HintOrType[NNAlgorithm] = None,
+        algorithm_kwargs: Optional[Dict[str, Any]] = None,
         hubness: HintOrType[HubnessReduction] = None,
         hubness_kwargs: Optional[Dict[str, Any]] = None,
     ):
@@ -83,9 +87,7 @@ class Kiez:
         elif n_neighbors <= 0:
             raise ValueError(f"Expected n_neighbors > 0. Got {n_neighbors}")
         self.n_neighbors = n_neighbors
-        self.algorithm = (
-            SklearnNN(n_candidates=n_neighbors) if algorithm is None else algorithm
-        )
+        self.algorithm = nn_algorithm_resolver.make(algorithm, algorithm_kwargs)
         self.hubness = hubness_reduction_resolver.make(hubness, hubness_kwargs)
         self._check_algorithm_hubness_compatibility()
 

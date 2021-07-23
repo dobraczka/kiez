@@ -56,6 +56,9 @@ k_inst = Kiez(n_neighbors=5, algorithm=hnsw, hubness=hr)
 k_inst.fit(source, target)
 nn_dist, nn_ind = k_inst.kneighbors()
 ```
+Benchmark
+---------
+The results and configurations of our experiments can be found in a seperate [benchmarking repository](https://github.com/dobraczka/kiez-benchmarking)
 
 License
 -------

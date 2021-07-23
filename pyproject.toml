@@ -31,6 +31,7 @@ nmslib = "^2.1.1"
 importlib-metadata = "^4.5.0;python_version<3.8"
 sphinx = {version = "^4.0.2", optional = true}
 insegel = {version = "^1.1.0", optional = true}
+class-resolver = "^0.0.13"
 
 [tool.poetry.dev-dependencies]
 ipdb = "^0.13.4"

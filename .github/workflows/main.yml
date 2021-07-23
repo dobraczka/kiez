@@ -47,40 +47,40 @@ jobs:
       run: poetry run pflake8
     - name: Test with tox
       run: tox | tee report.txt
-    - name: Get coverage
-      run: |
-        echo "cov=$(grep 'TOTAL' report.txt | tail -1 | sed 's/\s\+/,/g' | cut -d',' -f 4 | sed 's/%//g' )" >> $GITHUB_ENV
-        rm report.txt
-    - name: Get badge color red
-      if: ${{ env.cov < 51 }}
-      run: |
-        echo "cov_color=red" >> $GITHUB_ENV
-    - name: Get badge color orange
-      if: ${{ env.cov < 71 && env.cov > 50}}
-      run: |
-        echo "cov_color=orange" >> $GITHUB_ENV
-    - name: Get badge color yellow
-      if: ${{ env.cov < 81 && env.cov > 70}}
-      run: |
-        echo "cov_color=yellow" >> $GITHUB_ENV
-    - name: Get badge color yellowgreen
-      if: ${{ env.cov < 86 && env.cov > 80}}
-      run: |
-        echo "cov_color=yellowgreen" >> $GITHUB_ENV
-    - name: Get badge color green
-      if: ${{ env.cov < 95 && env.cov > 85}}
-      run: |
-        echo "cov_color=green" >> $GITHUB_ENV
-    - name: Get badge color brightgreen
-      if: ${{ env.cov > 94}}
-      run: |
-        echo "cov_color=brightgreen" >> $GITHUB_ENV
-    - name: Create test badge
-      uses: schneegans/dynamic-badges-action@v1.1.0
-      with:
-        auth: ${{ secrets.GIST_SECRET }}
-        gistID: 7c57dda3b055c972a06f0f076df46196
-        filename: test.json
-        label: coverage
-        message: ${{ env.cov }} %
-        color: ${{ env.cov_color }}
+    # - name: Get coverage
+    #   run: |
+    #     echo "cov=$(grep 'TOTAL' report.txt | tail -1 | sed 's/\s\+/,/g' | cut -d',' -f 4 | sed 's/%//g' )" >> $GITHUB_ENV
+    #     rm report.txt
+    # - name: Get badge color red
+    #   if: ${{ env.cov < 51 }}
+    #   run: |
+    #     echo "cov_color=red" >> $GITHUB_ENV
+    # - name: Get badge color orange
+    #   if: ${{ env.cov < 71 && env.cov > 50}}
+    #   run: |
+    #     echo "cov_color=orange" >> $GITHUB_ENV
+    # - name: Get badge color yellow
+    #   if: ${{ env.cov < 81 && env.cov > 70}}
+    #   run: |
+    #     echo "cov_color=yellow" >> $GITHUB_ENV
+    # - name: Get badge color yellowgreen
+    #   if: ${{ env.cov < 86 && env.cov > 80}}
+    #   run: |
+    #     echo "cov_color=yellowgreen" >> $GITHUB_ENV
+    # - name: Get badge color green
+    #   if: ${{ env.cov < 95 && env.cov > 85}}
+    #   run: |
+    #     echo "cov_color=green" >> $GITHUB_ENV
+    # - name: Get badge color brightgreen
+    #   if: ${{ env.cov > 94}}
+    #   run: |
+    #     echo "cov_color=brightgreen" >> $GITHUB_ENV
+    # - name: Create test badge
+    #   uses: schneegans/dynamic-badges-action@v1.1.0
+    #   with:
+    #     auth: ${{ secrets.GIST_SECRET }}
+    #     gistID: 7c57dda3b055c972a06f0f076df46196
+    #     filename: test.json
+    #     label: coverage
+    #     message: ${{ env.cov }} %
+    #     color: ${{ env.cov_color }}

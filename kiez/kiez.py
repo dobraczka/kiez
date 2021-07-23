@@ -2,12 +2,13 @@
 # SPDX-License-Identifier: BSD-3-Clause
 from __future__ import annotations
 
-from typing import Tuple, Union
+from typing import Dict, Optional, Union
 
 import numpy as np
+from class_resolver import HintOrType
 
-from kiez.hubness_reduction import DisSimLocal
-from kiez.hubness_reduction.base import HubnessReduction, NoHubnessReduction
+from kiez.hubness_reduction import DisSimLocal, hubness_reduction_resolver
+from kiez.hubness_reduction.base import HubnessReduction
 from kiez.neighbors import NNAlgorithm, SklearnNN
 
 
@@ -26,9 +27,14 @@ class Kiez:
         If no algorithm is provided :obj:`~kiez.neighbors.SklearnNN`
         is used with default values
 
-    hubness : :obj:`~kiez.hubness_reduction.base.HubnessReduction`, default = None
-        initialised `HubnessReduction` object
-        If no hubness is provided no hubness reduction will be performed
+    hubness :
+        Either an instance of a :obj:`~kiez.hubness_reduction.base.HubnessReduction`,
+        the class for a :obj:`~kiez.hubness_reduction.base.HubnessReduction` that should
+        be instantiated, the name of the hubness reduction method, or if None, defaults
+        to no hubness reduction.
+    hubness_kwargs :
+        A dictionary of keyword arguments to pass to the :obj:`~kiez.hubness_reduction.base.HubnessReduction`
+        if given as a class in the ``hubness`` argument.
 
     Examples
     --------
@@ -66,7 +72,8 @@ class Kiez:
         self,
         n_neighbors: int = 5,
         algorithm: NNAlgorithm = None,
-        hubness: HubnessReduction = None,
+        hubness: HintOrType[HubnessReduction] = None,
+        hubness_kwargs: Optional[Dict[str, Any]] = None,
     ):
         if not np.issubdtype(type(n_neighbors), np.integer):
             raise TypeError(
@@ -79,7 +86,7 @@ class Kiez:
         self.algorithm = (
             SklearnNN(n_candidates=n_neighbors) if algorithm is None else algorithm
         )
-        self.hubness = NoHubnessReduction() if hubness is None else hubness
+        self.hubness = hubness_reduction_resolver.make(hubness, hubness_kwargs)
         self._check_algorithm_hubness_compatibility()
 
     def __repr__(self):

@@ -87,6 +87,8 @@ class Kiez:
         elif n_neighbors <= 0:
             raise ValueError(f"Expected n_neighbors > 0. Got {n_neighbors}")
         self.n_neighbors = n_neighbors
+        if algorithm is None and algorithm_kwargs is None:
+            algorithm_kwargs = dict(n_candidates=n_neighbors)
         self.algorithm = nn_algorithm_resolver.make(algorithm, algorithm_kwargs)
         self.hubness = hubness_reduction_resolver.make(hubness, hubness_kwargs)
         self._check_algorithm_hubness_compatibility()

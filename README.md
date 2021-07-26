@@ -1,5 +1,5 @@
 <p align="center">
-<img src="https://github.com/dobraczka/kiez/raw/develop/docs/kiezlogo.png" alt="kiez logo", width=200/>
+<img src="https://github.com/dobraczka/kiez/raw/main/docs/kiezlogo.png" alt="kiez logo", width=200/>
 </p>
 
 <h2 align="center"> kiez</h2>

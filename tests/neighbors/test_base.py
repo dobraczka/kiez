@@ -9,9 +9,9 @@ rng = np.random.RandomState(2)
 def test_str_rep(algo_cls, n_samples=20, n_features=5):
     source = rng.rand(n_samples, n_features)
     algo = algo_cls()
-    assert "is unfitted" in str(algo)
+    assert "is unfitted" in str(algo._describe_source_target_fitted())
     algo.fit(source, source)
-    assert "is fitted" in str(algo)
+    assert "is fitted" in str(algo._describe_source_target_fitted())
 
 
 def test_check_k_value():

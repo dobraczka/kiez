@@ -1,10 +1,94 @@
 import numpy as np
 import pytest
 from kiez import Kiez
-from kiez.hubness_reduction import DisSimLocal
-from kiez.neighbors import HNSW, SklearnNN
+from kiez.hubness_reduction import DisSimLocal, HubnessReduction, NoHubnessReduction
+from kiez.neighbors import HNSW, NNAlgorithm, SklearnNN
+from numpy.testing import assert_array_equal
+from sklearn.neighbors import NearestNeighbors
 
 rng = np.random.RandomState(2)
+
+
+class CustomHubness(HubnessReduction):
+    """Test class to make sure user created classes work"""
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+    def fit(self, *args, **kwargs):
+        pass  # pragma: no cover
+
+    def __repr__(self):
+        return "NoHubnessReduction"
+
+    def transform(
+        self,
+        neigh_dist,
+        neigh_ind,
+        query,
+        assume_sorted=True,
+        return_distance=True,
+        *args,
+        **kwargs
+    ):
+        if return_distance:
+            return neigh_dist, neigh_ind
+        else:
+            return neigh_ind
+
+
+class CustomAlgorithm(NNAlgorithm):
+    """Test class to make sure user created classes work"""
+
+    def __init__(
+        self,
+        n_candidates=5,
+        algorithm="auto",
+        leaf_size=30,
+        metric="minkowski",
+        p=2,
+        metric_params=None,
+        n_jobs=None,
+    ):
+        super().__init__(n_candidates=n_candidates, metric=metric, n_jobs=n_jobs)
+        self.algorithm = algorithm
+        self.leaf_size = leaf_size
+        self.p = p
+        self.metric_params = metric_params
+
+    def _fit(self, data, is_source: bool):
+        nn = NearestNeighbors(
+            n_neighbors=self.n_candidates,
+            algorithm=self.algorithm,
+            leaf_size=self.leaf_size,
+            metric=self.metric,
+            p=self.p,
+            metric_params=self.metric_params,
+            n_jobs=self.n_jobs,
+        )
+        nn.fit(data)
+        return nn
+
+    def _kneighbors(self, k, query, index, return_distance, is_self_querying):
+        if is_self_querying:
+            return index.kneighbors(
+                X=None, n_neighbors=k, return_distance=return_distance
+            )
+        return index.kneighbors(X=query, n_neighbors=k, return_distance=return_distance)
+
+
+def test_hubness_resolver(n_samples=20, n_features=5):
+    source = rng.rand(n_samples, n_features)
+    target = rng.rand(n_samples, n_features)
+    res = []
+    for algo in [SklearnNN(), None, "SklearnNN", CustomAlgorithm()]:
+        for hub in [NoHubnessReduction(), None, "NoHubnessReduction", CustomHubness()]:
+            k_inst = Kiez(algorithm=algo, hubness=hub)
+            k_inst.fit(source, target)
+            res.append(k_inst.kneighbors(source, k=1))
+    for i in range(len(res) - 1):
+        assert_array_equal(res[i][0], res[i + 1][0])
+        assert_array_equal(res[i][1], res[i + 1][1])
 
 
 def test_wrong_kcandidates(n_samples=20, n_features=5):

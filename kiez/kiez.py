@@ -150,9 +150,9 @@ class Kiez:
         Kiez
             Fitted kiez instance
         """
+        self.algorithm.fit(source, target)
         if target is None:
             target = source
-        self.algorithm.fit(source, target)
         neigh_dist_t_to_s, neigh_ind_t_to_s = self._kcandidates(
             target,
             s_to_t=False,

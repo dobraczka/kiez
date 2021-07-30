@@ -33,7 +33,7 @@ class NNAlgorithm(ABC):
     def _fit(self, data, is_source: bool):
         pass  # pragma: no cover
 
-    def fit(self, source: np.ndarray, target: np.ndarray):
+    def fit(self, source: np.ndarray, target: np.ndarray = None):
         """Indexes the given data using the underlying algorithm
 
         Parameters
@@ -41,23 +41,25 @@ class NNAlgorithm(ABC):
         source : matrix of shape (n_samples, n_features)
             embeddings of source entities
         target : matrix of shape (m_samples, n_features)
-            embeddings of target entities
+            embeddings of target entities or None in a single-source use case
 
         Raises
         ------
         ValueError
             If source and target have a different number of features
         """
-        if source.shape[1] != target.shape[1]:
-            raise ValueError(
-                "Expected source and target to have the same number of features, but"
-                f" got source.shape: {source.shape} and target.shape: {target.shape}"
-            )
-        self.source_equals_target = np.array_equal(source, target)
+        self.source_equals_target = target is None
         if self.source_equals_target:
             self.source_index = self._fit(source, True)
             self.target_index = self.source_index
+            target = source
         else:
+            if source.shape[1] != target.shape[1]:
+                raise ValueError(
+                    "Expected source and target to have the same number of features,"
+                    f" but got source.shape: {source.shape} and target.shape:"
+                    f" {target.shape}"
+                )
             self.source_index = self._fit(source, True)
             self.target_index = self._fit(target, False)
         self.source_ = source

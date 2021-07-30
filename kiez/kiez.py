@@ -135,7 +135,7 @@ class Kiez:
                     f" metric={self.algorithm.metric}."
                 )
 
-    def fit(self, source, target) -> Kiez:
+    def fit(self, source, target=None) -> Kiez:
         """Fits the algorithm and hubness reduction method
 
         Parameters
@@ -143,13 +143,15 @@ class Kiez:
         source : matrix of shape (n_samples, n_features)
             embeddings of source entities
         target : matrix of shape (m_samples, n_features)
-            embeddings of target entities
+            embeddings of target entities. If none given, uses the source.
 
         Returns
         -------
         Kiez
             Fitted kiez instance
         """
+        if target is None:
+            target = source
         self.algorithm.fit(source, target)
         neigh_dist_t_to_s, neigh_ind_t_to_s = self._kcandidates(
             target,

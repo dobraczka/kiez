@@ -49,7 +49,6 @@ jobs:
       run: tox | tee report.txt
     - if: ${{ github.event_name.pull_request == false && github.ref == 'refs/heads/master' }}
       name: Create test coverage badge when on master and not on pull request
-    - name: Get coverage
       run: |
         echo "cov=$(grep 'TOTAL' report.txt | tail -1 | sed 's/\s\+/,/g' | cut -d',' -f 4 | sed 's/%//g' )" >> $GITHUB_ENV
         rm report.txt

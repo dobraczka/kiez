@@ -54,30 +54,31 @@ jobs:
         echo "cov=$(grep 'TOTAL' report.txt | tail -1 | sed 's/\s\+/,/g' | cut -d',' -f 4 | sed 's/%//g' )" >> $GITHUB_ENV
         rm report.txt
     - name: Get badge color red
-      if: ${{ env.cov < 51 }}
+      if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' && env.cov < 51 }}
       run: |
         echo "cov_color=red" >> $GITHUB_ENV
     - name: Get badge color orange
-      if: ${{ env.cov < 71 && env.cov > 50}}
+      if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' && env.cov < 71 && env.cov > 50}}
       run: |
         echo "cov_color=orange" >> $GITHUB_ENV
     - name: Get badge color yellow
-      if: ${{ env.cov < 81 && env.cov > 70}}
+      if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' && env.cov < 81 && env.cov > 70}}
       run: |
         echo "cov_color=yellow" >> $GITHUB_ENV
     - name: Get badge color yellowgreen
-      if: ${{ env.cov < 86 && env.cov > 80}}
+      if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' && env.cov < 86 && env.cov > 80}}
       run: |
         echo "cov_color=yellowgreen" >> $GITHUB_ENV
     - name: Get badge color green
-      if: ${{ env.cov < 95 && env.cov > 85}}
+      if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' && env.cov < 95 && env.cov > 85}}
       run: |
         echo "cov_color=green" >> $GITHUB_ENV
     - name: Get badge color brightgreen
-      if: ${{ env.cov > 94}}
+      if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' && env.cov > 94}}
       run: |
         echo "cov_color=brightgreen" >> $GITHUB_ENV
-    - name: Create test badge
+    - if: ${{ github.event_name.pull_request == false && github.ref == 'refs/heads/master' }}
+      name: Create test badge
       uses: schneegans/dynamic-badges-action@v1.1.0
       with:
         auth: ${{ secrets.GIST_SECRET }}

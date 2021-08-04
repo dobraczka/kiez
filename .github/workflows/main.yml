@@ -47,7 +47,7 @@ jobs:
       run: poetry run pflake8
     - name: Test with tox
       run: tox | tee report.txt
-    - if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
+    - if: ${{ github.event_name.pull_request == false && github.ref == 'refs/heads/master' }}
       name: Create test coverage badge when on master and not on pull request
     - name: Get coverage
       run: |

@@ -40,7 +40,11 @@ class LocalScaling(HubnessReduction):
     ):
         super().__init__(**kwargs)
         self.k = k
-        self.method = method
+        self.method = method.lower()
+        if self.method not in ["ls", "standard", "nicdm"]:
+            raise ValueError(
+                f"Internal: Invalid method {self.method}. Try 'ls' or 'nicdm'."
+            )
         self.verbose = verbose
 
     def __repr__(self):

@@ -81,8 +81,22 @@ def test_hubness_resolver(n_samples=20, n_features=5):
     source = rng.rand(n_samples, n_features)
     target = rng.rand(n_samples, n_features)
     res = []
-    for algo in [SklearnNN(), SklearnNN, None, "SklearnNN", CustomAlgorithm, CustomAlgorithm()]:
-        for hub in [NoHubnessReduction(), NoHubnessReduction, None, "NoHubnessReduction", CustomHubness, CustomHubness()]:
+    for algo in [
+        SklearnNN(),
+        SklearnNN,
+        None,
+        "SklearnNN",
+        CustomAlgorithm,
+        CustomAlgorithm(),
+    ]:
+        for hub in [
+            NoHubnessReduction(),
+            NoHubnessReduction,
+            None,
+            "NoHubnessReduction",
+            CustomHubness,
+            CustomHubness(),
+        ]:
             k_inst = Kiez(algorithm=algo, hubness=hub)
             k_inst.fit(source, target)
             res.append(k_inst.kneighbors(source, k=1))

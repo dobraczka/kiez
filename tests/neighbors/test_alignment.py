@@ -44,7 +44,7 @@ def test_alignment_source_equals_target(
                     )
                     continue
             align = Kiez(n_neighbors=n_neighbors, algorithm=algo, hubness=hubness)
-            align.fit(source, source)
+            align.fit(source)
             results.append(
                 align.kneighbors(source_query_points=query, return_distance=True)
             )
@@ -67,7 +67,7 @@ def test_alignment_source_equals_target(
             algorithm=algo,
             hubness=hubness,
         )
-        align.fit(source, source)
+        align.fit(source)
         results_approx = align.kneighbors(
             source_query_points=query, return_distance=True
         )

@@ -1,0 +1,36 @@
+name: Publish new release
+
+on:
+    workflows: ["Test before publishing"]
+    types:
+      - completed
+      - requested
+
+jobs:
+  on-success:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: "3.9"
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install poetry
+    - name: Publish to pip via poetry
+      run: |
+        poetry install -v
+        poetry publish --build --username "__token__" --password ${{ secrets.PYPI_TOKEN }}
+    - name: get_version
+      run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+      id: version
+    - name: get_release_files
+      run:
+    - uses: ncipollo/release-action@v1
+      with:
+        artifacts: "dist/*.whl,dist/*.tar.gz"
+        bodyFile: "NEW_IN_THIS_RELEASE.md"
+        token: ${{ secrets.GITHUB_TOKEN }}

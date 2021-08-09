@@ -23,7 +23,8 @@ jobs:
     - name: Publish to pip via poetry
       run: |
         poetry install -v
-        poetry publish --build --username "__token__" --password ${{ secrets.PYPI_TOKEN }}
+        poetry build
+        # poetry publish --build --username "__token__" --password ${{ secrets.PYPI_TOKEN }}
     - name: get_version
       run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
       id: version

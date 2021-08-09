@@ -27,8 +27,6 @@ jobs:
     - name: get_version
       run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
       id: version
-    - name: get_release_files
-      run:
     - uses: ncipollo/release-action@v1
       with:
         artifacts: "dist/*.whl,dist/*.tar.gz"

@@ -4,10 +4,8 @@ name: CI
 
 # Controls when the action will run.
 on:
-  # Triggers the workflow on push or pull request events but only for the main branch
+  # Triggers the workflow on push only for the main branch
   push:
-    branches: [ main ]
-  pull_request:
     branches: [ main ]
 
   # Allows you to run this workflow manually from the Actions tab
@@ -47,37 +45,35 @@ jobs:
       run: poetry run pflake8
     - name: Test with tox
       run: tox | tee report.txt
-    - if: ${{ github.event_name.pull_request == false && github.ref == 'refs/heads/master' }}
-      name: Create test coverage badge when on master and not on pull request
+    - name: Create test coverage badge when on master and not on pull request
       run: |
         echo "cov=$(grep 'TOTAL' report.txt | tail -1 | sed 's/\s\+/,/g' | cut -d',' -f 4 | sed 's/%//g' )" >> $GITHUB_ENV
         rm report.txt
     - name: Get badge color red
-      if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' && env.cov < 51 }}
+      if: ${{ env.cov < 51 }}
       run: |
         echo "cov_color=red" >> $GITHUB_ENV
     - name: Get badge color orange
-      if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' && env.cov < 71 && env.cov > 50}}
+      if: ${{ env.cov < 71 && env.cov > 50}}
       run: |
         echo "cov_color=orange" >> $GITHUB_ENV
     - name: Get badge color yellow
-      if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' && env.cov < 81 && env.cov > 70}}
+      if: ${{ env.cov < 81 && env.cov > 70}}
       run: |
         echo "cov_color=yellow" >> $GITHUB_ENV
     - name: Get badge color yellowgreen
-      if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' && env.cov < 86 && env.cov > 80}}
+      if: ${{ env.cov < 86 && env.cov > 80}}
       run: |
         echo "cov_color=yellowgreen" >> $GITHUB_ENV
     - name: Get badge color green
-      if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' && env.cov < 95 && env.cov > 85}}
+      if: ${{ env.cov < 95 && env.cov > 85}}
       run: |
         echo "cov_color=green" >> $GITHUB_ENV
     - name: Get badge color brightgreen
-      if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' && env.cov > 94}}
+      if: ${{ env.cov > 94}}
       run: |
         echo "cov_color=brightgreen" >> $GITHUB_ENV
-    - if: ${{ github.event_name.pull_request == false && github.ref == 'refs/heads/master' }}
-      name: Create test badge
+    - name: Create test badge
       uses: schneegans/dynamic-badges-action@v1.1.0
       with:
         auth: ${{ secrets.GIST_SECRET }}

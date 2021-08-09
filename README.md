@@ -56,12 +56,14 @@ k_inst = Kiez(n_neighbors=5, algorithm=hnsw, hubness=hr)
 k_inst.fit(source, target)
 nn_dist, nn_ind = k_inst.kneighbors()
 ```
-Benchmark
----------
+
+## Documentation
+You can find more documentation on [readthedocs](https://kiez.readthedocs.io)
+
+## Benchmark
 The results and configurations of our experiments can be found in a seperate [benchmarking repository](https://github.com/dobraczka/kiez-benchmarking)
 
-License
--------
+## License
 `kiez` is licensed under the terms of the BSD-3-Clause [license](LICENSE.txt).
 Several files were modified from [`scikit-hubness`](https://github.com/VarIr/scikit-hubness),
 distributed under the same [license](external/SCIKIT_HUBNESS_LICENSE.txt).

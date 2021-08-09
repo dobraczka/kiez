@@ -61,5 +61,7 @@ You can install kiez via pip:
    :caption: Documentation
 
    Installation <source/installation>
+   Usage <source/usage>
+   Architecture <source/architecture>
    Using your own X <source/using_your_own>
    kiez API <source/apidoc>

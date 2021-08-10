@@ -166,9 +166,7 @@ def test_from_config():
     kiez = Kiez.from_path(path)
     assert kiez.hubness is not None
     assert isinstance(kiez.hubness, HubnessReduction)
-    assert isinstance(
-        kiez.hubness, LocalScaling
-    ), f"wrong hubness: {kiez.hubness.__class__.__name__}"
+    assert isinstance(kiez.hubness, LocalScaling), f"wrong hubness: {kiez.hubness}"
     assert kiez.algorithm is not None
-    assert isinstance(kiez.algorithm, NNAlgorithm), f"wrong algorithm: {kiez.algorithm}"
+    assert isinstance(kiez.algorithm, NNAlgorithm)
     assert isinstance(kiez.algorithm, HNSW), f"wrong algorithm: {kiez.algorithm}"

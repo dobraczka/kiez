@@ -1,0 +1,10 @@
+{
+  "algorithm": "HNSW",
+  "algorithm_kwargs": {
+    "n_candidates": 10
+  },
+  "hubness": "LocalScaling",
+  "hubness_kwargs": {
+    "method": "NICDM"
+  }
+}

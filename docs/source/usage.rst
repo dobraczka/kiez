@@ -31,6 +31,22 @@ The `Kiez` class enables the usage of different nearest neighbor (NN) algorithms
     nn_algo = HNSW(n_candidates=10)
     k_inst = Kiez(algorithm=nn_algo, hubness=hr)
 
+    # You can also initalize Kiez via a json file
+
+    # content of 'conf.json' file
+    # {
+    #   "algorithm": "HNSW",
+    #   "algorithm_kwargs": {
+    #     "n_candidates": 10
+    #   },
+    #   "hubness": "LocalScaling",
+    #   "hubness_kwargs": {
+    #     "method": "NICDM"
+    #   }
+    # }
+
+    >>> kiez = Kiez.from_path("conf.json")
+
 With your initialized kiez instance you are ready to fit your data and retrieve the k nearest neighbors utilizing hubness reduction:
 
 .. code-block:: python

@@ -11,7 +11,7 @@ from class_resolver import HintOrType
 
 from kiez.hubness_reduction import DisSimLocal, hubness_reduction_resolver
 from kiez.hubness_reduction.base import HubnessReduction
-from kiez.neighbors import NNAlgorithm, SklearnNN, nn_algorithm_resolver
+from kiez.neighbors import NNAlgorithm, nn_algorithm_resolver
 
 
 class Kiez:
@@ -71,6 +71,22 @@ class Kiez:
     >>> k_inst = Kiez(n_neighbors=5, algorithm=hnsw, hubness=hr)
     >>> k_inst.fit(source, target)
     >>> nn_dist, nn_ind = k_inst.kneighbors()
+
+    You can also initalize Kiez via a json file
+
+    # content of conf.json
+    # {
+    #   "algorithm": "HNSW",
+    #   "algorithm_kwargs": {
+    #     "n_candidates": 10
+    #   },
+    #   "hubness": "LocalScaling",
+    #   "hubness_kwargs": {
+    #     "method": "NICDM"
+    #   }
+    # }
+
+    >>> kiez = Kiez.from_path("conf.json")
     """
 
     def __init__(

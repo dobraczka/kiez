@@ -1,11 +1,20 @@
+import pathlib
+
 import numpy as np
 import pytest
-from kiez import Kiez
-from kiez.hubness_reduction import DisSimLocal, HubnessReduction, NoHubnessReduction
-from kiez.neighbors import HNSW, NNAlgorithm, SklearnNN
 from numpy.testing import assert_array_equal
 from sklearn.neighbors import NearestNeighbors
 
+from kiez import Kiez
+from kiez.hubness_reduction import (
+    DisSimLocal,
+    HubnessReduction,
+    LocalScaling,
+    NoHubnessReduction,
+)
+from kiez.neighbors import HNSW, NNAlgorithm, SklearnNN
+
+HERE = pathlib.Path(__file__).parent.resolve()
 rng = np.random.RandomState(2)
 
 
@@ -29,7 +38,7 @@ class CustomHubness(HubnessReduction):
         assume_sorted=True,
         return_distance=True,
         *args,
-        **kwargs
+        **kwargs,
     ):
         if return_distance:
             return neigh_dist, neigh_ind
@@ -150,3 +159,14 @@ def test_dis_sim_local_wrong_metric():
 def test_dis_sim_local_squaring():
     k_inst = Kiez(algorithm=HNSW(metric="sqeuclidean"), hubness=DisSimLocal())
     assert k_inst.hubness.squared
+
+
+def test_from_config():
+    path = HERE.joinpath("example_conf.json")
+    kiez = Kiez.from_path(path)
+    assert kiez.hubness is not None
+    assert isinstance(kiez.hubness, HubnessReduction)
+    assert isinstance(kiez.hubness, LocalScaling), f"wrong hubness: {kiez.hubness}"
+    assert kiez.algorithm is not None
+    assert isinstance(kiez.algorithm, NNAlgorithm)
+    assert isinstance(kiez.algorithm, HNSW), f"wrong algorithm: {kiez.algorithm}"

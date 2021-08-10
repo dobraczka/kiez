@@ -2,6 +2,8 @@
 # SPDX-License-Identifier: BSD-3-Clause
 from __future__ import annotations
 
+import json
+from pathlib import Path
 from typing import Any, Dict, Optional, Tuple, Union
 
 import numpy as np
@@ -99,6 +101,12 @@ class Kiez:
             f" hubness: {self.hubness})"
             f" {self.algorithm._describe_source_target_fitted()}"
         )
+
+    @classmethod
+    def from_path(cls, path: Union[str, Path]) -> Kiez:
+        """Load a Kiez instance from configuration in a JSON file, based on its path."""
+        with open(path) as file:
+            return cls(**json.load(file))
 
     def _kcandidates(
         self, query_points, *, s_to_t=True, k=None, return_distance=True

@@ -63,6 +63,17 @@ You can find more documentation on [readthedocs](https://kiez.readthedocs.io)
 ## Benchmark
 The results and configurations of our experiments can be found in a seperate [benchmarking repository](https://github.com/dobraczka/kiez-benchmarking)
 
+## Contributing
+PRs and enhancement ideas are always welcome. If you want to build kiez locally use:
+```bash
+git clone git@github.com:dobraczka/kiez.git
+cd kiez
+poetry install
+```
+To run the tests (given you are in the kiez folder):
+```bash
+poetry run pytest tests
+```
 ## License
 `kiez` is licensed under the terms of the BSD-3-Clause [license](LICENSE.txt).
 Several files were modified from [`scikit-hubness`](https://github.com/VarIr/scikit-hubness),

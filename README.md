@@ -67,16 +67,18 @@ The results and configurations of our experiments can be found in a seperate [be
 ## Citation
 If you find this work useful you can use the following citation:
 ```
-@article{Kiez,
-  author    = {Daniel Obraczka and Erhard Rahm},
-  editor    = {David Aveiro, Jan Dietz and Joaquim Filipe}
-  title     = {An Evaluation of Hubness Reduction Methods for Entity Alignment with
-Knowledge Graph Embeddings},
-  booktitle = {Proceedings of the 13th International Joint Conference on Knowledge
-               Discovery, Knowledge Engineering and Knowledge Management},
-  year      = {2021},
-  publisher = {{SCITEPRESS}},
-  url       = {https://dbs.uni-leipzig.de/file/KIEZ_KEOD_2021_Obraczka_Rahm.pdf}
+@conference{Kiez,
+  author={Daniel Obraczka. and Erhard Rahm.},
+  title={An Evaluation of Hubness Reduction Methods for Entity Alignment with Knowledge Graph Embeddings},
+  booktitle={Proceedings of the 13th International Joint Conference on Knowledge Discovery, Knowledge Engineering and Knowledge Management - KEOD,},
+  year={2021},
+  pages={28-39},
+  publisher={SciTePress},
+  organization={INSTICC},
+  doi={10.5220/0010646400003064},
+  isbn={978-989-758-533-3},
+  issn={2184-3228},
+  url={https://dbs.uni-leipzig.de/file/KIEZ_KEOD_2021_Obraczka_Rahm.pdf},
 }
 ```
 

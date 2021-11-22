@@ -35,10 +35,10 @@ def create_tempfile_preferably_in_dir(
     """
     temp_file = mkstemp if persistent else NamedTemporaryFile
     try:
-        handle = temp_file(suffix=suffix, prefix=prefix, dir=directory)
+        handle = temp_file(suffix=suffix, prefix=prefix, dir=directory)  # type: ignore
         warn = False
     except FileNotFoundError:
-        handle = temp_file(suffix=suffix, prefix=prefix, dir=None)
+        handle = temp_file(suffix=suffix, prefix=prefix, dir=None)  # type: ignore
         warn = True
 
     # Extract the path (as string)

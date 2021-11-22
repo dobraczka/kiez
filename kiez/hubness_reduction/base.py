@@ -19,14 +19,7 @@ class HubnessReduction(ABC):
         pass  # pragma: no cover
 
     @abstractmethod
-    def transform(
-        self,
-        neigh_dist,
-        neigh_ind,
-        query,
-        assume_sorted,
-        return_distance=True,
-    ):
+    def transform(self, neigh_dist, neigh_ind, query, assume_sorted, *args, **kwargs):
         pass  # pragma: no cover
 
 
@@ -43,16 +36,6 @@ class NoHubnessReduction(HubnessReduction):
         return "NoHubnessReduction"
 
     def transform(
-        self,
-        neigh_dist,
-        neigh_ind,
-        query,
-        assume_sorted=True,
-        return_distance=True,
-        *args,
-        **kwargs
+        self, neigh_dist, neigh_ind, query, assume_sorted=True, *args, **kwargs
     ):
-        if return_distance:
-            return neigh_dist, neigh_ind
-        else:
-            return neigh_ind
+        return neigh_dist, neigh_ind

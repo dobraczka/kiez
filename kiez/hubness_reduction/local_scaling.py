@@ -5,6 +5,7 @@
 from __future__ import annotations
 
 import warnings
+from typing import Tuple
 
 import numpy as np
 from sklearn.utils.validation import check_consistent_length, check_is_fitted
@@ -110,9 +111,11 @@ class LocalScaling(HubnessReduction):
         self,
         neigh_dist,
         neigh_ind,
-        source=None,
+        query=None,
         assume_sorted: bool = True,
-    ) -> (np.ndarray, np.ndarray):
+        *args,
+        **kwargs,
+    ) -> Tuple[np.ndarray, np.ndarray]:
         """Transform distance between test and training data with Mutual Proximity.
 
         Parameters
@@ -122,7 +125,7 @@ class LocalScaling(HubnessReduction):
             k nearest neighbors among the training data (columns).
         neigh_ind: np.ndarray, shape (n_query, n_neighbors)
             Neighbor indices corresponding to the values in neigh_dist
-        source
+        query
             Ignored
         assume_sorted: bool, default = True #noqa: DAR103
             Assume input matrices are sorted according to neigh_dist.

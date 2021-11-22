@@ -1,11 +1,12 @@
 # This is a basic workflow to help you get started with Actions
 
-name: Tests for main
+name: Tests
 
 # Controls when the action will run.
 on:
-  # Triggers the workflow on push only for the main branch
   push:
+    branches: [ main ]
+  pull_request:
     branches: [ main ]
 
   # Allows you to run this workflow manually from the Actions tab
@@ -31,54 +32,6 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         python -m pip install poetry
-        python -m pip install black
-        python -m pip install pep8-naming
-        python -m pip install pyflakes
-        python -m pip install flake8-bugbear
-        python -m pip install flake8-simplify
-        python -m pip install pyproject-flake8
-        python -m pip install tox
-
-    - name: Blacken
-      run: black --config pyproject.toml --diff kiez/ tests/
-    - name: Lint with flake8
-      run: poetry run pflake8
-    - name: Test with tox
-      run: tox | tee report.txt
-    - name: Create test coverage badge when on master and not on pull request
-      run: |
-        echo "cov=$(grep 'TOTAL' report.txt | tail -1 | sed 's/\s\+/,/g' | cut -d',' -f 4 | sed 's/%//g' )" >> $GITHUB_ENV
-        rm report.txt
-    - name: Get badge color red
-      if: ${{ env.cov < 51 }}
-      run: |
-        echo "cov_color=red" >> $GITHUB_ENV
-    - name: Get badge color orange
-      if: ${{ env.cov < 71 && env.cov > 50}}
-      run: |
-        echo "cov_color=orange" >> $GITHUB_ENV
-    - name: Get badge color yellow
-      if: ${{ env.cov < 81 && env.cov > 70}}
-      run: |
-        echo "cov_color=yellow" >> $GITHUB_ENV
-    - name: Get badge color yellowgreen
-      if: ${{ env.cov < 86 && env.cov > 80}}
-      run: |
-        echo "cov_color=yellowgreen" >> $GITHUB_ENV
-    - name: Get badge color green
-      if: ${{ env.cov < 95 && env.cov > 85}}
-      run: |
-        echo "cov_color=green" >> $GITHUB_ENV
-    - name: Get badge color brightgreen
-      if: ${{ env.cov > 94}}
-      run: |
-        echo "cov_color=brightgreen" >> $GITHUB_ENV
-    - name: Create test badge
-      uses: schneegans/dynamic-badges-action@v1.1.0
-      with:
-        auth: ${{ secrets.GIST_SECRET }}
-        gistID: 7c57dda3b055c972a06f0f076df46196
-        filename: test.json
-        label: coverage
-        message: ${{ env.cov }} %
-        color: ${{ env.cov_color }}
+        python -m pip install nox_poetry
+    - name: Test with nox
+      run: nox -s tests

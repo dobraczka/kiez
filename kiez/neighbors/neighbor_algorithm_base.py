@@ -10,8 +10,6 @@ from sklearn.utils.validation import check_is_fitted
 class NNAlgorithm(ABC):
     """Base class for nearest neighbor algorithms"""
 
-    valid_metrics = []
-
     def __init__(self, n_candidates, metric, n_jobs):
         self.n_candidates = n_candidates
         self.metric = metric
@@ -54,7 +52,7 @@ class NNAlgorithm(ABC):
             self.target_index = self.source_index
             target = source
         else:
-            if source.shape[1] != target.shape[1]:
+            if target is not None and source.shape[1] != target.shape[1]:
                 raise ValueError(
                     "Expected source and target to have the same number of features,"
                     f" but got source.shape: {source.shape} and target.shape:"

@@ -75,7 +75,7 @@ def _seperate_common_embedding(
 
 def from_openea(
     emb_dir_path: str, kg_path: str
-) -> Tuple[np.ndarray, np.ndarray, Dict[int, str], Dict[int, str], Dict[int, int]]:
+) -> Tuple[np.ndarray, np.ndarray, Dict[int, str], Dict[int, str], Dict[str, str]]:
     """Load OpenEA-type data
     Parameters
     ----------

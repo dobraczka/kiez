@@ -58,7 +58,14 @@ class MutualProximity(HubnessReduction):
         )
 
     def fit(
-        self, neigh_dist, neigh_ind, source, target, assume_sorted=None
+        self,
+        neigh_dist,
+        neigh_ind,
+        source,
+        target,
+        assume_sorted=None,
+        *args,
+        **kwargs,
     ) -> MutualProximity:
         """Fit the model using neigh_dist and neigh_ind as training data.
 
@@ -102,7 +109,9 @@ class MutualProximity(HubnessReduction):
             self.sd_t_to_s_ = np.nanstd(neigh_dist, axis=1, ddof=0)
         return self
 
-    def transform(self, neigh_dist, neigh_ind, query, assume_sorted=None):
+    def transform(
+        self, neigh_dist, neigh_ind, query, assume_sorted=None, *args, **kwargs
+    ):
         """Transform distance between test and training data with Mutual Proximity.
 
         Parameters

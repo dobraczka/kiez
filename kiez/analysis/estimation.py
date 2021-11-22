@@ -11,7 +11,7 @@ from __future__ import annotations
 
 import logging
 import warnings
-from typing import Union
+from typing import Tuple, Union
 
 import numpy as np
 from scipy import stats
@@ -143,10 +143,10 @@ def _calc_atkinson_index(k_occurrence: np.ndarray, eps: float = 0.5) -> float:
         term = np.prod(k_occurrence) ** (1.0 / k_occurrence.size)
     else:
         term = np.mean(k_occurrence ** (1 - eps)) ** (1 / (1 - eps))
-    return 1.0 - 1.0 / k_occurrence.mean() * term
+    return float(1.0 - 1.0 / k_occurrence.mean() * term)
 
 
-def _calc_antihub_occurrence(k_occurrence: np.ndarray) -> (np.array, float):
+def _calc_antihub_occurrence(k_occurrence: np.ndarray) -> Tuple[np.ndarray, float]:
     """Proportion of antihubs in data set.
 
     Antihubs are objects that are never among the nearest neighbors

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import warnings
+from typing import Tuple
 
 import numpy as np
 from sklearn.utils.validation import check_consistent_length, check_is_fitted
@@ -109,7 +110,7 @@ class CSLS(HubnessReduction):
         assume_sorted: bool = True,
         *args,
         **kwargs,
-    ) -> (np.ndarray, np.ndarray):
+    ) -> Tuple[np.ndarray, np.ndarray]:
         """Transform distance between test and training data with CSLS.
 
         Parameters

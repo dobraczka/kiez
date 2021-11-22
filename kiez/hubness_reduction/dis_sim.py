@@ -5,6 +5,7 @@
 from __future__ import annotations
 
 import warnings
+from typing import Tuple
 
 import numpy as np
 from sklearn.metrics import euclidean_distances
@@ -125,7 +126,9 @@ class DisSimLocal(HubnessReduction):
         neigh_ind: np.ndarray,
         query: np.ndarray,
         assume_sorted: bool = True,
-    ) -> (np.ndarray, np.ndarray):
+        *args,
+        **kwargs,
+    ) -> Tuple[np.ndarray, np.ndarray]:
         """Transform distance between test and training data with DisSimLocal.
 
         Parameters

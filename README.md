@@ -64,6 +64,24 @@ You can find more documentation on [readthedocs](https://kiez.readthedocs.io)
 ## Benchmark
 The results and configurations of our experiments can be found in a seperate [benchmarking repository](https://github.com/dobraczka/kiez-benchmarking)
 
+## Citation
+If you find this work useful you can use the following citation:
+```
+@conference{Kiez,
+  author={Daniel Obraczka. and Erhard Rahm.},
+  title={An Evaluation of Hubness Reduction Methods for Entity Alignment with Knowledge Graph Embeddings},
+  booktitle={Proceedings of the 13th International Joint Conference on Knowledge Discovery, Knowledge Engineering and Knowledge Management - KEOD,},
+  year={2021},
+  pages={28-39},
+  publisher={SciTePress},
+  organization={INSTICC},
+  doi={10.5220/0010646400003064},
+  isbn={978-989-758-533-3},
+  issn={2184-3228},
+  url={https://dbs.uni-leipzig.de/file/KIEZ_KEOD_2021_Obraczka_Rahm.pdf},
+}
+```
+
 ## Contributing
 PRs and enhancement ideas are always welcome. If you want to build kiez locally use:
 ```bash

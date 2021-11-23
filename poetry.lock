@@ -1156,7 +1156,7 @@ nmslib = ["nmslib"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7.1"
-content-hash = "8c56505345be56c578ff3b04ae282740f7cac0d4f3c6e232c40350a3d0af0b55"
+content-hash = "777af98b9e3c05db70dc8b5c0837ab39e4fc44116631e0b1ffe7765b58df45a7"
 
 [metadata.files]
 alabaster = [

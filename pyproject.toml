@@ -27,7 +27,7 @@ tqdm = "~4.56"
 scipy = "~1.6"
 importlib-metadata = "^4.5.0;python_version<3.8"
 class-resolver = "^0.1.0"
-ngt = {version = "^1.12.2", optional = true}
+ngt = {version = ">=1.8", optional = true}
 annoy = {version = "^1.17.0", optional = true}
 nmslib = {version = "^2.1.1", optional = true}
 Sphinx = {version = "^4.3.0", optional = true}
@@ -50,7 +50,6 @@ black = "^21.11b1"
 [tool.poetry.extras]
 docs = ["sphinx", "insegel"]
 all = ["ngt","annoy","nmslib"]
-cpu = ["ngt","annoy","nmslib"]
 ngt = ["ngt"]
 nmslib = ["nmslib"]
 annoy = ["annoy"]

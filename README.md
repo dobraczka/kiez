@@ -7,6 +7,7 @@
 <p align="center">
 <a href="https://github.com/dobraczka/kiez/actions/workflows/main.yml"><img alt="Actions Status" src="https://github.com/dobraczka/kiez/actions/workflows/main.yml/badge.svg?branch=main"></a>
 <a href="https://github.com/dobraczka/kiez/actions/workflows/quality.yml"><img alt="Actions Status" src="https://github.com/dobraczka/kiez/actions/workflows/quality.yml/badge.svg?branch=main"></a>
+<a href='https://kiez.readthedocs.io/en/latest/?badge=latest'><img src='https://readthedocs.org/projects/kiez/badge/?version=latest' alt='Documentation Status' /></a>
 <a href="https://codecov.io/github/dobraczka/kiez?branch=master"><img alt="Coverage" src="https://codecov.io/github/dobraczka/kiez/coverage.svg?branch=master"></a>
 <a href="https://pypi.org/project/kiez"/><img alt="Stable python versions" src="https://img.shields.io/pypi/pyversions/kiez"></a>
 <a href="https://github.com/dobraczka/kiez/blob/main/LICENSE"><img alt="License BSD3 - Clause" src="https://img.shields.io/badge/license-BSD--3--Clause-blue"></a>

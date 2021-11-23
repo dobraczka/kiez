@@ -27,6 +27,19 @@ You can install kiez via pip:
 pip install kiez
 ```
 
+This will omit ANN libraries. If you want them as well use:
+
+``` bash
+  pip install kiez[all]
+```
+
+You can also get only a specific library with e.g.:
+
+``` bash
+  pip install kiez[nmslib]
+```
+
+
 ## Usage
 Simple nearest neighbor search for source entities in target space:
 ``` python

@@ -1,6 +1,5 @@
-New in 0.3.0
+New in 0.3.1
 ============
 
-- More possibilities to instantiate Kiez
-- Single-source use simplified
-- Enhanced documentation
+- Relaxed some version constraints of dependencies
+- Enhanced documentation and some type hint problems

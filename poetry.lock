@@ -1148,7 +1148,6 @@ testing = ["pytest (>=4.6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytes
 [extras]
 all = ["ngt", "annoy", "nmslib"]
 annoy = ["annoy"]
-cpu = ["ngt", "annoy", "nmslib"]
 docs = ["Sphinx", "insegel"]
 ngt = ["ngt"]
 nmslib = ["nmslib"]
@@ -1156,7 +1155,7 @@ nmslib = ["nmslib"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7.1"
-content-hash = "777af98b9e3c05db70dc8b5c0837ab39e4fc44116631e0b1ffe7765b58df45a7"
+content-hash = "e5ac2d2c02a32e7828fca37251fd427e0acce09465652b7fd077ff175b3641ce"
 
 [metadata.files]
 alabaster = [

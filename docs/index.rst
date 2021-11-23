@@ -52,11 +52,6 @@ You can install kiez via pip:
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents
-
-
-.. toctree::
-   :maxdepth: 3
    :hidden:
    :caption: Documentation
 

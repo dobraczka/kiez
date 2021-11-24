@@ -2,7 +2,7 @@
 <img src="https://github.com/dobraczka/kiez/raw/main/docs/kiezlogo.png" alt="kiez logo", width=200/>
 </p>
 
-<h2 align="center"> kiez</h2>
+<h2 align="center"> <a href="https://dbs.uni-leipzig.de/file/KIEZ_KEOD_2021_Obraczka_Rahm.pdf">kiez</a></h2>
 
 <p align="center">
 <a href="https://github.com/dobraczka/kiez/actions/workflows/main.yml"><img alt="Actions Status" src="https://github.com/dobraczka/kiez/actions/workflows/main.yml/badge.svg?branch=main"></a>

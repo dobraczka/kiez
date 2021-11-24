@@ -20,7 +20,6 @@ You can also get only a specific library with e.g.:
   pip install kiez[nmslib]
 
 
-
 To build kiez from source use `poetry <https://python-poetry.org/>`_ 
 
 .. code-block:: bash

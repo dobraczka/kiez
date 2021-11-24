@@ -49,6 +49,12 @@ You can install kiez via pip:
   
   pip install kiez
 
+This will omit ANN libraries if you want them as well use:
+
+.. code-block:: bash
+  
+  pip install kiez[all]
+
 
 .. toctree::
    :maxdepth: 2

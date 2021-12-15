@@ -152,8 +152,11 @@ class HNSW(NNAlgorithm):
         if self.space == "cosinesimil":
             neigh_dist *= -1
             neigh_dist += 1
-        elif self.space == "l2" and self.metric == "sqeuclidean":
-            neigh_dist **= 2
+        elif self.space == "l2":
+            if self.metric == "sqeuclidean":
+                neigh_dist **= 2
+            elif self.metric == "euclidean":
+                neigh_dist = np.sqrt(neigh_dist)
 
         if return_distance:
             return neigh_dist, neigh_ind

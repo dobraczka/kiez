@@ -2,7 +2,7 @@ import numpy as np
 import pytest
 from kiez import Kiez
 from kiez.hubness_reduction import CSLS, DisSimLocal, LocalScaling, MutualProximity
-from kiez.neighbors import HNSW, NNG, Annoy, SklearnNN
+from kiez.neighbors import HNSW, NNG, Annoy, Faiss, SklearnNN
 from kiez.utils.platform import available_ann_algorithms_on_current_platform
 from numpy.testing import assert_array_almost_equal, assert_array_equal
 
@@ -14,7 +14,7 @@ MP = [MutualProximity(method=method) for method in ["normal", "empiric"]]
 LS = [LocalScaling(method=method) for method in ["standard", "nicdm"]]
 DSL = [DisSimLocal(squared=val) for val in [True, False]]
 HUBNESS = [None, CSLS(), *MP, *LS, *DSL]
-APPROXIMATE_ALGORITHMS = [HNSW, NNG, Annoy]
+APPROXIMATE_ALGORITHMS = [HNSW, NNG, Annoy, Faiss]
 
 
 @pytest.mark.parametrize("hubness", HUBNESS)
@@ -27,7 +27,7 @@ def test_alignment_source_equals_target(
 ):
     source = rng.rand(n_samples, n_features)
     query = rng.rand(n_query_pts, n_features)
-    skalgos = [
+    exactalgos = [
         SklearnNN(n_candidates=n_neighbors, algorithm=algo)
         for algo in ["auto", "kd_tree", "ball_tree", "brute"]
     ]
@@ -36,7 +36,7 @@ def test_alignment_source_equals_target(
         results = []
         results_nodist = []
 
-        for algo in [None, *skalgos]:
+        for algo in [None, *exactalgos]:
             if hubness == "dsl" and p != 2:
                 with pytest.raises(ValueError):
                     align = Kiez(
@@ -80,6 +80,7 @@ def test_alignment_source_equals_target(
             for i in range(len(results_approx[1])):
                 assert np.intersect1d(results_approx[1][i], results[1][1][i]).size >= 1
         else:
+            assert_array_almost_equal(results_approx[0], results[1][0], decimal=3)
             for ra, r in zip(results_approx[1], results[1][1]):
                 assert set(ra) == set(r)
 

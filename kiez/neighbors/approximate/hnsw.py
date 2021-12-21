@@ -21,9 +21,9 @@ class HNSW(NNAlgorithm):
 
     Parameters
     ----------
-    n_candidates: int
+    n_candidates: int, default = 5
         number of nearest neighbors used in search
-    metric: str, default = euclidean'
+    metric: str, default = 'euclidean'
         distance measure used in search
         possible measures are found in :obj:`HNSW.valid_metrics`
     method: str, default = 'hnsw',

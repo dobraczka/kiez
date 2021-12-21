@@ -59,7 +59,8 @@ def test_alignment_source_equals_target(
     assert p == 2, f"Internal: last parameter p={p}, should have been 2"
 
     ann_algos = [
-        algo_cls(n_candidates=n_neighbors) for algo_cls in APPROXIMATE_ALGORITHMS
+        algo_cls(n_candidates=n_neighbors, metric="euclidean")
+        for algo_cls in APPROXIMATE_ALGORITHMS
     ]
     for algo in ann_algos:
         align = Kiez(
@@ -131,7 +132,8 @@ def test_alignment(
     # Test approximate NN against exact NN with Euclidean distances
     assert p == 2, f"Internal: last parameter p={p}, should have been 2"
     ann_algos = [
-        algo_cls(n_candidates=n_neighbors) for algo_cls in APPROXIMATE_ALGORITHMS
+        algo_cls(n_candidates=n_neighbors, metric="euclidean")
+        for algo_cls in APPROXIMATE_ALGORITHMS
     ]
     for algo in ann_algos:
         align = Kiez(

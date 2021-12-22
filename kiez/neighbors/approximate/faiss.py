@@ -1,3 +1,5 @@
+import warnings
+
 import numpy as np
 from kiez.neighbors.neighbor_algorithm_base import NNAlgorithm
 
@@ -25,15 +27,16 @@ class Faiss(NNAlgorithm):
     metric: str, default = 'l2'
         distance measure used in search
         possible measures are found in :obj:`Faiss.valid_metrics`
-    index_key: str
-        index_key
-    index_param: str
-        index_param
-    use_auto_tune: bool
-        use_auto_tune
+        Euclidean is the same as l2, expect for taking the sqrt of the result
+    index_key: str, default = None
+        index name to use
+        If none is provided will determine the best automatically
+        Else will use it as input for :meth:`faiss.index_factory`
+    index_param: str, default = None
+        Hyperparameter string for the indexing algorithm
+        See https://github.com/facebookresearch/faiss/wiki/Index-IO,-cloning-and-hyper-parameter-tuning#auto-tuning-the-runtime-parameters for info
     use_gpu: bool
-        use_gpu
-
+        If true uses all available gpus
 
     Examples
     --------
@@ -53,7 +56,12 @@ class Faiss(NNAlgorithm):
 
     manually select index
 
-    >>> k_inst = Kiez(algorithm="Faiss",algorithm_kwargs={"metric":"euclidean","index_key":"Flat","use_auto_tune":False})
+    >>> k_inst = Kiez(algorithm="Faiss",algorithm_kwargs={"metric":"euclidean","index_key":"Flat"})
+
+
+    supply hyperparameters for indexing algorithm
+
+    >>> k_inst = Kiez(algorithm="Faiss",algorithm_kwargs={"index_key":"HNSW32","index_param":"efSearch=16383"})
 
     Notes
     -----
@@ -70,7 +78,6 @@ class Faiss(NNAlgorithm):
         metric: str = "l2",
         index_key: str = None,
         index_param: str = None,
-        use_auto_tune: bool = True,
         use_gpu: bool = False,
     ):
         if faiss is None:  # pragma: no cover
@@ -89,8 +96,9 @@ class Faiss(NNAlgorithm):
         else:
             self.space = metric
         super().__init__(n_candidates=n_candidates, metric=metric, n_jobs=None)
+        use_auto_tune = True
         # check index string
-        if index_key is not None:
+        if index_key:
             try:
                 faiss.index_factory(1, index_key)
             except RuntimeError:
@@ -99,13 +107,25 @@ class Faiss(NNAlgorithm):
                     " wiki to create a correct instruction:"
                     " https://github.com/facebookresearch/faiss/wiki/The-index-factory"
                 )
-        if use_auto_tune:
+            # user seems to know what they want so no tuning
+            if index_param or index_key == "Flat":
+                use_auto_tune = False
+        elif index_param:
+            warnings.warn(
+                "Index key not set but hyperparameter given. Are you sure this is"
+                " intended?"
+            )
+        else:
+            # no index and no hyperparams so check
+            # if autofaiss is available
             if autofaiss is None:  # pragma: no cover
-                raise ImportError(
-                    "Please install the `autofaiss` package, before using the"
-                    " `use_auto_tune`option.\nYou can install `autofaiss` via: pip"
-                    " install autofaiss"
+                warnings.warn(
+                    "Please install the `autofaiss` package, to enable automatic index"
+                    " selection.\nYou can install `autofaiss` via: pip install"
+                    " autofaiss\n Will use `Flat` index for now, but there are probably"
+                    " better choices..."
                 )
+                use_auto_tune = False
         self.index_key = index_key
         self.index_param = index_param
         self.use_auto_tune = use_auto_tune

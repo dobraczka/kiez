@@ -1,5 +1,4 @@
-New in 0.3.1
+New in 0.3.2
 ============
 
-- Relaxed some version constraints of dependencies
-- Enhanced documentation and some type hint problems
+- Fixed some version constraints of dependencies

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "kiez"
-version = "0.3.1"
+version = "0.3.2"
 description = "Hubness reduced nearest neighbor search for entity alignment with knowledge graph embeddings"
 authors = ["Daniel Obraczka <obraczka@informatik.uni-leipzig.de>"]
 license = "BSD"

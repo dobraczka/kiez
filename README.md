@@ -98,9 +98,6 @@ If you find this work useful you can use the following citation:
   year      = {2021},
   url       = {https://dbs.uni-leipzig.de/file/KIEZ_KEOD_2021_Obraczka_Rahm.pdf},
   doi       = {10.5220/0010646400003064},
-  timestamp = {Fri, 19 Nov 2021 13:50:30 +0100},
-  biburl    = {https://dblp.org/rec/conf/ic3k/ObraczkaR21.bib},
-  bibsource = {dblp computer science bibliography, https://dblp.org}
 }
 ```
 

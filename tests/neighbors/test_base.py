@@ -1,11 +1,11 @@
 import numpy as np
 import pytest
-from kiez.neighbors import HNSW, NNG, Annoy, SklearnNN
+from kiez.neighbors import NMSLIB, NNG, Annoy, Faiss, SklearnNN
 
 rng = np.random.RandomState(2)
 
 
-@pytest.mark.parametrize("algo_cls", [HNSW, SklearnNN, NNG, Annoy])
+@pytest.mark.parametrize("algo_cls", [NMSLIB, SklearnNN, NNG, Annoy, Faiss])
 def test_str_rep(algo_cls, n_samples=20, n_features=5):
     source = rng.rand(n_samples, n_features)
     algo = algo_cls()

@@ -1,6 +1,6 @@
 from class_resolver import Resolver
 from kiez.neighbors.approximate.faiss import Faiss
-from kiez.neighbors.approximate.hnsw import NMSLIB
+from kiez.neighbors.approximate.nmslib import NMSLIB
 from kiez.neighbors.approximate.nng import NNG
 from kiez.neighbors.approximate.random_projection_trees import Annoy
 from kiez.neighbors.exact.sklearn_nearest_neighbors import SklearnNN

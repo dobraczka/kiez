@@ -31,12 +31,15 @@ def test_alignment_source_equals_target(
         SklearnNN(n_candidates=n_neighbors, algorithm=algo)
         for algo in ["auto", "kd_tree", "ball_tree", "brute"]
     ]
+    exactalgos.append(
+        Faiss(n_candidates=n_neighbors, metric="euclidean", index_key="Flat")
+    )
 
     for p in P:
         results = []
         results_nodist = []
 
-        for algo in [None, *exactalgos]:
+        for algo in exactalgos:
             if hubness == "dsl" and p != 2:
                 with pytest.raises(ValueError):
                     align = Kiez(
@@ -53,7 +56,7 @@ def test_alignment_source_equals_target(
             )
         for i in range(len(results) - 1):
             assert_array_almost_equal(results_nodist[i], results[i][1])
-            assert_array_almost_equal(results[i][0], results[i + 1][0])
+            assert_array_almost_equal(results[i][0], results[i + 1][0], decimal=3)
             assert_array_almost_equal(results[i][1], results[i + 1][1])
     # Test approximate NN against exact NN with Euclidean distances
     assert p == 2, f"Internal: last parameter p={p}, should have been 2"
@@ -97,16 +100,19 @@ def test_alignment(
     source = rng.rand(n_query_pts, n_features)
     target = rng.rand(n_samples, n_features)
 
-    skalgos = [
+    exactalgos = [
         SklearnNN(n_candidates=n_neighbors, algorithm=algo)
         for algo in ["auto", "kd_tree", "ball_tree", "brute"]
     ]
+    exactalgos.append(
+        Faiss(n_candidates=n_neighbors, metric="euclidean", index_key="Flat")
+    )
 
     for p in P:
         results = []
         results_nodist = []
 
-        for algo in [None, *skalgos]:
+        for algo in exactalgos:
             if hubness == "dsl" and p != 2:
                 with pytest.raises(ValueError):
                     align = Kiez(

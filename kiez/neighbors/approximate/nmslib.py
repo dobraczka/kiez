@@ -15,9 +15,9 @@ except ImportError:  # pragma: no cover
     nmslib = None
 
 
-class HNSW(NNAlgorithm):
+class NMSLIB(NNAlgorithm):
     """
-    Wrapper for hierarchical navigable small world graphs based approximate nearest neighbor search
+    Wrapper for hierarchical navigable small world graphs based approximate nearest neighbor search implementation from NMSLIB
 
     Parameters
     ----------

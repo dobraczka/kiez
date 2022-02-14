@@ -2,7 +2,7 @@ import numpy as np
 import pytest
 from kiez import Kiez
 from kiez.hubness_reduction import CSLS, DisSimLocal, LocalScaling, MutualProximity
-from kiez.neighbors import HNSW, NNG, Annoy, Faiss, SklearnNN
+from kiez.neighbors import NMSLIB, NNG, Annoy, Faiss, SklearnNN
 from kiez.utils.platform import available_ann_algorithms_on_current_platform
 from numpy.testing import assert_array_almost_equal, assert_array_equal
 
@@ -14,7 +14,7 @@ MP = [MutualProximity(method=method) for method in ["normal", "empiric"]]
 LS = [LocalScaling(method=method) for method in ["standard", "nicdm"]]
 DSL = [DisSimLocal(squared=val) for val in [True, False]]
 HUBNESS = [None, CSLS(), *MP, *LS, *DSL]
-APPROXIMATE_ALGORITHMS = [HNSW, NNG, Annoy, Faiss]
+APPROXIMATE_ALGORITHMS = [NMSLIB, NNG, Annoy, Faiss]
 
 
 @pytest.mark.parametrize("hubness", HUBNESS)

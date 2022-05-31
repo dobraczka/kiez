@@ -25,7 +25,7 @@ class NMSLIB(NNAlgorithm):
         number of nearest neighbors used in search
     metric: str, default = 'euclidean'
         distance measure used in search
-        possible measures are found in :obj:`HNSW.valid_metrics`
+        possible measures are found in :obj:`NMSLIB.valid_metrics`
     method: str, default = 'hnsw',
         ANN method to use. Currently, only 'hnsw' is supported.
     M: int, default = 16

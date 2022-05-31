@@ -27,17 +27,30 @@ You can install kiez via pip:
 pip install kiez
 ```
 
-This will omit ANN libraries. If you want them as well use:
+To make kiez faster it is recommended to install [faiss](https://github.com/facebookresearch/faiss) as well (if you do not already have it in your environment):
+
+``` bash
+pip install kiez[faiss-cpu]
+```
+
+or if you have a gpu:
+``` bash
+pip install kiez[faiss-gpu]
+```
+If you need specific cuda versions for faiss see their [installation instructions](https://github.com/facebookresearch/faiss/blob/main/INSTALL.md) and install it seperately.
+
+You can also get other specific libraries with e.g.:
+
+``` bash
+  pip install kiez[nmslib]
+```
+
+If you want to install all of them use:
 
 ``` bash
   pip install kiez[all]
 ```
 
-You can also get only a specific library with e.g.:
-
-``` bash
-  pip install kiez[nmslib]
-```
 
 
 ## Usage
@@ -54,7 +67,7 @@ k_inst = Kiez()
 k_inst.fit(source, target)
 nn_dist, nn_ind = k_inst.kneighbors()
 ```
-Using ANN libraries and hubness reduction methods:
+Using (A)NN libraries and hubness reduction methods:
 ``` python
 from kiez import Kiez
 import numpy as np
@@ -63,12 +76,12 @@ rng = np.random.RandomState(0)
 source = rng.rand(100,50)
 target = rng.rand(100,50)
 # prepare algorithm and hubness reduction
-from kiez.neighbors import HNSW
-hnsw = HNSW(n_candidates=10)
+from kiez.neighbors import Faiss
+faiss = Faiss(n_candidates=10)
 from kiez.hubness_reduction import CSLS
 hr = CSLS()
 # fit and get neighbors
-k_inst = Kiez(n_neighbors=5, algorithm=hnsw, hubness=hr)
+k_inst = Kiez(n_neighbors=5, algorithm=faiss, hubness=hr)
 k_inst.fit(source, target)
 nn_dist, nn_ind = k_inst.kneighbors()
 ```
@@ -108,6 +121,13 @@ To run the tests (given you are in the kiez folder):
 ```bash
 poetry run pytest tests
 ```
+
+Or install [nox](https://github.com/theacodes/nox) and run:
+```
+nox
+```
+which check all the linting as well.
+
 ## License
 `kiez` is licensed under the terms of the BSD-3-Clause [license](LICENSE.txt).
 Several files were modified from [`scikit-hubness`](https://github.com/VarIr/scikit-hubness),

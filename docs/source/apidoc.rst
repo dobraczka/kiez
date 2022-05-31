@@ -96,7 +96,8 @@ Neighbors
    :nosignatures:
    :toctree: _autosummary
 
-    kiez.neighbors.HNSW
+    kiez.neighbors.Faiss
+    kiez.neighbors.NMSLIB
     kiez.neighbors.NNG
     kiez.neighbors.SklearnNN
     kiez.neighbors.Annoy

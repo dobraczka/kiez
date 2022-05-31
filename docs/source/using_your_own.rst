@@ -1,5 +1,5 @@
 Using your own ...
-==============
+===================
 
 kiez is created with extensibility in mind. Therefore it is easy to incorporate your own hubness reduction methods, or wrappers for (approximate) nearest neighbor libraries. The reason for this is, that the central class of kiez takes hubness and nearest neighbor arguments as objects and uses them internally:
 

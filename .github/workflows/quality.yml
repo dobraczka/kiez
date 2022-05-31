@@ -36,3 +36,5 @@ jobs:
       run: nox -s lint
     - name: Type checking
       run: nox -s type_checking
+    - name: Build docs
+      run: nox -s build_docs

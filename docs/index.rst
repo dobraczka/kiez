@@ -43,18 +43,28 @@ The main feature of kiez lies in the ability to use hubness reduction methods an
     k_inst.fit(source, target)
     nn_dist, nn_ind = k_inst.kneighbors()
 
-You can install kiez via pip:
+
+The recommended way to install kiez is via pip and including faiss
+
+.. code-block:: bash
+  
+  pip install kiez[faiss-gpu]
+
+A minimal installation of kiez can be obtained via
 
 .. code-block:: bash
   
   pip install kiez
 
-This will omit ANN libraries if you want them as well use:
+which will omit ANN libraries.
+
+If you want all of the available libraries use:
 
 .. code-block:: bash
   
   pip install kiez[all]
 
+More info about installation can be found in :ref:`installation`
 
 .. toctree::
    :maxdepth: 2

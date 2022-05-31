@@ -1,5 +1,4 @@
-New in 0.3.1
+New in 0.3.3
 ============
 
-- Relaxed some version constraints of dependencies
-- Enhanced documentation and some type hint problems
+- Patch IPython vulnerability by setting it to >=7.31.1

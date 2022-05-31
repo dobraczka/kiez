@@ -1,4 +1,5 @@
 import pathlib
+from unittest import mock
 
 import numpy as np
 import pytest
@@ -168,3 +169,16 @@ def test_from_config():
     assert kiez.algorithm is not None
     assert isinstance(kiez.algorithm, NNAlgorithm)
     assert isinstance(kiez.algorithm, NMSLIB), f"wrong algorithm: {kiez.algorithm}"
+
+
+def mock_make(name, algorithm_kwargs):
+    if name == "Faiss":
+        raise ImportError
+    else:
+        return SklearnNN()
+
+
+@mock.patch("kiez.kiez.nn_algorithm_resolver.make", mock_make)
+def test_no_faiss():
+    kiez = Kiez()
+    assert isinstance(kiez.algorithm, SklearnNN)

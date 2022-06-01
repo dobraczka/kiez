@@ -19,8 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
-      matrix:
-        python-version: [3.7, 3.8, 3.9]
+      python-version: 3.8
 
     steps:
     - uses: actions/checkout@v2
@@ -37,3 +36,5 @@ jobs:
       run: nox -s lint
     - name: Type checking
       run: nox -s type_checking
+    - name: Build docs
+      run: nox -s build_docs

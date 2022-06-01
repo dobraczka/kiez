@@ -15,17 +15,17 @@ except ImportError:  # pragma: no cover
     nmslib = None
 
 
-class HNSW(NNAlgorithm):
+class NMSLIB(NNAlgorithm):
     """
-    Wrapper for hierarchical navigable small world graphs based approximate nearest neighbor search
+    Wrapper for hierarchical navigable small world graphs based approximate nearest neighbor search implementation from NMSLIB
 
     Parameters
     ----------
-    n_candidates: int
+    n_candidates: int, default = 5
         number of nearest neighbors used in search
-    metric: str, default = euclidean'
+    metric: str, default = 'euclidean'
         distance measure used in search
-        possible measures are found in :obj:`HNSW.valid_metrics`
+        possible measures are found in :obj:`NMSLIB.valid_metrics`
     method: str, default = 'hnsw',
         ANN method to use. Currently, only 'hnsw' is supported.
     M: int, default = 16
@@ -152,8 +152,11 @@ class HNSW(NNAlgorithm):
         if self.space == "cosinesimil":
             neigh_dist *= -1
             neigh_dist += 1
-        elif self.space == "l2" and self.metric == "sqeuclidean":
-            neigh_dist **= 2
+        elif self.space == "l2":
+            if self.metric == "sqeuclidean":
+                neigh_dist **= 2
+            elif self.metric == "euclidean":
+                neigh_dist = np.sqrt(neigh_dist)
 
         if return_distance:
             return neigh_dist, neigh_ind

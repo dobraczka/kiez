@@ -167,7 +167,7 @@ def _calc_antihub_occurrence(k_occurrence: np.ndarray) -> Tuple[np.ndarray, floa
 
 def _calc_hub_occurrence(
     k: int, k_occurrence: np.ndarray, n_test: int, hub_size: float = 2
-):
+) -> Tuple[np.ndarray, float]:
     """Proportion of nearest neighbor slots occupied by hubs.
 
     Parameters
@@ -299,6 +299,7 @@ def hubness_score(
         elif k > k_neighbors.shape[1]:
             k = nn_ind.shape[1]
             warnings.warn(f"k > nn_ind.shape[1], k will be set to {k}")
+    assert k is not None
 
     # Negative indices can occur, when ANN does not find enough neighbors,
     # and must be removed

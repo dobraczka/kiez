@@ -26,8 +26,8 @@ class Kiez:
         number of nearest neighbors used in search
     algorithm : :obj:`~kiez.neighbors.NNAlgorithm`, default = None
         initialised `NNAlgorithm` object that will be used for neighbor search
-        If no algorithm is provided :obj:`~kiez.neighbors.SklearnNN`
-        is used with default values
+        If no algorithm is provided :obj:`~kiez.neighbors.Faiss` is used if available else
+        :obj:`~kiez.neighbors.SklearnNN` is used with default values
     algorithm_kwargs :
         A dictionary of keyword arguments to pass to the :obj:`~kiez.neighbors.NNAlgorithm`
         if given as a class in the ``algorithm`` argument.
@@ -63,8 +63,8 @@ class Kiez:
     >>> source = rng.rand(100,50)
     >>> target = rng.rand(100,50)
     >>> # prepare algorithm and hubness reduction
-    >>> from kiez.neighbors import HNSW
-    >>> hnsw = HNSW(n_candidates=10)
+    >>> from kiez.neighbors import NMSLIB
+    >>> hnsw = NMSLIB(n_candidates=10)
     >>> from kiez.hubness_reduction import CSLS
     >>> hr = CSLS()
     >>> # fit and get neighbors
@@ -79,7 +79,7 @@ class Kiez:
     IGNORE
     # content of conf.json
     # {
-    #   "algorithm": "HNSW",
+    #   "algorithm": "NMSLIB",
     #   "algorithm_kwargs": {
     #     "n_candidates": 10
     #   },
@@ -110,7 +110,16 @@ class Kiez:
         self.n_neighbors = n_neighbors
         if algorithm is None and algorithm_kwargs is None:
             algorithm_kwargs = {"n_candidates": n_neighbors}
-        self.algorithm = nn_algorithm_resolver.make(algorithm, algorithm_kwargs)
+        if algorithm is None:
+            try:
+                self.algorithm = nn_algorithm_resolver.make("Faiss", algorithm_kwargs)
+            except ImportError:
+                self.algorithm = nn_algorithm_resolver.make(
+                    "SklearnNN", algorithm_kwargs
+                )
+        else:
+            self.algorithm = nn_algorithm_resolver.make(algorithm, algorithm_kwargs)
+        assert self.algorithm
         self.hubness = hubness_reduction_resolver.make(hubness, hubness_kwargs)
         self._check_algorithm_hubness_compatibility()
 

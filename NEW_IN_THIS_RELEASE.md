@@ -1,4 +1,4 @@
-New in 0.3.3
+New in 0.4.0
 ============
 
-- Patch IPython vulnerability by setting it to >=7.31.1
+- Added Faiss to enable fast hubness-reduced nearest neighbor search on the gpu 

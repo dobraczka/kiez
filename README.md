@@ -94,22 +94,17 @@ The results and configurations of our experiments can be found in a seperate [be
 ## Citation
 If you find this work useful you can use the following citation:
 ```
-@inproceedings{Kiez,
-  author    = {Daniel Obraczka and
-               Erhard Rahm},
-  editor    = {David Aveiro and
-               Jan L. G. Dietz and
-               Joaquim Filipe},
-  title     = {An Evaluation of Hubness Reduction Methods for Entity Alignment with
-               Knowledge Graph Embeddings},
-  booktitle = {Proceedings of the 13th International Joint Conference on Knowledge
-               Discovery, Knowledge Engineering and Knowledge Management, {IC3K}
-               2021, Volume 2: KEOD, Online Streaming, October 25-27, 2021},
-  pages     = {28--39},
-  publisher = {{SCITEPRESS}},
-  year      = {2021},
-  url       = {https://dbs.uni-leipzig.de/file/KIEZ_KEOD_2021_Obraczka_Rahm.pdf},
-  doi       = {10.5220/0010646400003064},
+@article{obraczka2022fast,
+  title={Fast Hubness-Reduced Nearest Neighbor Search for Entity Alignment in Knowledge Graphs},
+  author={Obraczka, Daniel and Rahm, Erhard},
+  journal={SN Computer Science},
+  volume={3},
+  number={6},
+  pages={1--19},
+  year={2022},
+  publisher={Springer},
+  url={https://link.springer.com/article/10.1007/s42979-022-01417-1},
+  doi={10.1007/s42979-022-01417-1},
 }
 ```
 
@@ -129,7 +124,7 @@ Or install [nox](https://github.com/theacodes/nox) and run:
 ```
 nox
 ```
-which check all the linting as well.
+which checks all the linting as well.
 
 ## License
 `kiez` is licensed under the terms of the BSD-3-Clause [license](LICENSE.txt).

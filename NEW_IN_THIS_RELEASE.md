@@ -1,4 +1,4 @@
-New in 0.4.0
+New in 0.4.1
 ============
 
-- Added Faiss to enable fast hubness-reduced nearest neighbor search on the gpu 
+- Fix joblib vulnerability by raising minimum required version

@@ -1,4 +1,4 @@
-New in 0.4.1
+New in 0.4.2
 ============
 
-- Fix joblib vulnerability by raising minimum required version
+- Upgrade class_resolver dependency

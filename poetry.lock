@@ -150,16 +150,21 @@ unicode-backport = ["unicodedata2"]
 
 [[package]]
 name = "class-resolver"
-version = "0.1.1"
+version = "0.3.10"
 description = "Lookup and instantiate classes with style."
 category = "main"
 optional = false
-python-versions = ">=3.6"
+python-versions = ">=3.7"
 
 [package.extras]
 click = ["click"]
-docs = ["sphinx", "sphinx-autodoc-typehints", "sphinx-click", "sphinx-rtd-theme"]
+docdata = ["docdata"]
+docs = ["sphinx", "sphinx-autodoc-typehints", "sphinx-automodapi", "sphinx-rtd-theme"]
+numpy = ["numpy"]
+optuna = ["optuna"]
 ray = ["ray[tune]"]
+tests = ["coverage", "pytest"]
+torch = ["torch"]
 
 [[package]]
 name = "click"
@@ -1317,7 +1322,7 @@ nmslib = ["nmslib"]
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.8,<3.11"
-content-hash = "d0b9673313b3e7da19be0b94088867cb901cf8205d46b0d058b685390c90b23d"
+content-hash = "b4d670a922f8af83321f60f4f38e3ae5b00642579dd79cfb565eb9dd3aeda7be"
 
 [metadata.files]
 alabaster = [
@@ -1394,8 +1399,8 @@ charset-normalizer = [
     {file = "charset_normalizer-2.0.12-py3-none-any.whl", hash = "sha256:6881edbebdb17b39b4eaaa821b438bf6eddffb4468cf344f09f89def34a8b1df"},
 ]
 class-resolver = [
-    {file = "class_resolver-0.1.1-py3-none-any.whl", hash = "sha256:017ae602d6da6e8aebc4b2c397c648742cea26cca290ee6d833a98d279b52678"},
-    {file = "class_resolver-0.1.1.tar.gz", hash = "sha256:f755c264f973a4b64501933b263e643dea2e60abfa04698ac72fb4356eecdb95"},
+    {file = "class_resolver-0.3.10-py3-none-any.whl", hash = "sha256:041c8706abb5a7f0ac3b1067e973e65a0571a59198717b440d7c0052fb75ec4e"},
+    {file = "class_resolver-0.3.10.tar.gz", hash = "sha256:cc26438ec4d7e27852ece0db638058454ac76055413996a78678bbd72b0343c3"},
 ]
 click = [
     {file = "click-8.1.3-py3-none-any.whl", hash = "sha256:bb4d8133cb15a609f44e8213d9b391b0809795062913b383c62be0ee95b1db48"},

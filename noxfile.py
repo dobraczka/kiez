@@ -28,6 +28,19 @@ def lint(session: Session) -> None:
 
 
 @session()
+def pyroma(session: Session) -> None:
+    session.install("poetry", "pyroma")
+    session.run("pyroma", "--min", "10", ".")
+
+
+@session()
+def doctests(session: Session) -> None:
+    session.install(".[all]")
+    session.install("xdoctest")
+    session.run("xdoctest", "-m", "kiez")
+
+
+@session()
 def type_checking(session: Session) -> None:
     args = session.posargs or locations
     session.install("mypy")

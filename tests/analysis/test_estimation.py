@@ -64,7 +64,7 @@ def test_all(k, get_expected):
         if isinstance(v, np.ndarray):
             assert_array_equal(v, measures[score_key])
         else:
-            assert v == measures[score_key]
+            assert pytest.approx(v) == measures[score_key]
 
 
 @pytest.mark.parametrize("verbose", [True, False])

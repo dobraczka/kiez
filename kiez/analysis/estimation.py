@@ -11,7 +11,7 @@ from __future__ import annotations
 
 import logging
 import warnings
-from typing import Tuple, Union
+from typing import Optional, Tuple, Union
 
 import numpy as np
 from scipy import stats
@@ -133,7 +133,7 @@ def _calc_atkinson_index(k_occurrence: np.ndarray, eps: float = 0.5) -> float:
     ----------
     k_occurrence: ndarray
         Reverse nearest neighbor count for each object.
-    eps: float, default = 0.5 # noqa: DAR103
+    eps: float
         'Income' weight. Turns the index into a normative measure.
     Returns
     -------
@@ -193,7 +193,7 @@ def hubness_score(
     nn_ind: np.ndarray,
     target_samples: int,
     *,
-    k: int = None,
+    k: Optional[int] = None,
     hub_size: float = 2.0,
     shuffle_equal: bool = True,
     random_state=None,
@@ -272,21 +272,9 @@ def hubness_score(
     >>> k_inst.fit(source, target)
     >>> nn_ind = k_inst.kneighbors(return_distance=False)
     >>> # get hubness
-    >>> hubness_score(nn_ind, target.shape[1])
-        {
-            "k_skewness": 1.0243818877407802,
-            "k_skewness_truncnorm": 0.705309555084711,
-            "atkinson": 0.1846908928840305,
-            "robinhood": 0.31,
-            "antihubs": array([14, 34, 37, 45, 54, 57, 67, 74]),
-            "antihub_occurrence": 0.08,
-            "hubs": array([31, 39, 46, 56, 62, 66, 68, 70]),
-            "hub_occurrence": 0.436,
-            "groupie_ratio": 0.076,
-        }
-    IGNORE:
-    # noqa: DAR002
-    IGNORE
+    >>> hub_score = hubness_score(nn_ind, target.shape[1])
+    >>> hub_score["robinhood"]
+        0.31
     """
     n_train = nn_ind.shape[0]
     n_test = target_samples

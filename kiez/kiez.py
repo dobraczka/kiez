@@ -74,22 +74,7 @@ class Kiez:
 
     You can also initalize Kiez via a json file
 
-    IGNORE:
-    # noqa: E800
-    IGNORE
-    # content of conf.json
-    # {
-    #   "algorithm": "NMSLIB",
-    #   "algorithm_kwargs": {
-    #     "n_candidates": 10
-    #   },
-    #   "hubness": "LocalScaling",
-    #   "hubness_kwargs": {
-    #     "method": "NICDM"
-    #   }
-    # }
-
-    >>> kiez = Kiez.from_path("conf.json")
+    >>> kiez = Kiez.from_path("tests/example_conf.json")
     """
 
     def __init__(

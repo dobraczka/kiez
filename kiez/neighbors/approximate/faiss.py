@@ -1,11 +1,14 @@
+import logging
 import warnings
+from typing import Optional
 
 import numpy as np
+
 from kiez.neighbors.neighbor_algorithm_base import NNAlgorithm
 
 try:
-    import autofaiss
 
+    import autofaiss
     import faiss
 except ImportError:  # pragma: no cover
     faiss = None
@@ -42,19 +45,15 @@ class Faiss(NNAlgorithm):
     --------
     >>> import numpy as np
     >>> from kiez import Kiez
-    >>> source = np.random.rand(1000,512)
-    >>> target = np.random.rand(100,512)
+    >>> source = np.random.rand(1000, 512)
+    >>> target = np.random.rand(100, 512)
     >>> k_inst = Kiez(algorithm="Faiss")
     >>> k_inst.fit(source, target)
 
     get info about selected indices
 
-    >>> k_inst.algorithm.source_index_infos
-    {'index_key': 'HNSW15', 'index_param': 'efSearch=16383', 'size in bytes': 2184150, 'avg_search_speed_ms': 2.122945833601989, '99p_search_speed_ms': 5.1722947141388405, 'reconstruction error %': 0.0, 'nb vectors': 1000, 'vectors dimension': 512, 'compression ratio': 0.9376645376920083}
-    >>> k_inst.algorithm.target_index_infos
-    {'index_key': 'Flat', 'index_param': '', 'size in bytes': 204845, 'avg_search_speed_ms': 0.07473751151701435, '99p_search_speed_ms': 0.19808110082522035, 'reconstruction error %': 0.0, 'nb vectors': 100, 'vectors dimension': 512, 'compression ratio': 0.9997803217066562}
-
-    manually select index
+    >>> k_inst.algorithm.source_index_infos["index_key"]
+    'HNSW15'
 
     >>> k_inst = Kiez(algorithm="Faiss",algorithm_kwargs={"metric":"euclidean","index_key":"Flat"})
 
@@ -76,9 +75,10 @@ class Faiss(NNAlgorithm):
         self,
         n_candidates: int = 5,
         metric: str = "l2",
-        index_key: str = None,
-        index_param: str = None,
+        index_key: Optional[str] = None,
+        index_param: Optional[str] = None,
         use_gpu: bool = False,
+        verbose: int = logging.WARNING,
     ):
         if faiss is None:  # pragma: no cover
             raise ImportError(
@@ -131,6 +131,7 @@ class Faiss(NNAlgorithm):
         self.use_auto_tune = use_auto_tune
         self.use_gpu = use_gpu
         self.index_infos = None
+        self.verbose = verbose
 
     def _source_target_repr(self, is_source: bool):
         ret_str = f"{self.__class__.__name__}(n_candidates={self.n_candidates},metric={self.metric},"
@@ -181,6 +182,7 @@ class Faiss(NNAlgorithm):
                 metric_type=self.space,
                 save_on_disk=False,
                 use_gpu=self.use_gpu,
+                verbose=self.verbose,
             )
             if is_source:
                 self.source_index_key = index_infos["index_key"]

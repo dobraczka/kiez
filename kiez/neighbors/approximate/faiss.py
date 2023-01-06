@@ -1,11 +1,14 @@
+import logging
 import warnings
+from typing import Optional
 
 import numpy as np
+
 from kiez.neighbors.neighbor_algorithm_base import NNAlgorithm
 
 try:
-    import autofaiss
 
+    import autofaiss
     import faiss
 except ImportError:  # pragma: no cover
     faiss = None
@@ -72,9 +75,10 @@ class Faiss(NNAlgorithm):
         self,
         n_candidates: int = 5,
         metric: str = "l2",
-        index_key: str = None,
-        index_param: str = None,
+        index_key: Optional[str] = None,
+        index_param: Optional[str] = None,
         use_gpu: bool = False,
+        verbose: int = logging.WARNING,
     ):
         if faiss is None:  # pragma: no cover
             raise ImportError(
@@ -127,6 +131,7 @@ class Faiss(NNAlgorithm):
         self.use_auto_tune = use_auto_tune
         self.use_gpu = use_gpu
         self.index_infos = None
+        self.verbose = verbose
 
     def _source_target_repr(self, is_source: bool):
         ret_str = f"{self.__class__.__name__}(n_candidates={self.n_candidates},metric={self.metric},"
@@ -177,6 +182,7 @@ class Faiss(NNAlgorithm):
                 metric_type=self.space,
                 save_on_disk=False,
                 use_gpu=self.use_gpu,
+                verbose=self.verbose,
             )
             if is_source:
                 self.source_index_key = index_infos["index_key"]

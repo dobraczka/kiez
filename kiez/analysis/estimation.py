@@ -11,7 +11,7 @@ from __future__ import annotations
 
 import logging
 import warnings
-from typing import Tuple, Union
+from typing import Optional, Tuple, Union
 
 import numpy as np
 from scipy import stats
@@ -193,7 +193,7 @@ def hubness_score(
     nn_ind: np.ndarray,
     target_samples: int,
     *,
-    k: int = None,
+    k: Optional[int] = None,
     hub_size: float = 2.0,
     shuffle_equal: bool = True,
     random_state=None,

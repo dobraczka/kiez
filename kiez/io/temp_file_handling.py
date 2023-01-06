@@ -4,15 +4,16 @@
 
 import logging
 from tempfile import NamedTemporaryFile, mkstemp
+from typing import Optional
 
 __all__ = ["create_tempfile_preferably_in_dir"]
 
 
 def create_tempfile_preferably_in_dir(
-    suffix: str = None,
-    prefix: str = None,
-    directory: str = None,
-    persistent: bool = False,
+    suffix: Optional[str] = None,
+    prefix: Optional[str] = None,
+    directory: Optional[str] = None,
+    persistent: Optional[bool] = False,
 ):
     """Create a temporary file with precedence for directory if possible, in TMP otherwise.
     For example, this is useful to try to save into /dev/shm.

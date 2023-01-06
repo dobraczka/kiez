@@ -42,19 +42,15 @@ class Faiss(NNAlgorithm):
     --------
     >>> import numpy as np
     >>> from kiez import Kiez
-    >>> source = np.random.rand(1000,512)
-    >>> target = np.random.rand(100,512)
+    >>> source = np.random.rand(1000, 512)
+    >>> target = np.random.rand(100, 512)
     >>> k_inst = Kiez(algorithm="Faiss")
     >>> k_inst.fit(source, target)
 
     get info about selected indices
 
-    >>> k_inst.algorithm.source_index_infos
-    {'index_key': 'HNSW15', 'index_param': 'efSearch=16383', 'size in bytes': 2184150, 'avg_search_speed_ms': 2.122945833601989, '99p_search_speed_ms': 5.1722947141388405, 'reconstruction error %': 0.0, 'nb vectors': 1000, 'vectors dimension': 512, 'compression ratio': 0.9376645376920083}
-    >>> k_inst.algorithm.target_index_infos
-    {'index_key': 'Flat', 'index_param': '', 'size in bytes': 204845, 'avg_search_speed_ms': 0.07473751151701435, '99p_search_speed_ms': 0.19808110082522035, 'reconstruction error %': 0.0, 'nb vectors': 100, 'vectors dimension': 512, 'compression ratio': 0.9997803217066562}
-
-    manually select index
+    >>> k_inst.algorithm.source_index_infos["index_key"]
+    'HNSW15'
 
     >>> k_inst = Kiez(algorithm="Faiss",algorithm_kwargs={"metric":"euclidean","index_key":"Flat"})
 

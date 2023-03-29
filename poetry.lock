@@ -297,14 +297,14 @@ files = [
 
 [[package]]
 name = "class-resolver"
-version = "0.3.10"
+version = "0.4.0"
 description = "Lookup and instantiate classes with style."
 category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "class_resolver-0.3.10-py3-none-any.whl", hash = "sha256:041c8706abb5a7f0ac3b1067e973e65a0571a59198717b440d7c0052fb75ec4e"},
-    {file = "class_resolver-0.3.10.tar.gz", hash = "sha256:cc26438ec4d7e27852ece0db638058454ac76055413996a78678bbd72b0343c3"},
+    {file = "class_resolver-0.4.0-py3-none-any.whl", hash = "sha256:f857cd4fc20be3d10ab644846d97c9bc446b1af58f466942eda50fd4dd10b9ce"},
+    {file = "class_resolver-0.4.0.tar.gz", hash = "sha256:1a1915b571a4954a7ca7bb94e2df3ca691316e668309b25659b179f0e0268f57"},
 ]
 
 [package.extras]
@@ -313,8 +313,8 @@ docdata = ["docdata"]
 docs = ["sphinx", "sphinx-autodoc-typehints", "sphinx-automodapi", "sphinx-rtd-theme"]
 numpy = ["numpy"]
 optuna = ["optuna"]
-ray = ["ray[tune]"]
-tests = ["coverage", "pytest"]
+ray = ["ray[tune] (<2.0.0)"]
+tests = ["coverage", "docdata", "pytest"]
 torch = ["torch"]
 
 [[package]]
@@ -578,14 +578,14 @@ files = [
 
 [[package]]
 name = "filelock"
-version = "3.10.6"
+version = "3.10.7"
 description = "A platform independent file lock."
 category = "dev"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "filelock-3.10.6-py3-none-any.whl", hash = "sha256:52f119747b2b9c4730dac715a7b1ab34b8ee70fd9259cba158ee53da566387ff"},
-    {file = "filelock-3.10.6.tar.gz", hash = "sha256:409105becd604d6b176a483f855e7e8903c5cb2873e47f2c64f66a370c046aaf"},
+    {file = "filelock-3.10.7-py3-none-any.whl", hash = "sha256:bde48477b15fde2c7e5a0713cbe72721cb5a5ad32ee0b8f419907960b9d75536"},
+    {file = "filelock-3.10.7.tar.gz", hash = "sha256:892be14aa8efc01673b5ed6589dbccb95f9a8596f0507e232626155495c18105"},
 ]
 
 [package.extras]
@@ -1672,14 +1672,14 @@ six = ">=1.5"
 
 [[package]]
 name = "pytz"
-version = "2023.2"
+version = "2023.3"
 description = "World timezone definitions, modern and historical"
 category = "main"
 optional = false
 python-versions = "*"
 files = [
-    {file = "pytz-2023.2-py2.py3-none-any.whl", hash = "sha256:8a8baaf1e237175b02f5c751eea67168043a749c843989e2b3015aa1ad9db68b"},
-    {file = "pytz-2023.2.tar.gz", hash = "sha256:a27dcf612c05d2ebde626f7d506555f10dfc815b3eddccfaadfc7d99b11c9a07"},
+    {file = "pytz-2023.3-py2.py3-none-any.whl", hash = "sha256:a151b3abb88eda1d4e34a9814df37de2a80e301e68ba0fd856fb9b46bfbbbffb"},
+    {file = "pytz-2023.3.tar.gz", hash = "sha256:1d8ce29db189191fb55338ee6d0387d82ab59f3d00eac103412d64e0ebd0c588"},
 ]
 
 [[package]]
@@ -1788,14 +1788,14 @@ test = ["asv", "gmpy2", "mpmath", "pytest", "pytest-cov", "pytest-xdist", "sciki
 
 [[package]]
 name = "setuptools"
-version = "67.6.0"
+version = "67.6.1"
 description = "Easily download, build, install, upgrade, and uninstall Python packages"
 category = "dev"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "setuptools-67.6.0-py3-none-any.whl", hash = "sha256:b78aaa36f6b90a074c1fa651168723acbf45d14cb1196b6f02c0fd07f17623b2"},
-    {file = "setuptools-67.6.0.tar.gz", hash = "sha256:2ee892cd5f29f3373097f5a814697e397cf3ce313616df0af11231e2ad118077"},
+    {file = "setuptools-67.6.1-py3-none-any.whl", hash = "sha256:e728ca814a823bf7bf60162daf9db95b93d532948c4c0bea762ce62f60189078"},
+    {file = "setuptools-67.6.1.tar.gz", hash = "sha256:257de92a9d50a60b8e22abfcbb771571fde0dbf3ec234463212027a4eeecbe9a"},
 ]
 
 [package.extras]
@@ -2196,4 +2196,4 @@ nmslib = ["nmslib"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8,<4.0"
-content-hash = "a7eda62414ae57d2779197473385d070a0c855914b86802631332a47ef901fd6"
+content-hash = "4eef92b031d8f832f04947a0167dd4ee7c443c08cdc0e385d4b8f178e13657db"

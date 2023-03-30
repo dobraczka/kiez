@@ -31,9 +31,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install nox_poetry
-    - name: Lint
-      run: nox -s lint
-    - name: Type checking
-      run: nox -s type_checking
+    - name: Run all style checks
+      run: nox -t style
     - name: Build docs
       run: nox -s build_docs

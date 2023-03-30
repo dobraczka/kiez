@@ -1,6 +1,7 @@
 import numpy as np
-from kiez.neighbors import SklearnNN
 from numpy.testing import assert_array_equal
+
+from kiez.neighbors import SklearnNN
 
 rng = np.random.RandomState(2)
 

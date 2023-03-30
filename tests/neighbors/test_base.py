@@ -1,5 +1,6 @@
 import numpy as np
 import pytest
+
 from kiez.neighbors import NMSLIB, NNG, Annoy, Faiss, SklearnNN
 
 rng = np.random.RandomState(2)

@@ -1,7 +1,8 @@
 import numpy as np
 import pytest
-from kiez.neighbors import NMSLIB
 from numpy.testing import assert_array_equal
+
+from kiez.neighbors import NMSLIB
 
 rng = np.random.RandomState(2)
 

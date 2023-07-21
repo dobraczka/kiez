@@ -29,7 +29,7 @@ def lint(session: Session) -> None:
 
 @session()
 def pyroma(session: Session) -> None:
-    session.install("poetry", "pyroma")
+    session.install("pyroma")
     session.run("pyroma", "--min", "10", ".")
 
 

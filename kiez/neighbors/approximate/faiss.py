@@ -7,11 +7,12 @@ import numpy as np
 from kiez.neighbors.neighbor_algorithm_base import NNAlgorithm
 
 try:
-
-    import autofaiss
     import faiss
 except ImportError:  # pragma: no cover
     faiss = None
+try:
+    import autofaiss
+except ImportError:  # pragma: no cover
     autofaiss = None
 
 
@@ -96,7 +97,7 @@ class Faiss(NNAlgorithm):
         else:
             self.space = metric
         super().__init__(n_candidates=n_candidates, metric=metric, n_jobs=None)
-        use_auto_tune = True
+        use_auto_tune = autofaiss is not None
         # check index string
         if index_key:
             try:

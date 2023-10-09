@@ -61,7 +61,7 @@ mypy = "^0.960"
 
 [tool.poetry.extras]
 docs = ["sphinx", "insegel"]
-all = ["ngt","annoy","nmslib","faiss-cpu","faiss-gpu","autofaiss"]
+all = ["annoy","nmslib","faiss-cpu","faiss-gpu","autofaiss"]
 ngt = ["ngt"]
 nmslib = ["nmslib"]
 annoy = ["annoy"]

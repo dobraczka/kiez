@@ -1,7 +1,8 @@
 import numpy as np
 import pytest
-from kiez.neighbors import Faiss
 from numpy.testing import assert_array_equal
+
+from kiez.neighbors import Faiss
 
 
 @pytest.mark.parametrize("single_source", [True, False])

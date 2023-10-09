@@ -9,9 +9,10 @@ from __future__ import annotations
 import logging
 
 import numpy as np
+from tqdm.auto import tqdm
+
 from kiez.io.temp_file_handling import create_tempfile_preferably_in_dir
 from kiez.neighbors.neighbor_algorithm_base import NNAlgorithmWithJoblib
-from tqdm.auto import tqdm
 
 try:
     import ngtpy  # noqa: autoimport

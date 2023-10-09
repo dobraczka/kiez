@@ -3,16 +3,13 @@ from unittest import mock
 
 import numpy as np
 import pytest
-from kiez import Kiez
-from kiez.hubness_reduction import (
-    DisSimLocal,
-    HubnessReduction,
-    LocalScaling,
-    NoHubnessReduction,
-)
-from kiez.neighbors import NMSLIB, NNAlgorithm, SklearnNN
 from numpy.testing import assert_array_equal
 from sklearn.neighbors import NearestNeighbors
+
+from kiez import Kiez
+from kiez.hubness_reduction import (DisSimLocal, HubnessReduction,
+                                    LocalScaling, NoHubnessReduction)
+from kiez.neighbors import NMSLIB, NNAlgorithm, SklearnNN
 
 HERE = pathlib.Path(__file__).parent.resolve()
 rng = np.random.RandomState(2)

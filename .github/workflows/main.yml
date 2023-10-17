@@ -51,7 +51,7 @@ jobs:
         python -m pip install poetry
         python -m pip install nox_poetry
     - name: Set up Conda
-    - uses: s-weigand/setup-conda@v1
+      uses: s-weigand/setup-conda@v1
       with:
         activate-conda: false
     - name: Test faiss

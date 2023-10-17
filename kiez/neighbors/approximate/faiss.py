@@ -102,12 +102,12 @@ class Faiss(NNAlgorithm):
         if index_key:
             try:
                 faiss.index_factory(1, index_key)
-            except RuntimeError:
+            except RuntimeError as exc:
                 raise ValueError(
                     f'Could not parse index "{index_key}".\n Please consult the faiss'
                     " wiki to create a correct instruction:"
                     " https://github.com/facebookresearch/faiss/wiki/The-index-factory"
-                )
+                ) from exc
             # user seems to know what they want so no tuning
             if index_param or index_key == "Flat":
                 use_auto_tune = False

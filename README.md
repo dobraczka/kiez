@@ -7,7 +7,6 @@
 <p align="center">
 <a href="https://github.com/dobraczka/kiez/actions/workflows/main.yml"><img alt="Actions Status" src="https://github.com/dobraczka/kiez/actions/workflows/main.yml/badge.svg?branch=main"></a>
 <a href='https://kiez.readthedocs.io/en/latest/?badge=latest'><img src='https://readthedocs.org/projects/kiez/badge/?version=latest' alt='Documentation Status' /></a>
-<a href="https://codecov.io/gh/dobraczka/kiez"><img src="https://codecov.io/gh/dobraczka/kiez/branch/main/graph/badge.svg?token=AHBYFKJVLV"/></a>
 <a href="https://pypi.org/project/kiez"/><img alt="Stable python versions" src="https://img.shields.io/pypi/pyversions/kiez"></a>
 <a href="https://github.com/dobraczka/kiez/blob/main/LICENSE"><img alt="License BSD3 - Clause" src="https://img.shields.io/badge/license-BSD--3--Clause-blue"></a>
 <a href="https://github.com/psf/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
@@ -26,31 +25,23 @@ You can install kiez via pip:
 pip install kiez
 ```
 
-To make kiez faster it is recommended to install [faiss](https://github.com/facebookresearch/faiss) as well (if you do not already have it in your environment):
+If you have a GPU you can make kiez faster by installing [faiss](https://github.com/facebookresearch/faiss) (if you do not already have it in your environment):
 
 ``` bash
-pip install kiez[faiss-cpu]
+conda env create -n kiez-faiss python=3.10
+conda activate kiez-faiss
+conda install -c pytorch faiss-cpu=1.7.4 mkl=2021 blas=1.0=mkl
+pip install autofaiss
+pip install kiez
 ```
 
-or if you have a gpu:
-``` bash
-pip install kiez[faiss-gpu]
-```
-If you need specific cuda versions for faiss see their [installation instructions](https://github.com/facebookresearch/faiss/blob/main/INSTALL.md) and install it seperately.
+For more information see their [installation instructions](https://github.com/facebookresearch/faiss/blob/main/INSTALL.md).
 
 You can also get other specific libraries with e.g.:
 
 ``` bash
   pip install kiez[nmslib]
 ```
-
-If you want to install all of them use:
-
-``` bash
-  pip install kiez[all]
-```
-
-
 
 ## Usage
 Simple nearest neighbor search for source entities in target space:

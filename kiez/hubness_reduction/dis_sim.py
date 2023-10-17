@@ -93,8 +93,8 @@ class DisSimLocal(HubnessReduction):
         try:
             if self.k <= 0:
                 raise ValueError(f"Expected k > 0. Got {self.k}")
-        except TypeError:
-            raise TypeError(f"Expected k: int > 0. Got {self.k}")
+        except TypeError as exc:
+            raise TypeError(f"Expected k: int > 0. Got {self.k}") from exc
 
         k = self.k
         if k > neigh_ind.shape[1]:

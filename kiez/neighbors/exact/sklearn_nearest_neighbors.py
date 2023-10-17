@@ -1,6 +1,7 @@
 # documentation copied in parts from scikit-learn
-from kiez.neighbors.neighbor_algorithm_base import NNAlgorithm
 from sklearn.neighbors import VALID_METRICS, NearestNeighbors
+
+from kiez.neighbors.neighbor_algorithm_base import NNAlgorithm
 
 
 class SklearnNN(NNAlgorithm):

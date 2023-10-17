@@ -86,8 +86,8 @@ class CSLS(HubnessReduction):
         try:
             if self.k <= 0:
                 raise ValueError(f"Expected k > 0. Got {self.k}")
-        except TypeError:
-            raise TypeError(f"Expected k: int > 0. Got {self.k}")
+        except TypeError as exc:
+            raise TypeError(f"Expected k: int > 0. Got {self.k}") from exc
 
         # increment to include the k-th element in slicing
         k = self.k + 1

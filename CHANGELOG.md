@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Loosen class-resolver dependency
+- Simplify dependencies for extras
 
 ## [0.4.3] - 2023-03-27
 

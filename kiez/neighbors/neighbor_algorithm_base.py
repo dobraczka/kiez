@@ -24,6 +24,7 @@ class NNAlgorithm(ABC):
         return " is unfitted"
 
     @property
+    @abstractmethod
     def valid_metrics(self):
         pass  # pragma: no cover
 

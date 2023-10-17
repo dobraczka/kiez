@@ -1,8 +1,9 @@
 import numpy as np
 import pytest
+from numpy.testing import assert_array_equal
+
 from kiez.neighbors import NMSLIB
 from kiez.neighbors.util import available_ann_algorithms
-from numpy.testing import assert_array_equal
 
 APPROXIMATE_ALGORITHMS = available_ann_algorithms()
 if NMSLIB not in APPROXIMATE_ALGORITHMS:

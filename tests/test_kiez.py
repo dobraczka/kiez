@@ -3,17 +3,14 @@ from unittest import mock
 
 import numpy as np
 import pytest
-from kiez import Kiez
-from kiez.hubness_reduction import (
-    DisSimLocal,
-    HubnessReduction,
-    LocalScaling,
-    NoHubnessReduction,
-)
-from kiez.neighbors import NMSLIB, NNAlgorithm, SklearnNN
-from kiez.neighbors.util import available_ann_algorithms
 from numpy.testing import assert_array_equal
 from sklearn.neighbors import NearestNeighbors
+
+from kiez import Kiez
+from kiez.hubness_reduction import (DisSimLocal, HubnessReduction,
+                                    LocalScaling, NoHubnessReduction)
+from kiez.neighbors import NMSLIB, NNAlgorithm, SklearnNN
+from kiez.neighbors.util import available_ann_algorithms
 
 APPROXIMATE_ALGORITHMS = available_ann_algorithms()
 

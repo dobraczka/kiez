@@ -7,6 +7,7 @@
 from __future__ import annotations
 
 import numpy as np
+
 from kiez.neighbors.neighbor_algorithm_base import NNAlgorithm
 
 try:

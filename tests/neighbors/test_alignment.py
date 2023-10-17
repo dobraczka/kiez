@@ -1,10 +1,12 @@
 import numpy as np
 import pytest
+from numpy.testing import assert_array_almost_equal, assert_array_equal
+
 from kiez import Kiez
-from kiez.hubness_reduction import CSLS, DisSimLocal, LocalScaling, MutualProximity
+from kiez.hubness_reduction import (CSLS, DisSimLocal, LocalScaling,
+                                    MutualProximity)
 from kiez.neighbors import Annoy, Faiss, SklearnNN
 from kiez.neighbors.util import available_ann_algorithms
-from numpy.testing import assert_array_almost_equal, assert_array_equal
 
 P = (1, 3, 4, np.inf, 2)  # Euclidean last, for tests against approx NN
 rng = np.random.RandomState(2)

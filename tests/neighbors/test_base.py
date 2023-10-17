@@ -1,7 +1,9 @@
 import numpy as np
 import pytest
+
 from kiez.neighbors import NMSLIB, NNG, Annoy, Faiss, SklearnNN
 from kiez.neighbors.util import available_ann_algorithms
+
 APPROXIMATE_ALGORITHMS = available_ann_algorithms()
 ALGORITHMS = [*APPROXIMATE_ALGORITHMS, SklearnNN]
 

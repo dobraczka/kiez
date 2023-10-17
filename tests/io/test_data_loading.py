@@ -1,7 +1,8 @@
 import numpy as np
 import pytest
-from kiez.io.data_loading import _seperate_common_embedding
 from numpy.testing import assert_array_equal
+
+from kiez.io.data_loading import _seperate_common_embedding
 
 
 @pytest.mark.parametrize(

@@ -1,9 +1,16 @@
 import numpy as np
 import pytest
 from kiez.neighbors import Faiss
+from kiez.neighbors.util import available_ann_algorithms
 from numpy.testing import assert_array_equal
 
+APPROXIMATE_ALGORITHMS = available_ann_algorithms()
+if Faiss not in APPROXIMATE_ALGORITHMS:
+    skip = True
+else:
+    skip = False
 
+@pytest.mark.skipif(skip, reason="Faiss not installed")
 @pytest.mark.parametrize("single_source", [True, False])
 def test_different_instantiations(single_source):
     rng = np.random.RandomState(2)

@@ -2,19 +2,18 @@ import numpy as np
 import pytest
 from kiez import Kiez
 from kiez.hubness_reduction import CSLS, DisSimLocal, LocalScaling, MutualProximity
-from kiez.neighbors import NMSLIB, NNG, Annoy, Faiss, SklearnNN
-from kiez.utils.platform import available_ann_algorithms_on_current_platform
+from kiez.neighbors import Annoy, Faiss, SklearnNN
+from kiez.neighbors.util import available_ann_algorithms
 from numpy.testing import assert_array_almost_equal, assert_array_equal
 
 P = (1, 3, 4, np.inf, 2)  # Euclidean last, for tests against approx NN
 rng = np.random.RandomState(2)
-APPROXIMATE_ALGORITHMS = available_ann_algorithms_on_current_platform()
+APPROXIMATE_ALGORITHMS = available_ann_algorithms()
 
 MP = [MutualProximity(method=method) for method in ["normal", "empiric"]]
 LS = [LocalScaling(method=method) for method in ["standard", "nicdm"]]
 DSL = [DisSimLocal(squared=val) for val in [True, False]]
 HUBNESS = [None, CSLS(), *MP, *LS, *DSL]
-APPROXIMATE_ALGORITHMS = [NMSLIB, NNG, Annoy, Faiss]
 
 
 @pytest.mark.parametrize("hubness", HUBNESS)
@@ -31,9 +30,11 @@ def test_alignment_source_equals_target(
         SklearnNN(n_candidates=n_neighbors, algorithm=algo)
         for algo in ["auto", "kd_tree", "ball_tree", "brute"]
     ]
-    exactalgos.append(
-        Faiss(n_candidates=n_neighbors, metric="euclidean", index_key="Flat")
-    )
+
+    if Faiss in APPROXIMATE_ALGORITHMS:
+        exactalgos.append(
+            Faiss(n_candidates=n_neighbors, metric="euclidean", index_key="Flat")
+        )
 
     for p in P:
         results = []
@@ -104,9 +105,10 @@ def test_alignment(
         SklearnNN(n_candidates=n_neighbors, algorithm=algo)
         for algo in ["auto", "kd_tree", "ball_tree", "brute"]
     ]
-    exactalgos.append(
-        Faiss(n_candidates=n_neighbors, metric="euclidean", index_key="Flat")
-    )
+    if Faiss in APPROXIMATE_ALGORITHMS:
+        exactalgos.append(
+            Faiss(n_candidates=n_neighbors, metric="euclidean", index_key="Flat")
+        )
 
     for p in P:
         results = []

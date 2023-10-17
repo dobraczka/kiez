@@ -1,11 +1,14 @@
 import numpy as np
 import pytest
 from kiez.neighbors import NMSLIB, NNG, Annoy, Faiss, SklearnNN
+from kiez.neighbors.util import available_ann_algorithms
+APPROXIMATE_ALGORITHMS = available_ann_algorithms()
+ALGORITHMS = [*APPROXIMATE_ALGORITHMS, SklearnNN]
 
 rng = np.random.RandomState(2)
 
 
-@pytest.mark.parametrize("algo_cls", [NMSLIB, SklearnNN, NNG, Annoy, Faiss])
+@pytest.mark.parametrize("algo_cls", ALGORITHMS)
 def test_str_rep(algo_cls, n_samples=20, n_features=5):
     source = rng.rand(n_samples, n_features)
     algo = algo_cls()

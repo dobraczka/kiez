@@ -10,7 +10,7 @@ import numpy as np
 from class_resolver import HintOrType
 
 from kiez.hubness_reduction import DisSimLocal, hubness_reduction_resolver
-from kiez.hubness_reduction.base import HubnessReduction
+from kiez.hubness_reduction.base import HubnessReduction, NoHubnessReduction
 from kiez.neighbors import NNAlgorithm, nn_algorithm_resolver
 
 
@@ -174,19 +174,20 @@ class Kiez:
         self.algorithm.fit(source, target)
         if target is None:
             target = source
-        neigh_dist_t_to_s, neigh_ind_t_to_s = self._kcandidates(
-            target,
-            s_to_t=False,
-            k=self.algorithm.n_candidates,
-            return_distance=True,
-        )
-        self.hubness.fit(
-            neigh_dist_t_to_s,
-            neigh_ind_t_to_s,
-            source,
-            target,
-            assume_sorted=False,
-        )
+        if not isinstance(self.hubness, NoHubnessReduction):
+            neigh_dist_t_to_s, neigh_ind_t_to_s = self._kcandidates(
+                target,
+                s_to_t=False,
+                k=self.algorithm.n_candidates,
+                return_distance=True,
+            )
+            self.hubness.fit(
+                neigh_dist_t_to_s,
+                neigh_ind_t_to_s,
+                source,
+                target,
+                assume_sorted=False,
+            )
         return self
 
     def kneighbors(

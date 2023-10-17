@@ -5,8 +5,7 @@ from kiez.neighbors.approximate.nmslib import NMSLIB
 from kiez.neighbors.approximate.nng import NNG
 from kiez.neighbors.approximate.random_projection_trees import Annoy
 from kiez.neighbors.exact.sklearn_nearest_neighbors import SklearnNN
-from kiez.neighbors.neighbor_algorithm_base import (NNAlgorithm,
-                                                    NNAlgorithmWithJoblib)
+from kiez.neighbors.neighbor_algorithm_base import NNAlgorithm, NNAlgorithmWithJoblib
 
 __all__ = [
     "nn_algorithm_resolver",

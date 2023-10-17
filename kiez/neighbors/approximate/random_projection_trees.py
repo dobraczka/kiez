@@ -190,8 +190,8 @@ class Annoy(NNAlgorithmWithJoblib):
                 index, n_features = index
                 if not isinstance(index, str) or not isinstance(n_features, int):
                     raise ValueError(err_msg)
-            except ValueError:
-                raise ValueError(err_msg)
+            except ValueError as exc:
+                raise ValueError(err_msg) from exc
             # Load memory-mapped annoy.Index, unless it's already in main memory
             if isinstance(index, str):
                 annoy_index = annoy.AnnoyIndex(

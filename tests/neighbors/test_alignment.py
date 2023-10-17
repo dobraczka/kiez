@@ -3,8 +3,7 @@ import pytest
 from numpy.testing import assert_array_almost_equal, assert_array_equal
 
 from kiez import Kiez
-from kiez.hubness_reduction import (CSLS, DisSimLocal, LocalScaling,
-                                    MutualProximity)
+from kiez.hubness_reduction import CSLS, DisSimLocal, LocalScaling, MutualProximity
 from kiez.neighbors import Annoy, Faiss, SklearnNN
 from kiez.neighbors.util import available_ann_algorithms
 

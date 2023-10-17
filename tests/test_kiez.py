@@ -7,8 +7,12 @@ from numpy.testing import assert_array_equal
 from sklearn.neighbors import NearestNeighbors
 
 from kiez import Kiez
-from kiez.hubness_reduction import (DisSimLocal, HubnessReduction,
-                                    LocalScaling, NoHubnessReduction)
+from kiez.hubness_reduction import (
+    DisSimLocal,
+    HubnessReduction,
+    LocalScaling,
+    NoHubnessReduction,
+)
 from kiez.neighbors import NMSLIB, NNAlgorithm, SklearnNN
 from kiez.neighbors.util import available_ann_algorithms
 
@@ -48,6 +52,8 @@ class CustomHubness(HubnessReduction):
 
 class CustomAlgorithm(NNAlgorithm):
     """Test class to make sure user created classes work"""
+
+    valid_metrics = ["minkowski"]
 
     def __init__(
         self,

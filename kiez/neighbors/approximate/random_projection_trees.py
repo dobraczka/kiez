@@ -11,9 +11,10 @@ import logging
 from typing import Tuple
 
 import numpy as np
+from tqdm.auto import tqdm
+
 from kiez.io.temp_file_handling import create_tempfile_preferably_in_dir
 from kiez.neighbors.neighbor_algorithm_base import NNAlgorithmWithJoblib
-from tqdm.auto import tqdm
 
 try:
     import annoy  # noqa: autoimport
@@ -189,8 +190,8 @@ class Annoy(NNAlgorithmWithJoblib):
                 index, n_features = index
                 if not isinstance(index, str) or not isinstance(n_features, int):
                     raise ValueError(err_msg)
-            except ValueError:
-                raise ValueError(err_msg)
+            except ValueError as exc:
+                raise ValueError(err_msg) from exc
             # Load memory-mapped annoy.Index, unless it's already in main memory
             if isinstance(index, str):
                 annoy_index = annoy.AnnoyIndex(

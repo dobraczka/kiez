@@ -3,32 +3,30 @@
 Installation
 ============
 
-The easiest way to get kiez is via pip:
+You can install kiez via pip:
 
 .. code-block:: bash
 
-   pip install kiez 
-
-To make kiez faster it is recommended to install `faiss <https://github.com/facebookresearch/faiss>`_ as well (if you do not already have it in your environment):
+    pip install kiez
 
 
-.. code-block:: bash
-
-   pip install kiez[faiss-cpu]
-
-or if you have a gpu:
+If you have a GPU you can make kiez faster by installing `faiss <https://github.com/facebookresearch/faiss>`_ (if you do not already have it in your environment):
 
 .. code-block:: bash
 
-   pip install kiez[faiss-gpu]
+    conda env create -n kiez-faiss python=3.10
+    conda activate kiez-faiss
+    conda install -c pytorch faiss-cpu=1.7.4 mkl=2021 blas=1.0=mkl
+    pip install autofaiss
+    pip install kiez
 
-If you need specific cuda versions for faiss see their `installation instructions <https://github.com/facebookresearch/faiss/blob/main/INSTALL.md>`_ and install it seperately.
+For more information see their `installation instructions <https://github.com/facebookresearch/faiss/blob/main/INSTALL.md>`_.
 
-If you want all (A)NN libraries use:
+You can also get other specific libraries with e.g.:
 
 .. code-block:: bash
-  
-  pip install kiez[all]
+
+  pip install kiez[nmslib]
 
 Other options to get specific libraries are ``nmslib``,``annoy``, ``ngt``. However faiss is the recommended library, which provides the most accurate and fastest results.
 

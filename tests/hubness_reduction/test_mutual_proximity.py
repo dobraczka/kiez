@@ -1,8 +1,9 @@
 import numpy as np
 import pytest
+from numpy.testing import assert_array_equal
+
 from kiez import Kiez
 from kiez.hubness_reduction import MutualProximity
-from numpy.testing import assert_array_equal
 
 rng = np.random.RandomState(2)
 

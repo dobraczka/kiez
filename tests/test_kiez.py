@@ -3,6 +3,9 @@ from unittest import mock
 
 import numpy as np
 import pytest
+from numpy.testing import assert_array_equal
+from sklearn.neighbors import NearestNeighbors
+
 from kiez import Kiez
 from kiez.hubness_reduction import (
     DisSimLocal,
@@ -11,8 +14,9 @@ from kiez.hubness_reduction import (
     NoHubnessReduction,
 )
 from kiez.neighbors import NMSLIB, NNAlgorithm, SklearnNN
-from numpy.testing import assert_array_equal
-from sklearn.neighbors import NearestNeighbors
+from kiez.neighbors.util import available_ann_algorithms
+
+APPROXIMATE_ALGORITHMS = available_ann_algorithms()
 
 HERE = pathlib.Path(__file__).parent.resolve()
 rng = np.random.RandomState(2)
@@ -48,6 +52,8 @@ class CustomHubness(HubnessReduction):
 
 class CustomAlgorithm(NNAlgorithm):
     """Test class to make sure user created classes work"""
+
+    valid_metrics = ["minkowski"]
 
     def __init__(
         self,
@@ -156,19 +162,21 @@ def test_dis_sim_local_wrong_metric():
 
 
 def test_dis_sim_local_squaring():
-    k_inst = Kiez(algorithm=NMSLIB(metric="sqeuclidean"), hubness=DisSimLocal())
-    assert k_inst.hubness.squared
+    if NMSLIB in APPROXIMATE_ALGORITHMS:
+        k_inst = Kiez(algorithm=NMSLIB(metric="sqeuclidean"), hubness=DisSimLocal())
+        assert k_inst.hubness.squared
 
 
 def test_from_config():
-    path = HERE.joinpath("example_conf.json")
-    kiez = Kiez.from_path(path)
-    assert kiez.hubness is not None
-    assert isinstance(kiez.hubness, HubnessReduction)
-    assert isinstance(kiez.hubness, LocalScaling), f"wrong hubness: {kiez.hubness}"
-    assert kiez.algorithm is not None
-    assert isinstance(kiez.algorithm, NNAlgorithm)
-    assert isinstance(kiez.algorithm, NMSLIB), f"wrong algorithm: {kiez.algorithm}"
+    if NMSLIB in APPROXIMATE_ALGORITHMS:
+        path = HERE.joinpath("example_conf.json")
+        kiez = Kiez.from_path(path)
+        assert kiez.hubness is not None
+        assert isinstance(kiez.hubness, HubnessReduction)
+        assert isinstance(kiez.hubness, LocalScaling), f"wrong hubness: {kiez.hubness}"
+        assert kiez.algorithm is not None
+        assert isinstance(kiez.algorithm, NNAlgorithm)
+        assert isinstance(kiez.algorithm, NMSLIB), f"wrong algorithm: {kiez.algorithm}"
 
 
 def mock_make(name, algorithm_kwargs):

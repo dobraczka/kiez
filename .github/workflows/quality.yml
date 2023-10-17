@@ -31,7 +31,7 @@ jobs:
         python -m pip install poetry
         python -m pip install nox_poetry
     - name: Lint
-      run: nox -s lint
+      run: nox -s style_checking
     - name: Type checking
       run: nox -s type_checking
     - name: Build docs

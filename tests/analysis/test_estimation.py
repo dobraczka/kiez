@@ -6,9 +6,10 @@ import pickle
 
 import numpy as np
 import pytest
+from numpy.testing import assert_array_equal
+
 from kiez.analysis import hubness_score
 from kiez.analysis.estimation import _calc_atkinson_index, _calc_gini_index
-from numpy.testing import assert_array_equal
 
 PRE_CALC_NEIGHBORS = np.load("tests/nn_ind.npy")
 
@@ -108,9 +109,9 @@ def test_hubness_return_values_are_self_consistent(k):
     np.testing.assert_array_equal(occ, occ_true)
     # Calculate skewness (different method than in module)
     x0 = occ - occ.mean()
-    s2 = (x0 ** 2).mean()
-    m3 = (x0 ** 3).mean()
-    skew_true = m3 / (s2 ** 1.5)
+    s2 = (x0**2).mean()
+    m3 = (x0**3).mean()
+    skew_true = m3 / (s2**1.5)
     np.testing.assert_equal(skew, skew_true)
 
 

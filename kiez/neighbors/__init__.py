@@ -1,4 +1,5 @@
 from class_resolver import ClassResolver
+
 from kiez.neighbors.approximate.faiss import Faiss
 from kiez.neighbors.approximate.nmslib import NMSLIB
 from kiez.neighbors.approximate.nng import NNG

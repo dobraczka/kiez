@@ -43,26 +43,31 @@ The main feature of kiez lies in the ability to use hubness reduction methods an
     k_inst.fit(source, target)
     nn_dist, nn_ind = k_inst.kneighbors()
 
-
-The recommended way to install kiez is via pip and including faiss
-
-.. code-block:: bash
-  
-  pip install kiez[faiss-gpu]
-
-A minimal installation of kiez can be obtained via
+You can install kiez via pip:
 
 .. code-block:: bash
-  
-  pip install kiez
 
-which will omit ANN libraries.
+    pip install kiez
 
-If you want all of the available libraries use:
+
+If you have a GPU you can make kiez faster by installing `faiss <https://github.com/facebookresearch/faiss>`_ (if you do not already have it in your environment):
 
 .. code-block:: bash
-  
-  pip install kiez[all]
+
+    conda env create -n kiez-faiss python=3.10
+    conda activate kiez-faiss
+    conda install -c pytorch faiss-cpu=1.7.4 mkl=2021 blas=1.0=mkl
+    pip install autofaiss
+    pip install kiez
+
+For more information see their `installation instructions <https://github.com/facebookresearch/faiss/blob/main/INSTALL.md>`_.
+
+You can also get other specific libraries with e.g.:
+
+.. code-block:: bash
+
+  pip install kiez[nmslib]
+
 
 More info about installation can be found in :ref:`installation`
 

@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## [0.4.4] - 2023-10-18
+
 ### Changed
 
 - Loosen class-resolver dependency
@@ -84,6 +86,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Fix problems with readthedocs
 
+[0.4.4]: https://github.com/dobraczka/kiez/releases/tag/0.4.4
 [0.4.3]: https://github.com/dobraczka/kiez/releases/tag/0.4.3
 [0.4.2]: https://github.com/dobraczka/kiez/releases/tag/0.4.2
 [0.4.1]: https://github.com/dobraczka/kiez/releases/tag/0.4.1

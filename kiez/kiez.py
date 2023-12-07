@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import warnings
 from pathlib import Path
 from typing import Any, Dict, Optional, Tuple, Union
 
@@ -107,6 +108,14 @@ class Kiez:
         assert self.algorithm
         self.hubness = hubness_reduction_resolver.make(hubness, hubness_kwargs)
         self._check_algorithm_hubness_compatibility()
+        self._nohub = isinstance(self.hubness, NoHubnessReduction)
+        if self._nohub:
+            if self.algorithm.n_candidates != self.n_neighbors:
+                warnings.warn(
+                    "If no hubness reduction is used n_candidates should be the same"
+                    f" as n_neighbors! Setting n_candidates={n_neighbors}!"
+                )
+                self.algorithm.n_candidates = self.n_neighbors
 
     def __repr__(self):
         return (
@@ -171,10 +180,10 @@ class Kiez:
         Kiez
             Fitted kiez instance
         """
-        self.algorithm.fit(source, target)
+        self.algorithm.fit(source, target, only_fit_source=self._nohub)
         if target is None:
             target = source
-        if not isinstance(self.hubness, NoHubnessReduction):
+        if not self._nohub:
             neigh_dist_t_to_s, neigh_ind_t_to_s = self._kcandidates(
                 target,
                 s_to_t=False,
@@ -227,6 +236,13 @@ class Kiez:
         query_dist, query_ind = self._kcandidates(
             source_query_points, return_distance=True
         )
+        # if no hubness reduction we are done and return
+        if self._nohub:
+            if return_distance:
+                return query_dist, query_ind
+            else:
+                return query_ind
+
         query_dist = np.atleast_2d(query_dist)
         query_ind = np.atleast_2d(query_ind)
 

@@ -32,7 +32,12 @@ class NNAlgorithm(ABC):
     def _fit(self, data, is_source: bool):
         pass  # pragma: no cover
 
-    def fit(self, source: np.ndarray, target: np.ndarray = None):
+    def fit(
+        self,
+        source: np.ndarray,
+        target: np.ndarray = None,
+        only_fit_source: bool = False,
+    ):
         """Indexes the given data using the underlying algorithm
 
         Parameters
@@ -41,6 +46,10 @@ class NNAlgorithm(ABC):
             embeddings of source entities
         target : matrix of shape (m_samples, n_features)
             embeddings of target entities or None in a single-source use case
+        only_fit_source : bool
+            If true only indexes source. Will lead to problems later with many
+            hubness reduction methods and should mainly be used for search
+            without hubness reduction
 
         Raises
         ------
@@ -59,8 +68,11 @@ class NNAlgorithm(ABC):
                     f" but got source.shape: {source.shape} and target.shape:"
                     f" {target.shape}"
                 )
-            self.source_index = self._fit(source, True)
-            self.target_index = self._fit(target, False)
+            if only_fit_source:
+                self.source_index = self._fit(source, True)
+            else:
+                self.source_index = self._fit(source, True)
+                self.target_index = self._fit(target, False)
         self.source_ = source
         self.target_ = target
 

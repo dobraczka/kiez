@@ -95,7 +95,8 @@ class CustomAlgorithm(NNAlgorithm):
 def test_hubness_resolver(n_samples=20, n_features=5):
     source = rng.rand(n_samples, n_features)
     target = rng.rand(n_samples, n_features)
-    res = []
+    k_neighbors = 1
+    prev = None
     for algo in [
         SklearnNN(),
         SklearnNN,
@@ -111,21 +112,18 @@ def test_hubness_resolver(n_samples=20, n_features=5):
             CustomHubness,
             CustomHubness(),
         ]:
-            k_inst = Kiez(algorithm=algo, hubness=hub)
+            k_inst = Kiez(
+                algorithm=algo,
+                hubness=hub,
+            )
             k_inst.fit(source, target)
-            res.append(k_inst.kneighbors(source, k=1))
-    for i in range(len(res) - 1):
-        assert_array_equal(res[i][0], res[i + 1][0])
-        assert_array_equal(res[i][1], res[i + 1][1])
-
-
-def test_wrong_kcandidates(n_samples=20, n_features=5):
-    source = rng.rand(n_samples, n_features)
-    target = rng.rand(n_samples, n_features)
-    k_inst = Kiez()
-    k_inst.fit(source, target)
-    nn_ind = k_inst._kcandidates(source, k=1, return_distance=False)
-    assert nn_ind.shape == (20, 5)
+            res = k_inst.kneighbors(source, k=k_neighbors)
+            assert res[0].shape == (n_samples, k_neighbors)
+            assert res[1].shape == (n_samples, k_neighbors)
+            if prev is not None:
+                assert_array_equal(res[0], prev[0])
+                assert_array_equal(res[1], prev[1])
+            prev = res
 
 
 def test_non_default_kneighbors(n_samples=20, n_features=5):

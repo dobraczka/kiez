@@ -136,9 +136,6 @@ class Kiez:
         if k is None:
             k = self.algorithm.n_candidates
 
-        # The number of candidates must not be less than the number of neighbors used downstream
-        if k < self.n_neighbors:
-            k = self.n_neighbors
         return self.algorithm.kneighbors(
             k=k,
             query=query_points,
@@ -180,7 +177,7 @@ class Kiez:
         Kiez
             Fitted kiez instance
         """
-        self.algorithm.fit(source, target, only_fit_source=self._nohub)
+        self.algorithm.fit(source, target, only_fit_target=self._nohub)
         if target is None:
             target = source
         if not self._nohub:
@@ -228,13 +225,18 @@ class Kiez:
         """
         # function loosely adapted from skhubness: https://github.com/VarIr/scikit-hubness
 
+        n_candidates = None
         if k is None:
             n_neighbors = self.n_neighbors
+            n_candidates = self.algorithm.n_candidates
         else:
             n_neighbors = k
+            if self._nohub:
+                n_candidates = k
+
         # First obtain candidate neighbors
         query_dist, query_ind = self._kcandidates(
-            source_query_points, return_distance=True
+            source_query_points, k=n_candidates, return_distance=True
         )
         # if no hubness reduction we are done and return
         if self._nohub:

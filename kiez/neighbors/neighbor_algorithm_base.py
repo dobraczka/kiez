@@ -70,6 +70,7 @@ class NNAlgorithm(ABC):
                 )
             if only_fit_source:
                 self.source_index = self._fit(source, True)
+                self.target_index = self.source_index
             else:
                 self.source_index = self._fit(source, True)
                 self.target_index = self._fit(target, False)

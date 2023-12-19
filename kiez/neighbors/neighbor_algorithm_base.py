@@ -14,6 +14,7 @@ class NNAlgorithm(ABC):
         self.n_candidates = n_candidates
         self.metric = metric
         self.n_jobs = n_jobs
+        self._only_check_fitted_target = False
 
     def _describe_source_target_fitted(self):
         if hasattr(self, "source_"):
@@ -56,7 +57,6 @@ class NNAlgorithm(ABC):
         ValueError
             If source and target have a different number of features
         """
-        self._only_check_fitted_target = False
         self.source_equals_target = target is None
         if self.source_equals_target:
             self.source_index = self._fit(source, True)

@@ -201,14 +201,17 @@ class Faiss(NNAlgorithm):
                 params = faiss.GpuParameterSpace()
             if self.index_param is not None:
                 params.set_index_parameters(index, self.index_param)
-            index.add(self._to_float32(data))
+            # index.add(self._to_float32(data))
+            index.add(data)
         return index
 
     def _kneighbors(self, k, query, index, return_distance, is_self_querying):
         if is_self_querying:
-            dist, ind = index.search(self._to_float32(self.source_), k)
+            dist, ind = index.search(self.source_, k)
+            # dist, ind = index.search(self._to_float32(self.source_), k)
         else:
-            dist, ind = index.search(self._to_float32(query), k)
+            dist, ind = index.search(query, k)
+            # dist, ind = index.search(self._to_float32(query), k)
         if return_distance:
             if self.metric == "euclidean":
                 dist = np.sqrt(dist)

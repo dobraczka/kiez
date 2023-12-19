@@ -10,7 +10,9 @@ if __name__ == "__main__":
     target = np.random.rand(15000, 100)
     start = time.time()
     k_inst = Kiez(
-        algorithm="Faiss", algorithm_kwargs=dict(index_key="HNSW", use_gpu=True)
+        n_neighbors=5,
+        algorithm="Faiss",
+        algorithm_kwargs=dict(index_key="HNSW", use_gpu=True),
     )
     k_inst.fit(source, target)
     dist, neigh = k_inst.kneighbors()
@@ -23,6 +25,4 @@ if __name__ == "__main__":
     dist2, neigh2 = index.search(source, 5)
     end = time.time()
     print(end - start)
-    import ipdb  # noqa: autoimport
-
-    ipdb.set_trace()  # BREAKPOINT
+    print((neigh == neigh2).all())

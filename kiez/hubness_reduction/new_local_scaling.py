@@ -75,12 +75,8 @@ class NewLocalScaling(NewHubnessReduction):
         LocalScaling
             Fitted LocalScaling
         """
-        # increment to include the k-th element in slicing
-        k = self.k + 1
-
-        # Find distances to the k-th neighbor (standard LS) or the k neighbors (NICDM)
-        self.r_dist_t_to_s_ = neigh_dist[:, :k]
-        self.r_ind_t_to_s_ = neigh_ind[:, :k]
+        self.r_dist_t_to_s_ = neigh_dist
+        self.r_ind_t_to_s_ = neigh_ind
         return self
 
     def transform(
@@ -117,11 +113,8 @@ class NewLocalScaling(NewHubnessReduction):
 
         n_test, n_indexed = neigh_dist.shape
 
-        # increment to include the k-th element in slicing
-        k = self.k + 1
-
         # Find distances to the k-th neighbor (standard LS) or the k neighbors (NICDM)
-        r_dist_s_to_t = neigh_dist[:, :k]
+        r_dist_s_to_t = neigh_dist
 
         # Calculate LS or NICDM
         hub_reduced_dist = np.empty_like(neigh_dist)

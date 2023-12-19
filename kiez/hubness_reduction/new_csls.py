@@ -52,10 +52,8 @@ class NewCSLS(NewHubnessReduction):
         CSLS
             Fitted CSLS
         """
-        # increment to include the k-th element in slicing
-        k = self.k + 1
-        self.r_dist_train_ = neigh_dist[:, :k]
-        self.r_ind_train_ = neigh_ind[:, :k]
+        self.r_dist_train_ = neigh_dist
+        self.r_ind_train_ = neigh_ind
         return self
 
     def transform(
@@ -89,10 +87,8 @@ class NewCSLS(NewHubnessReduction):
 
         n_test, n_indexed = neigh_dist.shape
 
-        k = self.k
-
         # Find average distances to the k nearest neighbors
-        r_dist_test = neigh_dist[:, :k]
+        r_dist_test = neigh_dist
 
         hub_reduced_dist = np.empty_like(neigh_dist)
 

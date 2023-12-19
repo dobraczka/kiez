@@ -39,25 +39,25 @@ class NewDisSimLocal(NewHubnessReduction):
         self.squared = squared
         if self.nn_algo.metric in ["euclidean", "minkowski"]:
             self.squared = False
-            if hasattr(self.algorithm, "p"):
+            if hasattr(self.nn_algo, "p"):
                 if self.nn_algo.p != 2:
                     raise ValueError(
                         "DisSimLocal only supports squared Euclidean distances. If"
                         " the provided NNAlgorithm has a `p` parameter it must be"
-                        f" set to p=2. Now it is p={self.algorithm.p}"
+                        f" set to p=2. Now it is p={self.nn_algo.p}"
                     )
         elif self.nn_algo.metric in ["sqeuclidean"]:
             self.squared = True
         else:
             raise ValueError(
                 "DisSimLocal only supports squared Euclidean distances, not"
-                f" metric={self.algorithm.metric}."
+                f" metric={self.nn_algo.metric}."
             )
 
     def __repr__(self):
         return f"{self.__class__.__name__}(squared = {self.squared})"
 
-    def fit(
+    def _fit(
         self,
         neigh_dist: np.ndarray,
         neigh_ind: np.ndarray,
@@ -84,16 +84,8 @@ class NewDisSimLocal(NewHubnessReduction):
         DisSimLocal
             Fitted DisSimLocal
         """
-        k = self.k
-        if k > neigh_ind.shape[1]:
-            warnings.warn(
-                "Neighborhood parameter k larger than provided neighbors in"
-                f" neigh_dist, neigh_ind. Will reduce to k={neigh_ind.shape[1]}."
-            )
-            k = neigh_ind.shape[1]
-
         # Calculate local neighborhood centroids among the training points
-        knn = neigh_ind[:, :k]
+        knn = neigh_ind
         centroids = source[knn].mean(axis=1)
         dist_to_cent = row_norms(target - centroids, squared=True)
 
@@ -138,6 +130,7 @@ class NewDisSimLocal(NewHubnessReduction):
         n_test, n_indexed = neigh_dist.shape
 
         # Calculate local neighborhood centroids for source objects among target objects
+        k = neigh_ind.shape[1]
         mask = np.argpartition(neigh_dist, kth=k - 1)
         for i, ind in enumerate(neigh_ind):
             neigh_dist[i, :] = euclidean_distances(

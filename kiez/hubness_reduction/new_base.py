@@ -53,7 +53,7 @@ class NewHubnessReduction(ABC):
         hubness_reduced_query_dist, query_ind = self.transform(
             query_dist,
             query_ind,
-            source_query_points,
+            self.nn_algo.source_,
         )
         # Third, sort hubness reduced candidate neighbors to get the final k neighbors
         kth = np.arange(n_neighbors)

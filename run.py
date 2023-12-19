@@ -3,13 +3,13 @@ import time
 import faiss
 import numpy as np
 
-from kiez import Kiez
+from kiez import NewKiez
 
 if __name__ == "__main__":
     source = np.random.rand(10000, 100)
     target = np.random.rand(15000, 100)
     start = time.time()
-    k_inst = Kiez(
+    k_inst = NewKiez(
         n_neighbors=5,
         algorithm="Faiss",
         algorithm_kwargs=dict(index_key="HNSW", use_gpu=True),

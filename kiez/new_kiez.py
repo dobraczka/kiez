@@ -160,7 +160,7 @@ class NewKiez:
         neigh_ind : ndarray of shape (n_queries, n_neighbors)
             Indices of the nearest points in the population matrix.
         """
-        hubness_reduced_query_dist, query_ind = self.hubness.k_neighbors(
+        hubness_reduced_query_dist, query_ind = self.hubness.kneighbors(
             self.n_neighbors
         )
 

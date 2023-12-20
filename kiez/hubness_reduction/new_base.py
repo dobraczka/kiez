@@ -42,7 +42,7 @@ class NewHubnessReduction(ABC):
     def transform(self, neigh_dist, neigh_ind, query) -> Tuple[np.ndarray, np.ndarray]:
         pass  # pragma: no cover
 
-    def k_neighbors(self, k: int) -> Tuple[np.ndarray, np.ndarray]:
+    def kneighbors(self, k: int) -> Tuple[np.ndarray, np.ndarray]:
         n_neighbors = k
         # First obtain candidate neighbors
         query_dist, query_ind = self.nn_algo.kneighbors(
@@ -77,5 +77,5 @@ class NewNoHubnessReduction(NewHubnessReduction):
     def transform(self, neigh_dist, neigh_ind, query) -> Tuple[np.ndarray, np.ndarray]:
         pass  # pragma: no cover
 
-    def k_neighbors(self, k: int) -> Tuple[np.ndarray, np.ndarray]:
+    def kneighbors(self, k: int) -> Tuple[np.ndarray, np.ndarray]:
         return self.nn_algo.kneighbors(query=None, k=k, return_distance=True)

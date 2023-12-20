@@ -4,7 +4,7 @@ import faiss
 import numpy as np
 
 from kiez import Kiez, NewKiez
-from kiez.hubness_reduction.new_base import NewHubnessReduction
+from kiez.hubness_reduction.new_base import NewNoHubnessReduction
 from kiez.neighbors import Faiss
 
 if __name__ == "__main__":

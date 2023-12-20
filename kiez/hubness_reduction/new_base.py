@@ -72,7 +72,7 @@ class NewNoHubnessReduction(NewHubnessReduction):
         pass  # pragma: no cover
 
     def fit(self, source, target=None):
-        self.nn_algo.fit(source, target)
+        self.nn_algo.fit(source, target, only_fit_target=True)
 
     def transform(self, neigh_dist, neigh_ind, query) -> Tuple[np.ndarray, np.ndarray]:
         pass  # pragma: no cover

@@ -10,11 +10,12 @@ from kiez.neighbors import Faiss
 if __name__ == "__main__":
     source = np.random.rand(10000, 100)
     target = np.random.rand(15000, 100)
+    k = 100
 
     print("==Kiez==")
     start = time.time()
     k_inst = Kiez(
-        n_neighbors=5,
+        n_neighbors=k,
         algorithm="Faiss",
         algorithm_kwargs=dict(index_key="HNSW", use_gpu=True),
     )
@@ -26,7 +27,7 @@ if __name__ == "__main__":
     print("==NewKiez==")
     start = time.time()
     k_inst = NewKiez(
-        n_neighbors=5,
+        n_neighbors=k,
         algorithm="Faiss",
         algorithm_kwargs=dict(index_key="HNSW", use_gpu=True),
     )
@@ -39,7 +40,7 @@ if __name__ == "__main__":
     start = time.time()
     nhr = NewNoHubnessReduction(Faiss(index_key="HNSW", use_gpu=True))
     nhr.fit(source, target)
-    dist, neigh4 = nhr.kneighbors(5)
+    dist, neigh4 = nhr.kneighbors(k)
     end = time.time()
     print(end - start)
 
@@ -48,7 +49,7 @@ if __name__ == "__main__":
     index = faiss.index_factory(100, "HNSW")
     index = faiss.index_cpu_to_all_gpus(index)
     index.add(target)
-    dist2, neigh2 = index.search(source, 5)
+    dist2, neigh2 = index.search(source, k)
     end = time.time()
     print(end - start)
     print((neigh == neigh2).all())

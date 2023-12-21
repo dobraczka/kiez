@@ -15,13 +15,6 @@ class CSLS(HubnessReduction):
 
     Uses the formula presented in [1]_.
 
-    Parameters
-    ----------
-    k: int, default = 5
-        Number of neighbors to consider for mean distance of k-nearest neighbors
-    verbose: int, default= 0
-        Verbosity level
-
     References
     ----------
     .. [1] Lample, G., Conneau, A., Ranzato, M., Denoyer, L., & Jégou, H. (2018)
@@ -31,23 +24,15 @@ class CSLS(HubnessReduction):
            https://openreview.net/forum?id=H196sainb
     """
 
-    def __init__(self, k: int = 5, verbose: int = 0, *args, **kwargs):
-        super().__init__(**kwargs)
-        self.k = k
-        self.verbose = verbose
-
     def __repr__(self):
-        return f"{self.__class__.__name__}(k={self.k}, verbose = {self.verbose})"
+        return f"{self.__class__.__name__}(verbose = {self.verbose})"
 
-    def fit(
+    def _fit(
         self,
         neigh_dist,
         neigh_ind,
         source=None,
         target=None,
-        assume_sorted=None,
-        *args,
-        **kwargs,
     ) -> CSLS:
         """Fit the model using target, neigh_dist, and neigh_ind as training data.
 
@@ -62,44 +47,13 @@ class CSLS(HubnessReduction):
             ignored
         target
             ignored
-        assume_sorted: bool, default=True #noqa: DAR103
-            Assume input matrices are sorted according to neigh_dist.
-            If False, these are sorted here.
-        *args
-            Ignored
-        **kwargs
-            Ignored
         Returns
         -------
         CSLS
             Fitted CSLS
-        Raises
-        ------
-        ValueError
-            If self.k < 0
-        TypeError
-            If self.k not int
         """
-        # Check equal number of rows and columns
-        check_consistent_length(neigh_ind, neigh_dist)
-        check_consistent_length(neigh_ind.T, neigh_dist.T)
-        try:
-            if self.k <= 0:
-                raise ValueError(f"Expected k > 0. Got {self.k}")
-        except TypeError as exc:
-            raise TypeError(f"Expected k: int > 0. Got {self.k}") from exc
-
-        # increment to include the k-th element in slicing
-        k = self.k + 1
-
-        if assume_sorted:
-            self.r_dist_train_ = neigh_dist[:, :k]
-            self.r_ind_train_ = neigh_ind[:, :k]
-        else:
-            kth = np.arange(self.k)
-            mask = np.argpartition(neigh_dist, kth=kth)[:, :k]
-            self.r_dist_train_ = np.take_along_axis(neigh_dist, mask, axis=1)
-            self.r_ind_train_ = np.take_along_axis(neigh_ind, mask, axis=1)
+        self.r_dist_train_ = neigh_dist
+        self.r_ind_train_ = neigh_ind
         return self
 
     def transform(
@@ -107,9 +61,6 @@ class CSLS(HubnessReduction):
         neigh_dist,
         neigh_ind,
         query,
-        assume_sorted: bool = True,
-        *args,
-        **kwargs,
     ) -> Tuple[np.ndarray, np.ndarray]:
         """Transform distance between test and training data with CSLS.
 
@@ -121,12 +72,6 @@ class CSLS(HubnessReduction):
         neigh_ind: np.ndarray, shape (n_query, n_neighbors)
             Neighbor indices corresponding to the values in neigh_dist
         query
-            Ignored
-        assume_sorted: bool
-            ignored
-        *args
-            Ignored
-        **kwargs
             Ignored
 
         Returns
@@ -142,22 +87,8 @@ class CSLS(HubnessReduction):
 
         n_test, n_indexed = neigh_dist.shape
 
-        if n_indexed == 1:
-            warnings.warn(
-                "Cannot perform hubness reduction with a single neighbor per query. "
-                "Skipping hubness reduction, and returning untransformed distances."
-            )
-            return neigh_dist, neigh_ind
-
-        k = self.k
-
         # Find average distances to the k nearest neighbors
-        if assume_sorted:
-            r_dist_test = neigh_dist[:, :k]
-        else:
-            kth = np.arange(self.k)
-            mask = np.argpartition(neigh_dist, kth=kth)[:, :k]
-            r_dist_test = np.take_along_axis(neigh_dist, mask, axis=1)
+        r_dist_test = neigh_dist
 
         hub_reduced_dist = np.empty_like(neigh_dist)
 

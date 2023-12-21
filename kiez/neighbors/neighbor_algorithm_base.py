@@ -14,7 +14,6 @@ class NNAlgorithm(ABC):
         self.n_candidates = n_candidates
         self.metric = metric
         self.n_jobs = n_jobs
-        self._only_check_fitted_target = False
 
     def _describe_source_target_fitted(self):
         if hasattr(self, "source_"):
@@ -71,7 +70,6 @@ class NNAlgorithm(ABC):
                 )
             if only_fit_target:
                 self.target_index = self._fit(target, True)
-                self._only_check_fitted_target = True
             else:
                 self.source_index = self._fit(source, True)
                 self.target_index = self._fit(target, False)
@@ -96,10 +94,7 @@ class NNAlgorithm(ABC):
         pass  # pragma: no cover
 
     def kneighbors(self, query=None, k=None, s_to_t=True, return_distance=True):
-        if self._only_check_fitted_target:
-            check_is_fitted(self, ["target_index"])
-        else:
-            check_is_fitted(self, ["source_index", "target_index"])
+        check_is_fitted(self, ["source_index", "target_index"], all_or_any=any)
         k = self.n_candidates if k is None else k
         is_self_querying = query is None and self.source_equals_target
 

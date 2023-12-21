@@ -3,10 +3,10 @@ import pytest
 from numpy.testing import assert_array_equal
 
 from kiez.neighbors import Faiss
-from kiez.neighbors.util import available_ann_algorithms
+from kiez.neighbors.util import available_nn_algorithms
 
-APPROXIMATE_ALGORITHMS = available_ann_algorithms()
-if Faiss not in APPROXIMATE_ALGORITHMS:
+NN_ALGORITHMS = available_nn_algorithms()
+if Faiss not in NN_ALGORITHMS:
     skip = True
 else:
     skip = False
@@ -14,10 +14,9 @@ else:
 
 @pytest.mark.skipif(skip, reason="Faiss not installed")
 @pytest.mark.parametrize("single_source", [True, False])
-def test_different_instantiations(single_source):
+def test_different_instantiations(single_source, source_target):
     rng = np.random.RandomState(2)
-    source = rng.rand(50, 100)
-    target = rng.rand(50, 100)
+    source, target = source_target
     for same_config in [
         (
             {"metric": "l2"},

@@ -6,8 +6,8 @@ from kiez.neighbors import SklearnNN
 rng = np.random.RandomState(2)
 
 
-def test_self_query(n_samples=20, n_features=5, n_neighbors=5):
-    source = rng.rand(n_samples, n_features)
+def test_self_query(source_target, n_neighbors=5):
+    source, _ = source_target
     sklearnnn = SklearnNN()
     sklearnnn.fit(source, source)
     d, i = sklearnnn.kneighbors()

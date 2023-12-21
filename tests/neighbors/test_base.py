@@ -2,17 +2,16 @@ import numpy as np
 import pytest
 
 from kiez.neighbors import NMSLIB, NNG, Annoy, Faiss, SklearnNN
-from kiez.neighbors.util import available_ann_algorithms
+from kiez.neighbors.util import available_nn_algorithms
 
-APPROXIMATE_ALGORITHMS = available_ann_algorithms()
-ALGORITHMS = [*APPROXIMATE_ALGORITHMS, SklearnNN]
+NN_ALGORITHMS = available_nn_algorithms()
 
 rng = np.random.RandomState(2)
 
 
-@pytest.mark.parametrize("algo_cls", ALGORITHMS)
-def test_str_rep(algo_cls, n_samples=20, n_features=5):
-    source = rng.rand(n_samples, n_features)
+@pytest.mark.parametrize("algo_cls", NN_ALGORITHMS)
+def test_str_rep(algo_cls, source_target):
+    source, _ = source_target
     algo = algo_cls()
     assert "is unfitted" in str(algo._describe_source_target_fitted())
     algo.fit(source, source)

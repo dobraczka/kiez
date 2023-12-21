@@ -66,7 +66,7 @@ requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.flake8]
-ignore = "E203, E266, E501, W503, F403, F401, B950, B905"
+ignore = "E203, E266, E501, W503, F403, F401, B950, B905, C408"
 max-line-length = 88
 max-complexity = 18
 select = "B,C,E,F,W,T4,B9"

@@ -5,7 +5,7 @@ from kiez.neighbors.neighbor_algorithm_base import NNAlgorithm
 
 
 class SklearnNN(NNAlgorithm):
-    """Wrapper for scikit learn's NearestNeighbors class
+    """Wrapper for scikit learn's NearestNeighbors class.
 
     Parameters
     ----------
@@ -40,6 +40,7 @@ class SklearnNN(NNAlgorithm):
         The number of parallel jobs to run for neighbors search.
         ``None`` means 1 unless in a :obj:`joblib.parallel_backend` context.
         ``-1`` means using all processors.
+
     Notes
     -----
     See also scikit learn's guide: https://scikit-learn.org/stable/modules/neighbors.html#unsupervised-neighbors

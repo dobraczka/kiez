@@ -27,7 +27,7 @@ def test_no_hub(source_target):
     # check only created target index
     assert not hasattr(k_inst.algorithm, "source_index")
     k_inst.algorithm = SklearnNN()
-    assert "f{k_inst}" is not None
+    assert "f{k_inst}"
     assert (
         Kiez(
             n_candidates=n_cand,

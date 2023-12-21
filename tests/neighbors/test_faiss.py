@@ -15,7 +15,6 @@ else:
 @pytest.mark.skipif(skip, reason="Faiss not installed")
 @pytest.mark.parametrize("single_source", [True, False])
 def test_different_instantiations(single_source, source_target):
-    rng = np.random.RandomState(2)
     source, target = source_target
     for same_config in [
         (

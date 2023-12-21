@@ -31,6 +31,7 @@ class MutualProximity(HubnessReduction):
         - 'empiric' or 'exact' model distances with the empiric distributions (slow)
     verbose: int, default = 0
         If verbose > 0, show progress bar.
+
     References
     ----------
     .. [1] Schnitzer, D., Flexer, A., Schedl, M., & Widmer, G. (2012).
@@ -76,8 +77,9 @@ class MutualProximity(HubnessReduction):
             Ignored
         target
             Ignored
+
         Returns
-        ------
+        -------
         MutualProximity
 
         Raises
@@ -107,14 +109,17 @@ class MutualProximity(HubnessReduction):
             Neighbor indices corresponding to the values in neigh_dist
         query
             Ignored
+
         Returns
         -------
         hub_reduced_dist, neigh_ind
             Mutual Proximity distances, and corresponding neighbor indices
+
         Raises
         ------
         ValueError
             if self.method is unknown
+
         Notes
         -----
         The returned distances are NOT sorted! If you use this class directly,

@@ -29,6 +29,7 @@ class LocalScaling(HubnessReduction):
         - 'nicdm' rescales distances using a statistic over distances to k neighbors
     verbose: int, default = 0
         If verbose > 0, show progress bar.
+
     References
     ----------
     .. [1] Schnitzer, D., Flexer, A., Schedl, M., & Widmer, G. (2012).
@@ -70,6 +71,7 @@ class LocalScaling(HubnessReduction):
             Ignored
         target
             Ignored
+
         Returns
         -------
         LocalScaling
@@ -96,14 +98,17 @@ class LocalScaling(HubnessReduction):
             Neighbor indices corresponding to the values in neigh_dist
         query
             Ignored
+
         Returns
         -------
         hub_reduced_dist, neigh_ind
             Local scaling distances, and corresponding neighbor indices
+
         Raises
         ------
         ValueError
             If wrong self.method was supplied
+
         Notes
         -----
         The returned distances are NOT sorted! If you use this class directly,

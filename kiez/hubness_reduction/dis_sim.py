@@ -26,6 +26,7 @@ class DisSimLocal(HubnessReduction):
         DisSimLocal operates on squared Euclidean distances.
         If True, return (quasi) squared Euclidean distances;
         if False, return (quasi) Eucldean distances.
+
     References
     ----------
     .. [1] Hara K, Suzuki I, Kobayashi K, Fukumizu K, Radovanović M (2016)
@@ -79,6 +80,7 @@ class DisSimLocal(HubnessReduction):
         target: np.ndarray, shape (n_samples, n_features)
             Target embedding, where n_samples is the number of vectors,
             and n_features their dimensionality (number of features).
+
         Returns
         -------
         DisSimLocal
@@ -118,6 +120,7 @@ class DisSimLocal(HubnessReduction):
         -------
         hub_reduced_dist, neigh_ind
             DisSimLocal distances, and corresponding neighbor indices
+
         Notes
         -----
         The returned distances are NOT sorted! If you use this class directly,

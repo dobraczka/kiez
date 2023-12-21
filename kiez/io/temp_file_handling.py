@@ -19,7 +19,7 @@ def create_tempfile_preferably_in_dir(
     For example, this is useful to try to save into /dev/shm.
 
     Parameters
-    ---------
+    ----------
     suffix: str
         suffix of tempfile
     prefix: str

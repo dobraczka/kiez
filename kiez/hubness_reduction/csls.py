@@ -47,6 +47,7 @@ class CSLS(HubnessReduction):
             ignored
         target
             ignored
+
         Returns
         -------
         CSLS
@@ -78,6 +79,7 @@ class CSLS(HubnessReduction):
         -------
         hub_reduced_dist, neigh_ind
             CSLS distances, and corresponding neighbor indices
+
         Notes
         -----
         The returned distances are NOT sorted! If you use this class directly,

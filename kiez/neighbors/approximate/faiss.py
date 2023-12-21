@@ -88,38 +88,14 @@ class Faiss(NNAlgorithm):
         self.use_gpu = use_gpu
         self.verbose = verbose
 
-    def _source_target_repr(self, is_source: bool):
-        ret_str = f"{self.__class__.__name__}(n_candidates={self.n_candidates},metric={self.metric},"
-        if is_source:
-            ret_str += (
-                f"index_key={self.source_index_key},"
-                f" index_param={{{self.source_index_param}}},"
-            )
-        else:
-            ret_str += (
-                f"index_key={self.target_index_key},"
-                f" index_param={{{self.target_index_param}}},"
-            )
-        ret_str += f",use_gpu={self.use_gpu})"
-        return ret_str
-
     def __repr__(self):
-        if hasattr(self, "source_index_key") and hasattr(self, "target_index_key"):
-            ret_str = (
-                f"Source: {self._source_target_repr(True)}, "
-                f"Target: {self._source_target_repr(False)}"
-            )
-        elif hasattr(self, "source_index_key"):
-            ret_str = f"{self._source_target_repr(True)}"
-        else:
-            ret_str = (
-                f"{self.__class__.__name__}(n_candidates={self.n_candidates},"
-                + f"metric={self.metric},"
-                + f"index_key={self.index_key},"
-                + f"index_param={{{self.index_param}}},"
-                + f"use_gpu={self.use_gpu})"
-            )
-        return ret_str
+        return (
+            f"{self.__class__.__name__}(n_candidates={self.n_candidates},"
+            + f"metric={self.metric},"
+            + f"index_key={self.index_key},"
+            + f"index_param={{{self.index_param}}},"
+            + f"use_gpu={self.use_gpu})"
+        )
 
     def _fit(self, data, is_source: bool):
         dim = data.shape[1]

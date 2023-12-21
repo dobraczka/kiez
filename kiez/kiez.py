@@ -14,7 +14,7 @@ from kiez.neighbors import NNAlgorithm, nn_algorithm_resolver
 
 
 class Kiez:
-    """Performs hubness reduced nearest neighbor search for entity alignment
+    """Performs hubness reduced nearest neighbor search for entity alignment.
 
     Use the given algorithm to :meth:`fit` the data and calculate the
     :meth:`kneighbors`.
@@ -130,7 +130,7 @@ class Kiez:
             return cls(**json.load(file))
 
     def fit(self, source, target=None) -> Kiez:
-        """Fits the algorithm and hubness reduction method
+        """Fits the algorithm and hubness reduction method.
 
         Parameters
         ----------
@@ -152,7 +152,7 @@ class Kiez:
         k: Optional[int] = None,
         return_distance=True,
     ) -> Union[np.ndarray, Tuple[np.ndarray, np.ndarray]]:
-        """Retrieves the k-nearest neighbors using the supplied nearest neighbor algorithm and hubness reduction method.
+        """Retrieve the k-nearest neighbors using the supplied nearest neighbor algorithm and hubness reduction method.
 
         Parameters
         ----------

@@ -90,7 +90,7 @@ class NoHubnessReduction(HubnessReduction):
         self.nn_algo.fit(source, target, only_fit_target=True)
 
     def transform(self, neigh_dist, neigh_ind, query) -> Tuple[np.ndarray, np.ndarray]:
-        pass  # pragma: no cover
+        return neigh_dist, neigh_ind
 
     def kneighbors(self, k: Optional[int] = None) -> Tuple[np.ndarray, np.ndarray]:
         n_neighbors = self._set_k_if_needed(k)

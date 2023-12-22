@@ -1,8 +1,6 @@
 import numpy as np
 import pytest
-from numpy.testing import assert_array_equal
 
-from kiez import Kiez
 from kiez.hubness_reduction import LocalScaling, MutualProximity
 from kiez.neighbors import SklearnNN
 

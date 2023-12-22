@@ -39,21 +39,13 @@ insegel = {version = "^1.3.1", optional = true}
 
 [tool.poetry.group.dev.dependencies]
 ipdb = "^0.13.9"
-mypy = "^1.5.1"
-pytest = "^7.1.2"
-pytest-cov = "^3.0.0"
-pyproject-flake8 = "^0.0.1a4"
-flake8-eradicate = "^1.2.1"
-flake8-isort = "^4.1.1"
-flake8-debugger = "^4.1.2"
-flake8-comprehensions = "^3.10.0"
-flake8-print = "^5.0.0"
+mypy = "^1.8.0"
+pytest = "^7.4.3"
+pytest-cov = "^4.1.0"
 nox-poetry = "^1.0.0"
-black = "^22.3.0"
-pytest-mock = "^3.7.0"
-pydocstyle = "^6.1.1"
-flake8-bugbear = "^22.7.1"
+pytest-mock = "^3.12.0"
 toml = "^0.10.2"
+ruff = "^0.1.9"
 
 [tool.poetry.extras]
 docs = ["sphinx", "insegel"]
@@ -62,40 +54,35 @@ nmslib = ["nmslib"]
 annoy = ["annoy"]
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
+requires = [
+  "poetry-core>=1",
+]
 
-[tool.flake8]
-ignore = "E203, E266, E501, W503, F403, F401, B950, B905, C408"
-max-line-length = 88
-max-complexity = 18
-select = "B,C,E,F,W,T4,B9"
-count = "true"
-show-source = "true"
-statistics = "true"
-
-[tool.black]
+[tool.ruff]
+# Same as Black.
 line-length = 88
-experimental-string-processing = true
-include = '\.pyi?$'
-exclude = '''
-/(
-    \.git
-  | \.hg
-  | \.mypy_cache
-  | \.tox
-  | \.venv
-  | _build
-  | buck-out
-  | build
-  | dist
-)/
-'''
+indent-width = 4
 
+# Assume Python 3.8
+target-version = "py38"
 
-[tool.isort]
-profile = "black"
-multi_line_output = 3
-line_length = 88
-include_trailing_comma = true
-reverse_relative = true
+[tool.ruff.lint]
+ignore = ["E111", "E114", "E117", "E501", "D1", "D203", "D213", "D206", "D300", "Q000", "Q001", "Q002", "Q003", "COM812", "COM819", "ISC001","ISC002", "B905", "W191"]
+select = ["B", "C", "E", "F", "W", "B9","I", "D"]
+
+[tool.ruff.lint.mccabe]
+max-complexity = 18
+
+[tool.ruff.format]
+# Like Black, use double quotes for strings.
+quote-style = "double"
+
+# Like Black, indent with spaces, rather than tabs.
+indent-style = "space"
+
+# Like Black, respect magic trailing commas.
+skip-magic-trailing-comma = false
+
+# Like Black, automatically detect the appropriate line ending.
+line-ending = "auto"

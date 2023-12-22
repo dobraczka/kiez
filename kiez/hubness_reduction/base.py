@@ -46,13 +46,15 @@ class HubnessReduction(ABC):
     def _set_k_if_needed(self, k: Optional[int] = None) -> int:
         if k is None:
             warnings.warn(
-                f"No k supplied, setting to n_candidates = {self.nn_algo.n_candidates}"
+                f"No k supplied, setting to n_candidates = {self.nn_algo.n_candidates}",
+                stacklevel=2,
             )
             return self.nn_algo.n_candidates
         if k > self.nn_algo.n_candidates:
             warnings.warn(
                 "k > n_candidates supplied! Setting to n_candidates ="
-                f" {self.nn_algo.n_candidates}"
+                f" {self.nn_algo.n_candidates}",
+                stacklevel=2,
             )
             return self.nn_algo.n_candidates
         return k

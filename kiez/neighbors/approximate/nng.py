@@ -15,7 +15,7 @@ from kiez.io.temp_file_handling import create_tempfile_preferably_in_dir
 from kiez.neighbors.neighbor_algorithm_base import NNAlgorithmWithJoblib
 
 try:
-    import ngtpy  # noqa: autoimport
+    import ngtpy
 
 except ImportError:  # pragma: no cover
     ngtpy = None
@@ -27,8 +27,7 @@ __all__ = [
 
 
 class NNG(NNAlgorithmWithJoblib):
-    """
-    Wrapper for NGT's graph based approximate nearest neighbor search
+    """Wrapper for NGT's graph based approximate nearest neighbor search.
 
     Parameters
     ----------
@@ -96,7 +95,6 @@ class NNG(NNAlgorithmWithJoblib):
         n_jobs: int = 1,
         verbose: int = 0,
     ):
-
         if ngtpy is None:  # pragma: no cover
             raise ImportError(
                 "Please install the `ngt` package, before using this class.\n"

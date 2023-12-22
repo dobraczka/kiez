@@ -31,11 +31,10 @@ You can also get other specific libraries with e.g.:
 Other options to get specific libraries are ``nmslib``,``annoy``, ``ngt``. However faiss is the recommended library, which provides the most accurate and fastest results.
 
 
-To build kiez from source use `poetry <https://python-poetry.org/>`_ 
+To build kiez from source use `poetry <https://python-poetry.org/>`_
 
 .. code-block:: bash
 
-   git clone git@github.com:dobraczka/kiez.git 
+   git clone git@github.com:dobraczka/kiez.git
    cd kiez
    poetry install
-

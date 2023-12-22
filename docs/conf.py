@@ -13,8 +13,9 @@
 import os
 import sys
 
-from kiez import __version__
 from sphinx.ext.autodoc import between
+
+from kiez import __version__
 
 sys.path.insert(0, os.path.abspath("."))
 

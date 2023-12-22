@@ -10,9 +10,9 @@ from kiez.neighbors.util import available_nn_algorithms
 
 NN_ALGORITHMS = available_nn_algorithms()
 
-MP = [("MutualProximity", dict(method=method)) for method in ["normal", "empiric"]]
-LS = [("LocalScaling", dict(method=method)) for method in ["standard", "nicdm"]]
-DSL = [("DisSimLocal", dict(squared=val)) for val in [True, False]]
+MP = [("MutualProximity", {"method": method}) for method in ["normal", "empiric"]]
+LS = [("LocalScaling", {"method": method}) for method in ["standard", "nicdm"]]
+DSL = [("DisSimLocal", {"squared": val}) for val in [True, False]]
 HUBNESS_AND_KWARGS = [(None, {}), ("CSLS", {}), *MP, *LS, *DSL]
 
 
@@ -32,7 +32,7 @@ def test_no_hub(source_target):
         Kiez(
             n_candidates=n_cand,
             algorithm="SklearnNN",
-            algorithm_kwargs=dict(metric="minkowski"),
+            algorithm_kwargs={"metric": "minkowski"},
         ).algorithm.n_candidates
         == n_cand
     )

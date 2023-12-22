@@ -4,13 +4,12 @@
 
 from __future__ import annotations
 
-import warnings
 from typing import Tuple
 
 import numpy as np
 from sklearn.metrics import euclidean_distances
 from sklearn.utils.extmath import row_norms
-from sklearn.utils.validation import check_consistent_length, check_is_fitted
+from sklearn.utils.validation import check_is_fitted
 
 from .base import HubnessReduction
 

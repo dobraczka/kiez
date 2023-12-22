@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import json
-import warnings
 from pathlib import Path
 from typing import Any, Dict, Optional, Tuple, Union
 
@@ -9,7 +8,7 @@ import numpy as np
 from class_resolver import HintOrType
 
 from kiez.hubness_reduction import hubness_reduction_resolver
-from kiez.hubness_reduction.base import HubnessReduction, NoHubnessReduction
+from kiez.hubness_reduction.base import HubnessReduction
 from kiez.neighbors import NNAlgorithm, nn_algorithm_resolver
 
 
@@ -104,7 +103,7 @@ class Kiez:
             algorithm = nn_algorithm_resolver.make(algorithm, algorithm_kwargs)
         assert algorithm
         if hubness_kwargs is None:
-            hubness_kwargs = dict()
+            hubness_kwargs = {}
         hubness_kwargs["nn_algo"] = algorithm
         self.hubness = hubness_reduction_resolver.make(hubness, hubness_kwargs)
 

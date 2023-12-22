@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from kiez.neighbors import NMSLIB, NNG, Annoy, Faiss, SklearnNN
+from kiez.neighbors import SklearnNN
 from kiez.neighbors.util import available_nn_algorithms
 
 NN_ALGORITHMS = available_nn_algorithms()

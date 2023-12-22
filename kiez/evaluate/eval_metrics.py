@@ -1,6 +1,4 @@
-"""
-Calculate evaluation metrics such as hits@k
-"""
+"""Calculate evaluation metrics such as hits@k."""
 from typing import Any, Dict, List, Union
 
 import numpy as np
@@ -27,7 +25,7 @@ def hits(
     gold: Dict[Any, Any],  # source -> target
     k=None,
 ) -> Dict[int, float]:
-    """Show hits@k
+    """Show hits@k.
 
     Parameters
     ----------

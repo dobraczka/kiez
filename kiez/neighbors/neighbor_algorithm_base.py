@@ -1,5 +1,6 @@
 import warnings
 from abc import ABC, abstractmethod
+from typing import Optional
 
 import numpy as np
 from joblib import Parallel, delayed, effective_n_jobs
@@ -8,7 +9,7 @@ from sklearn.utils.validation import check_is_fitted
 
 
 class NNAlgorithm(ABC):
-    """Base class for nearest neighbor algorithms"""
+    """Base class for nearest neighbor algorithms."""
 
     def __init__(self, n_candidates, metric, n_jobs):
         self.n_candidates = n_candidates
@@ -35,10 +36,10 @@ class NNAlgorithm(ABC):
     def fit(
         self,
         source: np.ndarray,
-        target: np.ndarray = None,
+        target: Optional[np.ndarray] = None,
         only_fit_target: bool = False,
     ):
-        """Indexes the given data using the underlying algorithm
+        """Indexes the given data using the underlying algorithm.
 
         Parameters
         ----------
@@ -84,7 +85,8 @@ class NNAlgorithm(ABC):
         if k > needed_space:
             warnings.warn(
                 f"k={k} is larger than number of samples in indexed space.\n"
-                + f"Setting to k={needed_space}"
+                + f"Setting to k={needed_space}",
+                stacklevel=2,
             )
             return needed_space
         return k

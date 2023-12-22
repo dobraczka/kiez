@@ -16,6 +16,7 @@ def create_tempfile_preferably_in_dir(
     persistent: Optional[bool] = False,
 ):
     """Create a temporary file with precedence for directory if possible, in TMP otherwise.
+
     For example, this is useful to try to save into /dev/shm.
 
     Parameters

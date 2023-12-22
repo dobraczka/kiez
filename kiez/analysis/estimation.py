@@ -2,9 +2,7 @@
 # -*- coding: utf-8 -*-
 # SPDX-License-Identifier: BSD-3-Clause
 # adapted from skhubness: https://github.com/VarIr/scikit-hubness/
-"""
-Estimate hubness in datasets
-"""
+"""Estimate hubness in datasets."""
 
 
 from __future__ import annotations
@@ -293,7 +291,7 @@ def hubness_score(
             k_neighbors = k_neighbors[:, :k]
         elif k > k_neighbors.shape[1]:
             k = nn_ind.shape[1]
-            warnings.warn(f"k > nn_ind.shape[1], k will be set to {k}")
+            warnings.warn(f"k > nn_ind.shape[1], k will be set to {k}", stacklevel=2)
     assert k is not None
 
     # Negative indices can occur, when ANN does not find enough neighbors,

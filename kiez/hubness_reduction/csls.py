@@ -1,10 +1,9 @@
 from __future__ import annotations
 
-import warnings
 from typing import Tuple
 
 import numpy as np
-from sklearn.utils.validation import check_consistent_length, check_is_fitted
+from sklearn.utils.validation import check_is_fitted
 from tqdm.auto import tqdm
 
 from .base import HubnessReduction

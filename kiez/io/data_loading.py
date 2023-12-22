@@ -1,6 +1,4 @@
-"""
-Convenience methods for loading entity embeddings from knowledge graph embeddings
-"""
+"""Convenience methods for loading entity embeddings from knowledge graph embeddings."""
 import os
 from typing import Dict, Tuple
 
@@ -48,7 +46,8 @@ def _seperate_common_embedding(
     kg2_ids: Dict[int, str],
     ent_links: Dict[str, str],
 ) -> Tuple[np.ndarray, np.ndarray, Dict[int, str], Dict[int, str], Dict[str, str]]:
-    """Seperate single embedding array into two arrays split by knowledge graph
+    """Seperate single embedding array into two arrays split by knowledge graph.
+
     Parameters
     ----------
     emb: np.ndarray
@@ -76,7 +75,8 @@ def _seperate_common_embedding(
 def from_openea(
     emb_dir_path: str, kg_path: str
 ) -> Tuple[np.ndarray, np.ndarray, Dict[int, str], Dict[int, str], Dict[str, str]]:
-    """Load OpenEA-type data
+    """Load OpenEA-type data.
+
     Parameters
     ----------
     emb_dir_path: str
@@ -90,6 +90,7 @@ def from_openea(
         embeddings of both knowledge graphs
         entity ids per embedding row for both knowledge graphs
         entity links
+
     Notes
     -----
     See here for more information on the dataset structure

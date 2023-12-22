@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # SPDX-License-Identifier: BSD-3-Clause
 # adapted from skhubness: https://github.com/VarIr/scikit-hubness/
 """Estimate hubness in datasets."""
@@ -9,7 +8,7 @@ from __future__ import annotations
 
 import logging
 import warnings
-from typing import Optional, Tuple, Union
+from typing import Optional, Union
 
 import numpy as np
 from scipy import stats
@@ -149,7 +148,7 @@ def _calc_atkinson_index(k_occurrence: np.ndarray, eps: float = 0.5) -> float:
     return float(1.0 - 1.0 / k_occurrence.mean() * term)
 
 
-def _calc_antihub_occurrence(k_occurrence: np.ndarray) -> Tuple[np.ndarray, float]:
+def _calc_antihub_occurrence(k_occurrence: np.ndarray) -> tuple[np.ndarray, float]:
     """Proportion of antihubs in data set.
 
     Antihubs are objects that are never among the nearest neighbors
@@ -171,7 +170,7 @@ def _calc_antihub_occurrence(k_occurrence: np.ndarray) -> Tuple[np.ndarray, floa
 
 def _calc_hub_occurrence(
     k: int, k_occurrence: np.ndarray, n_test: int, hub_size: float = 2
-) -> Tuple[np.ndarray, float]:
+) -> tuple[np.ndarray, float]:
     """Proportion of nearest neighbor slots occupied by hubs.
 
     Parameters

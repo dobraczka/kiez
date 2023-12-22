@@ -18,9 +18,8 @@ rng = np.random.RandomState(2)
 
 @pytest.mark.skipif(skip, reason=skip_reason)
 def test_wrong_metric():
-    with pytest.raises(ValueError) as exc_info:
+    with pytest.raises(ValueError, match="Unknown"):
         Annoy(metric="jibberish")
-    assert "Unknown" in str(exc_info.value)
 
 
 @pytest.mark.skipif(skip, reason=skip_reason)
@@ -64,7 +63,7 @@ def test_inner_kneighbors(tmp_path, source_target, n_neighbors=5):
     source, target = source_target
     annoy = Annoy(n_candidates=n_neighbors)
     annoy.fit(source, target)
-    with pytest.raises(AssertionError) as exc_info:
+    with pytest.raises(AssertionError, match="Internal"):
         annoy._kneighbors_part(
             k=n_neighbors,
             query=source,
@@ -72,9 +71,8 @@ def test_inner_kneighbors(tmp_path, source_target, n_neighbors=5):
             return_distance=True,
             is_self_querying=False,
         )
-    assert "Internal" in str(exc_info.value)
 
-    with pytest.raises(ValueError) as exc_info:
+    with pytest.raises(ValueError, match="Internal"):
         annoy._kneighbors_part(
             k=n_neighbors,
             query=source,
@@ -82,9 +80,8 @@ def test_inner_kneighbors(tmp_path, source_target, n_neighbors=5):
             return_distance=True,
             is_self_querying=False,
         )
-    assert "Internal" in str(exc_info.value)
 
-    with pytest.raises(ValueError) as exc_info:
+    with pytest.raises(ValueError, match="Internal"):
         annoy._kneighbors_part(
             k=n_neighbors,
             query=source,
@@ -92,4 +89,3 @@ def test_inner_kneighbors(tmp_path, source_target, n_neighbors=5):
             return_distance=True,
             is_self_querying=False,
         )
-    assert "Internal" in str(exc_info.value)

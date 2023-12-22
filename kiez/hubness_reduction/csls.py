@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from typing import Tuple
-
 import numpy as np
 from sklearn.utils.validation import check_is_fitted
 from tqdm.auto import tqdm
@@ -61,7 +59,7 @@ class CSLS(HubnessReduction):
         neigh_dist,
         neigh_ind,
         query,
-    ) -> Tuple[np.ndarray, np.ndarray]:
+    ) -> tuple[np.ndarray, np.ndarray]:
         """Transform distance between test and training data with CSLS.
 
         Parameters

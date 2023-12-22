@@ -17,9 +17,8 @@ rng = np.random.RandomState(2)
 
 @pytest.mark.skipif(skip, reason=skip_reason)
 def test_wrong_metric():
-    with pytest.raises(ValueError) as exc_info:
+    with pytest.raises(ValueError, match="Unknown"):
         NMSLIB(metric="jibberish")
-    assert "Unknown" in str(exc_info.value)
 
 
 @pytest.mark.skipif(skip, reason=skip_reason)

@@ -69,10 +69,14 @@ target-version = "py38"
 
 [tool.ruff.lint]
 ignore = ["E111", "E114", "E117", "E501", "D1", "D203", "D213", "D206", "D300", "Q000", "Q001", "Q002", "Q003", "COM812", "COM819", "ISC001","ISC002", "B905", "W191"]
-select = ["B", "C", "E", "F", "W", "B9","I", "D"]
+select = ["B", "C", "E", "F", "W", "B", "I", "D", "UP", "A", "C4", "T10", "ICN", "PIE", "PYI", "PT"]
 
 [tool.ruff.lint.mccabe]
 max-complexity = 18
+
+[tool.ruff.lint.pyupgrade]
+# Preserve types, even if a file imports `from __future__ import annotations`.
+keep-runtime-typing = true
 
 [tool.ruff.format]
 # Like Black, use double quotes for strings.

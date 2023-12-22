@@ -26,7 +26,7 @@ K_OCC = np.array([3, 0, 5, 3, 0, 5, 4, 1, 0, 1, 1, 0, 0, 2, 0, 1, 0,
 rng = np.random.RandomState(2)
 
 
-@pytest.fixture
+@pytest.fixture()
 def get_expected():
     expected = {}
     for k in [2, 5, 10, 50]:
@@ -129,5 +129,5 @@ def test_k_too_large():
 
 
 def test_wrong_neighbors():
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match="no negative"):
         hubness_score(np.array([[np.inf], [0]]), 1)

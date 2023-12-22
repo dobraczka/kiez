@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # SPDX-License-Identifier: BSD-3-Clause
 # Author: Roman Feldbauer (adaptions for scikit-hubness)
 #         Daniel Obraczka (adaptions for kiez)
@@ -230,7 +229,7 @@ class NNG(NNAlgorithmWithJoblib):
                     epsilon=self.epsilon,
                 )
                 if return_distance:
-                    ind, dist = [np.array(arr) for arr in zip(*response)]
+                    ind, dist = (np.array(arr) for arr in zip(*response))
                 else:
                     ind = response
                 ind = ind[start:]
@@ -251,7 +250,7 @@ class NNG(NNAlgorithmWithJoblib):
                     epsilon=self.epsilon,
                 )
                 if return_distance:
-                    ind, dist = [np.array(arr) for arr in zip(*response)]
+                    ind, dist = (np.array(arr) for arr in zip(*response))
                 else:
                     ind = response
                 ind = ind[start:]

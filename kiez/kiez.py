@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import Any, Dict, Optional, Tuple, Union
+from typing import Any, Optional, Union
 
 import numpy as np
 from class_resolver import HintOrType
@@ -79,9 +79,9 @@ class Kiez:
         self,
         n_candidates: int = 10,
         algorithm: HintOrType[NNAlgorithm] = None,
-        algorithm_kwargs: Optional[Dict[str, Any]] = None,
+        algorithm_kwargs: Optional[dict[str, Any]] = None,
         hubness: HintOrType[HubnessReduction] = None,
-        hubness_kwargs: Optional[Dict[str, Any]] = None,
+        hubness_kwargs: Optional[dict[str, Any]] = None,
     ):
         if not np.issubdtype(type(n_candidates), np.integer):
             raise TypeError(
@@ -150,7 +150,7 @@ class Kiez:
         self,
         k: Optional[int] = None,
         return_distance=True,
-    ) -> Union[np.ndarray, Tuple[np.ndarray, np.ndarray]]:
+    ) -> Union[np.ndarray, tuple[np.ndarray, np.ndarray]]:
         """Retrieve the k-nearest neighbors using the supplied nearest neighbor algorithm and hubness reduction method.
 
         Parameters

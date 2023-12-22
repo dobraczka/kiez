@@ -18,18 +18,15 @@ rng = np.random.RandomState(2)
 
 @pytest.mark.skipif(skip, reason=skip_reason)
 def test_wrong_metric():
-    with pytest.raises(ValueError) as exc_info:
+    with pytest.raises(ValueError, match="Unknown"):
         NNG(metric="jibberish")
-        assert "Unknown" in exc_info
 
 
 @pytest.mark.skipif(skip, reason=skip_reason)
 def test_wrong_dir(source_target):
     source, _ = source_target
-    with pytest.raises(TypeError) as exc_info:
-        nng = NNG(index_dir=1)
-        nng.fit(source)
-        assert "NNG requires" in exc_info
+    with pytest.raises(TypeError, match="NNG requires"):
+        NNG(index_dir=1)
 
 
 @pytest.mark.skipif(skip, reason=skip_reason)

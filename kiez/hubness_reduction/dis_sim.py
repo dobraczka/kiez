@@ -1,10 +1,7 @@
-# -*- coding: utf-8 -*-
 # SPDX-License-Identifier: BSD-3-Clause
 # adapted from skhubness: https://github.com/VarIr/scikit-hubness/
 
 from __future__ import annotations
-
-from typing import Tuple
 
 import numpy as np
 from sklearn.metrics import euclidean_distances
@@ -101,7 +98,7 @@ class DisSimLocal(HubnessReduction):
         neigh_dist: np.ndarray,
         neigh_ind: np.ndarray,
         query: np.ndarray,
-    ) -> Tuple[np.ndarray, np.ndarray]:
+    ) -> tuple[np.ndarray, np.ndarray]:
         """Transform distance between test and training data with DisSimLocal.
 
         Parameters

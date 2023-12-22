@@ -31,7 +31,7 @@ def setup(app):
 # -- Project information -----------------------------------------------------
 
 project = "kiez"
-copyright = "2021, Daniel Obraczka"
+copyright = "2021, Daniel Obraczka"  # noqa: A001
 author = "Daniel Obraczka"
 
 # The full version, including alpha/beta/rc tags

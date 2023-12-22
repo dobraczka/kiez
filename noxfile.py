@@ -8,7 +8,15 @@ def tests(session: Session) -> None:
     session.install(".")
     session.install("pytest")
     session.install("pytest-cov")
-    session.run("pytest", *args)
+    session.run(
+        "coverage",
+        "run",
+        "--source=kiez",
+        "--data-file=.coverage.base",
+        "-m",
+        "pytest",
+        *args
+    )
 
 
 @nox_session(python="3.10", venv_backend="conda")
@@ -21,7 +29,15 @@ def test_faiss(session: Session) -> None:
     session.install("autofaiss")
     session.install("pytest")
     session.install("pytest-cov")
-    session.run("pytest", *args)
+    session.run(
+        "coverage",
+        "run",
+        "--source=kiez",
+        "--data-file=.coverage.faiss",
+        "-m",
+        "pytest",
+        *args
+    )
 
 
 @session(python="3.10")
@@ -30,7 +46,15 @@ def test_ngt(session: Session) -> None:
     session.install(".[ngt]")
     session.install("pytest")
     session.install("pytest-cov")
-    session.run("pytest", *args)
+    session.run(
+        "coverage",
+        "run",
+        "--source=kiez",
+        "--data-file=.coverage.ngt",
+        "-m",
+        "pytest",
+        *args
+    )
 
 
 @session(python="3.10")
@@ -39,7 +63,15 @@ def test_nmslib(session: Session) -> None:
     session.install(".[nmslib]")
     session.install("pytest")
     session.install("pytest-cov")
-    session.run("pytest", *args)
+    session.run(
+        "coverage",
+        "run",
+        "--source=kiez",
+        "--data-file=.coverage.nmslib",
+        "-m",
+        "pytest",
+        *args
+    )
 
 
 @session(python="3.10")
@@ -48,7 +80,15 @@ def test_annoy(session: Session) -> None:
     session.install(".[annoy]")
     session.install("pytest")
     session.install("pytest-cov")
-    session.run("pytest", *args)
+    session.run(
+        "coverage",
+        "run",
+        "--source=kiez",
+        "--data-file=.coverage.annoy",
+        "-m",
+        "pytest",
+        *args
+    )
 
 
 locations = ["kiez", "tests", "noxfile.py"]

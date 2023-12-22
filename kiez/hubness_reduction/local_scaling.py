@@ -29,6 +29,7 @@ class LocalScaling(HubnessReduction):
         - 'nicdm' rescales distances using a statistic over distances to k neighbors
     verbose: int, default = 0
         If verbose > 0, show progress bar.
+
     References
     ----------
     .. [1] Schnitzer, D., Flexer, A., Schedl, M., & Widmer, G. (2012).
@@ -36,33 +37,26 @@ class LocalScaling(HubnessReduction):
            Learning Research, 13(1), 2871–2902.
     """
 
-    def __init__(
-        self, k: int = 5, method: str = "standard", verbose: int = 0, **kwargs
-    ):
+    def __init__(self, method: str = "standard", **kwargs):
         super().__init__(**kwargs)
-        self.k = k
         self.method = method.lower()
         if self.method not in ["ls", "standard", "nicdm"]:
             raise ValueError(
                 f"Internal: Invalid method {self.method}. Try 'ls' or 'nicdm'."
             )
-        self.verbose = verbose
 
     def __repr__(self):
         return (
-            f"{self.__class__.__name__}(k={self.k}, method = {self.method}, verbose ="
+            f"{self.__class__.__name__}(method = {self.method}, verbose ="
             f" {self.verbose})"
         )
 
-    def fit(
+    def _fit(
         self,
         neigh_dist,
         neigh_ind,
         source,
         target,
-        assume_sorted: bool = True,
-        *args,
-        **kwargs,
     ) -> LocalScaling:
         """Fit the model using neigh_dist and neigh_ind as training data.
 
@@ -77,34 +71,14 @@ class LocalScaling(HubnessReduction):
             Ignored
         target
             Ignored
-        assume_sorted: bool, default = True #noqa: DAR103
-            Assume input matrices are sorted according to neigh_dist.
-            If False, these are sorted here.
-        *args
-            Ignored
-        **kwargs
-            Ignored
+
         Returns
         -------
         LocalScaling
             Fitted LocalScaling
         """
-        # Check equal number of rows and columns
-        check_consistent_length(neigh_ind, neigh_dist)
-        check_consistent_length(neigh_ind.T, neigh_dist.T)
-
-        # increment to include the k-th element in slicing
-        k = self.k + 1
-
-        # Find distances to the k-th neighbor (standard LS) or the k neighbors (NICDM)
-        if assume_sorted:
-            self.r_dist_t_to_s_ = neigh_dist[:, :k]
-            self.r_ind_t_to_s_ = neigh_ind[:, :k]
-        else:
-            kth = np.arange(self.k)
-            mask = np.argpartition(neigh_dist, kth=kth)[:, :k]
-            self.r_dist_t_to_s_ = np.take_along_axis(neigh_dist, mask, axis=1)
-            self.r_ind_t_to_s_ = np.take_along_axis(neigh_ind, mask, axis=1)
+        self.r_dist_t_to_s_ = neigh_dist
+        self.r_ind_t_to_s_ = neigh_ind
         return self
 
     def transform(
@@ -112,9 +86,6 @@ class LocalScaling(HubnessReduction):
         neigh_dist,
         neigh_ind,
         query=None,
-        assume_sorted: bool = True,
-        *args,
-        **kwargs,
     ) -> Tuple[np.ndarray, np.ndarray]:
         """Transform distance between test and training data with Mutual Proximity.
 
@@ -127,18 +98,17 @@ class LocalScaling(HubnessReduction):
             Neighbor indices corresponding to the values in neigh_dist
         query
             Ignored
-        assume_sorted: bool, default = True #noqa: DAR103
-            Assume input matrices are sorted according to neigh_dist.
-            If False, these are partitioned here.
-            NOTE: The returned matrices are never sorted.
+
         Returns
         -------
         hub_reduced_dist, neigh_ind
             Local scaling distances, and corresponding neighbor indices
+
         Raises
         ------
         ValueError
             If wrong self.method was supplied
+
         Notes
         -----
         The returned distances are NOT sorted! If you use this class directly,
@@ -148,23 +118,8 @@ class LocalScaling(HubnessReduction):
 
         n_test, n_indexed = neigh_dist.shape
 
-        if n_indexed == 1:
-            warnings.warn(
-                "Cannot perform hubness reduction with a single neighbor per query. "
-                "Skipping hubness reduction, and returning untransformed distances."
-            )
-            return neigh_dist, neigh_ind
-
-        # increment to include the k-th element in slicing
-        k = self.k + 1
-
         # Find distances to the k-th neighbor (standard LS) or the k neighbors (NICDM)
-        if assume_sorted:
-            r_dist_s_to_t = neigh_dist[:, :k]
-        else:
-            kth = np.arange(self.k)
-            mask = np.argpartition(neigh_dist, kth=kth)[:, :k]
-            r_dist_s_to_t = np.take_along_axis(neigh_dist, mask, axis=1)
+        r_dist_s_to_t = neigh_dist
 
         # Calculate LS or NICDM
         hub_reduced_dist = np.empty_like(neigh_dist)
@@ -178,11 +133,7 @@ class LocalScaling(HubnessReduction):
         )
 
         # Perform standard local scaling...
-        if self.method not in ["ls", "standard", "nicdm"]:
-            raise ValueError(
-                f"Internal: Invalid method {self.method}. Try 'ls' or 'nicdm'."
-            )
-        elif self.method in ["ls", "standard"]:
+        if self.method in ["ls", "standard"]:
             r_t_to_s = self.r_dist_t_to_s_[:, -1]
             r_s_to_t = r_dist_s_to_t[:, -1]
             for i in range_n_test:

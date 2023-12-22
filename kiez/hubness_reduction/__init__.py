@@ -1,7 +1,3 @@
-# -*- coding: utf-8 -*-
-# SPDX-License-Identifier: BSD-3-Clause
-# adapted from skhubness: https://github.com/VarIr/scikit-hubness/
-
 from class_resolver import ClassResolver
 
 from .base import HubnessReduction, NoHubnessReduction

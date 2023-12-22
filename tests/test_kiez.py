@@ -1,174 +1,124 @@
 import pathlib
 from unittest import mock
 
-import numpy as np
 import pytest
-from numpy.testing import assert_array_equal
-from sklearn.neighbors import NearestNeighbors
 
 from kiez import Kiez
-from kiez.hubness_reduction import (
-    DisSimLocal,
-    HubnessReduction,
-    LocalScaling,
-    NoHubnessReduction,
-)
+from kiez.hubness_reduction import HubnessReduction, LocalScaling
 from kiez.neighbors import NMSLIB, NNAlgorithm, SklearnNN
-from kiez.neighbors.util import available_ann_algorithms
+from kiez.neighbors.util import available_nn_algorithms
 
-APPROXIMATE_ALGORITHMS = available_ann_algorithms()
+NN_ALGORITHMS = available_nn_algorithms()
+
+MP = [("MutualProximity", dict(method=method)) for method in ["normal", "empiric"]]
+LS = [("LocalScaling", dict(method=method)) for method in ["standard", "nicdm"]]
+DSL = [("DisSimLocal", dict(squared=val)) for val in [True, False]]
+HUBNESS_AND_KWARGS = [(None, {}), ("CSLS", {}), *MP, *LS, *DSL]
+
 
 HERE = pathlib.Path(__file__).parent.resolve()
-rng = np.random.RandomState(2)
 
 
-class CustomHubness(HubnessReduction):
-    """Test class to make sure user created classes work"""
-
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-
-    def fit(self, *args, **kwargs):
-        pass  # pragma: no cover
-
-    def __repr__(self):
-        return "NoHubnessReduction"
-
-    def transform(
-        self,
-        neigh_dist,
-        neigh_ind,
-        query,
-        assume_sorted=True,
-        return_distance=True,
-        *args,
-        **kwargs,
-    ):
-        if return_distance:
-            return neigh_dist, neigh_ind
-        else:
-            return neigh_ind
-
-
-class CustomAlgorithm(NNAlgorithm):
-    """Test class to make sure user created classes work"""
-
-    valid_metrics = ["minkowski"]
-
-    def __init__(
-        self,
-        n_candidates=5,
-        algorithm="auto",
-        leaf_size=30,
-        metric="minkowski",
-        p=2,
-        metric_params=None,
-        n_jobs=None,
-    ):
-        super().__init__(n_candidates=n_candidates, metric=metric, n_jobs=n_jobs)
-        self.algorithm = algorithm
-        self.leaf_size = leaf_size
-        self.p = p
-        self.metric_params = metric_params
-
-    def _fit(self, data, is_source: bool):
-        nn = NearestNeighbors(
-            n_neighbors=self.n_candidates,
-            algorithm=self.algorithm,
-            leaf_size=self.leaf_size,
-            metric=self.metric,
-            p=self.p,
-            metric_params=self.metric_params,
-            n_jobs=self.n_jobs,
-        )
-        nn.fit(data)
-        return nn
-
-    def _kneighbors(self, k, query, index, return_distance, is_self_querying):
-        if is_self_querying:
-            return index.kneighbors(
-                X=None, n_neighbors=k, return_distance=return_distance
-            )
-        return index.kneighbors(X=query, n_neighbors=k, return_distance=return_distance)
-
-
-def test_hubness_resolver(n_samples=20, n_features=5):
-    source = rng.rand(n_samples, n_features)
-    target = rng.rand(n_samples, n_features)
-    res = []
-    for algo in [
-        SklearnNN(),
-        SklearnNN,
-        "SklearnNN",
-        CustomAlgorithm,
-        CustomAlgorithm(),
-    ]:
-        for hub in [
-            NoHubnessReduction(),
-            NoHubnessReduction,
-            None,
-            "NoHubnessReduction",
-            CustomHubness,
-            CustomHubness(),
-        ]:
-            k_inst = Kiez(algorithm=algo, hubness=hub)
-            k_inst.fit(source, target)
-            res.append(k_inst.kneighbors(source, k=1))
-    for i in range(len(res) - 1):
-        assert_array_equal(res[i][0], res[i + 1][0])
-        assert_array_equal(res[i][1], res[i + 1][1])
-
-
-def test_wrong_kcandidates(n_samples=20, n_features=5):
-    source = rng.rand(n_samples, n_features)
-    target = rng.rand(n_samples, n_features)
-    k_inst = Kiez()
+def test_no_hub(source_target):
+    source, target = source_target
+    n_cand = 10
+    k_inst = Kiez(n_candidates=n_cand)
     k_inst.fit(source, target)
-    nn_ind = k_inst._kcandidates(source, k=1, return_distance=False)
-    assert nn_ind.shape == (20, 5)
+    # check only created target index
+    assert not hasattr(k_inst.algorithm, "source_index")
+    k_inst.algorithm = SklearnNN()
+    assert "f{k_inst}"
+    assert (
+        Kiez(
+            n_candidates=n_cand,
+            algorithm="SklearnNN",
+            algorithm_kwargs=dict(metric="minkowski"),
+        ).algorithm.n_candidates
+        == n_cand
+    )
 
 
-def test_non_default_kneighbors(n_samples=20, n_features=5):
-    source = rng.rand(n_samples, n_features)
-    target = rng.rand(n_samples, n_features)
-    k_inst = Kiez()
+def assert_different_neighbors(k_inst, n_cand):
+    dist, neigh = k_inst.kneighbors()
+    assert neigh.shape[1] == n_cand
+    assert dist.shape[1] == n_cand
+
+    neigh = k_inst.kneighbors(return_distance=False)
+    assert neigh.shape[1] == n_cand
+
+    dist, neigh = k_inst.kneighbors(k=1)
+    assert neigh.shape[1] == 1
+    assert dist.shape[1] == 1
+
+    dist, neigh = k_inst.kneighbors(k=20)
+    assert neigh.shape[1] == n_cand
+    assert dist.shape[1] == n_cand
+
+
+@pytest.mark.parametrize("algo", NN_ALGORITHMS)
+def test_algo_resolver(source_target, algo, n_cand=5):
+    source, target = source_target
+    k_inst = Kiez(algorithm=algo, n_candidates=n_cand)
     k_inst.fit(source, target)
-    nn_ind = k_inst.kneighbors(source, k=1, return_distance=False)
-    assert nn_ind.shape == (20, 1)
+    assert_different_neighbors(k_inst, n_cand)
 
 
-def test_n_neighbors_wrong():
+@pytest.mark.parametrize("hub,hubkwargs", HUBNESS_AND_KWARGS)
+def test_hubness_resolver(hub, hubkwargs, source_target, n_cand=5):
+    source, target = source_target
+    k_inst = Kiez(
+        algorithm="SklearnNN",
+        n_candidates=n_cand,
+        hubness=hub,
+        hubness_kwargs=hubkwargs,
+    )
+    assert f"{k_inst}" is not None
+    k_inst.fit(source, target)
+    assert_different_neighbors(k_inst, n_cand)
+    k_inst.fit(source, None)
+    assert_different_neighbors(k_inst, n_cand)
     with pytest.raises(ValueError) as exc_info:
-        Kiez(n_neighbors=-1)
+        k_inst = Kiez(
+            algorithm="SklearnNN",
+            n_candidates=1,
+            hubness=hub,
+            hubness_kwargs=hubkwargs,
+        )
+    assert "Cannot" in str(exc_info.value)
+
+
+def test_n_candidates_wrong():
+    with pytest.raises(ValueError) as exc_info:
+        Kiez(n_candidates=-1)
     assert "Expected" in str(exc_info.value)
 
 
-def test_n_neighbors_wrong_type():
+def test_n_candidates_wrong_type():
     with pytest.raises(TypeError) as exc_info:
-        Kiez(n_neighbors="1")
+        Kiez(n_candidates="1")
     assert "does not" in str(exc_info.value)
 
 
 def test_dis_sim_local_wrong():
     with pytest.raises(ValueError) as exc_info:
-        Kiez(algorithm=SklearnNN(p=1), hubness=DisSimLocal())
+        Kiez(algorithm=SklearnNN(p=1), hubness="DisSimLocal")
     assert "only supports" in str(exc_info.value)
 
 
 def test_dis_sim_local_wrong_metric():
     with pytest.raises(ValueError) as exc_info:
-        Kiez(algorithm=SklearnNN(metric="cosine"), hubness=DisSimLocal())
+        Kiez(algorithm=SklearnNN(metric="cosine"), hubness="DisSimLocal")
     assert "only supports" in str(exc_info.value)
 
 
 def test_dis_sim_local_squaring():
-    if NMSLIB in APPROXIMATE_ALGORITHMS:
-        k_inst = Kiez(algorithm=NMSLIB(metric="sqeuclidean"), hubness=DisSimLocal())
+    if NMSLIB in NN_ALGORITHMS:
+        k_inst = Kiez(algorithm=NMSLIB(metric="sqeuclidean"), hubness="DisSimLocal")
         assert k_inst.hubness.squared
 
 
 def test_from_config():
-    if NMSLIB in APPROXIMATE_ALGORITHMS:
+    if NMSLIB in NN_ALGORITHMS:
         path = HERE.joinpath("example_conf.json")
         kiez = Kiez.from_path(path)
         assert kiez.hubness is not None

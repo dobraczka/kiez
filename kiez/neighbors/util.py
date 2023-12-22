@@ -3,14 +3,14 @@ from typing import List, Type
 from kiez.neighbors import NNAlgorithm, nn_algorithm_resolver
 
 
-def available_ann_algorithms() -> List[Type[NNAlgorithm]]:
-    """Get available approximate nearest neighbor algorithms
+def available_nn_algorithms() -> List[Type[NNAlgorithm]]:
+    """Get available (approximate) nearest neighbor algorithms
     Returns
     -------
     algorithms: List[Type[NNAlgorithm]]
         A tuple of available algorithms
     """
-    possible = ["NMSLIB", "NNG", "Annoy", "Faiss"]
+    possible = ["NMSLIB", "NNG", "Annoy", "Faiss", "SklearnNN"]
     available = []
     for ann in possible:
         try:

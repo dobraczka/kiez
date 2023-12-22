@@ -1,21 +1,20 @@
-# -*- coding: utf-8 -*-
-# SPDX-License-Identifier: BSD-3-Clause
 from __future__ import annotations
 
 import json
+import warnings
 from pathlib import Path
 from typing import Any, Dict, Optional, Tuple, Union
 
 import numpy as np
 from class_resolver import HintOrType
 
-from kiez.hubness_reduction import DisSimLocal, hubness_reduction_resolver
+from kiez.hubness_reduction import hubness_reduction_resolver
 from kiez.hubness_reduction.base import HubnessReduction, NoHubnessReduction
 from kiez.neighbors import NNAlgorithm, nn_algorithm_resolver
 
 
 class Kiez:
-    """Performs hubness reduced nearest neighbor search for entity alignment
+    """Performs hubness reduced nearest neighbor search for entity alignment.
 
     Use the given algorithm to :meth:`fit` the data and calculate the
     :meth:`kneighbors`.
@@ -79,38 +78,47 @@ class Kiez:
 
     def __init__(
         self,
-        n_neighbors: int = 5,
+        n_candidates: int = 10,
         algorithm: HintOrType[NNAlgorithm] = None,
         algorithm_kwargs: Optional[Dict[str, Any]] = None,
         hubness: HintOrType[HubnessReduction] = None,
         hubness_kwargs: Optional[Dict[str, Any]] = None,
     ):
-        if not np.issubdtype(type(n_neighbors), np.integer):
+        if not np.issubdtype(type(n_candidates), np.integer):
             raise TypeError(
-                f"n_neighbors does not take {type(n_neighbors)} value, enter"
+                f"n_neighbors does not take {type(n_candidates)} value, enter"
                 " integer value"
             )
-        elif n_neighbors <= 0:
-            raise ValueError(f"Expected n_neighbors > 0. Got {n_neighbors}")
-        self.n_neighbors = n_neighbors
-        if algorithm is None and algorithm_kwargs is None:
-            algorithm_kwargs = {"n_candidates": n_neighbors}
+        elif n_candidates <= 0:
+            raise ValueError(f"Expected n_candidates > 0. Got {n_candidates}")
+        if algorithm_kwargs is None:
+            algorithm_kwargs = {"n_candidates": n_candidates}
+        elif "n_candidates" not in algorithm_kwargs:
+            algorithm_kwargs["n_candidates"] = n_candidates
         if algorithm is None:
             try:
-                self.algorithm = nn_algorithm_resolver.make("Faiss", algorithm_kwargs)
+                algorithm = nn_algorithm_resolver.make("Faiss", algorithm_kwargs)
             except ImportError:
-                self.algorithm = nn_algorithm_resolver.make(
-                    "SklearnNN", algorithm_kwargs
-                )
+                algorithm = nn_algorithm_resolver.make("SklearnNN", algorithm_kwargs)
         else:
-            self.algorithm = nn_algorithm_resolver.make(algorithm, algorithm_kwargs)
-        assert self.algorithm
+            algorithm = nn_algorithm_resolver.make(algorithm, algorithm_kwargs)
+        assert algorithm
+        if hubness_kwargs is None:
+            hubness_kwargs = dict()
+        hubness_kwargs["nn_algo"] = algorithm
         self.hubness = hubness_reduction_resolver.make(hubness, hubness_kwargs)
-        self._check_algorithm_hubness_compatibility()
+
+    @property
+    def algorithm(self):
+        return self.hubness.nn_algo
+
+    @algorithm.setter
+    def algorithm(self, value):
+        self.hubness.nn_algo = value
 
     def __repr__(self):
         return (
-            f"Kiez(n_neighbors: {self.n_neighbors}, algorithm: {self.algorithm},"
+            f"Kiez(algorithm: {self.algorithm},"
             f" hubness: {self.hubness})"
             f" {self.algorithm._describe_source_target_fitted()}"
         )
@@ -121,43 +129,8 @@ class Kiez:
         with open(path) as file:
             return cls(**json.load(file))
 
-    def _kcandidates(
-        self, query_points, *, s_to_t=True, k=None, return_distance=True
-    ) -> Union[np.ndarray, Tuple[np.ndarray, np.ndarray]]:
-        if k is None:
-            k = self.algorithm.n_candidates
-
-        # The number of candidates must not be less than the number of neighbors used downstream
-        if k < self.n_neighbors:
-            k = self.n_neighbors
-        return self.algorithm.kneighbors(
-            k=k,
-            query=query_points,
-            s_to_t=s_to_t,
-            return_distance=return_distance,
-        )
-
-    def _check_algorithm_hubness_compatibility(self):
-        if isinstance(self.hubness, DisSimLocal):
-            if self.algorithm.metric in ["euclidean", "minkowski"]:
-                self.hubness.squared = False
-                if hasattr(self.algorithm, "p"):
-                    if self.algorithm.p != 2:
-                        raise ValueError(
-                            "DisSimLocal only supports squared Euclidean distances. If"
-                            " the provided NNAlgorithm has a `p` parameter it must be"
-                            f" set to p=2. Now it is p={self.algorithm.p}"
-                        )
-            elif self.algorithm.metric in ["sqeuclidean"]:
-                self.hubness.squared = True
-            else:
-                raise ValueError(
-                    "DisSimLocal only supports squared Euclidean distances, not"
-                    f" metric={self.algorithm.metric}."
-                )
-
     def fit(self, source, target=None) -> Kiez:
-        """Fits the algorithm and hubness reduction method
+        """Fits the algorithm and hubness reduction method.
 
         Parameters
         ----------
@@ -171,40 +144,20 @@ class Kiez:
         Kiez
             Fitted kiez instance
         """
-        self.algorithm.fit(source, target)
-        if target is None:
-            target = source
-        if not isinstance(self.hubness, NoHubnessReduction):
-            neigh_dist_t_to_s, neigh_ind_t_to_s = self._kcandidates(
-                target,
-                s_to_t=False,
-                k=self.algorithm.n_candidates,
-                return_distance=True,
-            )
-            self.hubness.fit(
-                neigh_dist_t_to_s,
-                neigh_ind_t_to_s,
-                source,
-                target,
-                assume_sorted=False,
-            )
+        self.hubness.fit(source, target)
         return self
 
     def kneighbors(
         self,
-        source_query_points=None,
-        k=None,
+        k: Optional[int] = None,
         return_distance=True,
     ) -> Union[np.ndarray, Tuple[np.ndarray, np.ndarray]]:
-        """Retrieves the k-nearest neighbors using the supplied nearest neighbor algorithm and hubness reduction method.
+        """Retrieve the k-nearest neighbors using the supplied nearest neighbor algorithm and hubness reduction method.
 
         Parameters
         ----------
-        source_query_points : matrix of shape (n_samples, n_features), default = None
-            subset of source entity embeddings
-            if `None` all source entities are used for querying
-        k : int, default = None
-            number of nearest neighbors to search for
+        k : Optional[int], default = None
+            k-nearest neighbors, if None is set to number of n_candidates
         return_distance : bool, default = True
             Whether to return distances
             If `False` only indices are returned
@@ -217,33 +170,7 @@ class Kiez:
         neigh_ind : ndarray of shape (n_queries, n_neighbors)
             Indices of the nearest points in the population matrix.
         """
-        # function loosely adapted from skhubness: https://github.com/VarIr/scikit-hubness
-
-        if k is None:
-            n_neighbors = self.n_neighbors
-        else:
-            n_neighbors = k
-        # First obtain candidate neighbors
-        query_dist, query_ind = self._kcandidates(
-            source_query_points, return_distance=True
-        )
-        query_dist = np.atleast_2d(query_dist)
-        query_ind = np.atleast_2d(query_ind)
-
-        # Second, reduce hubness
-        hubness_reduced_query_dist, query_ind = self.hubness.transform(
-            query_dist,
-            query_ind,
-            source_query_points,
-            assume_sorted=True,
-        )
-        # Third, sort hubness reduced candidate neighbors to get the final k neighbors
-        kth = np.arange(n_neighbors)
-        mask = np.argpartition(hubness_reduced_query_dist, kth=kth)[:, :n_neighbors]
-        hubness_reduced_query_dist = np.take_along_axis(
-            hubness_reduced_query_dist, mask, axis=1
-        )
-        query_ind = np.take_along_axis(query_ind, mask, axis=1)
+        hubness_reduced_query_dist, query_ind = self.hubness.kneighbors(k)
 
         if return_distance:
             result = hubness_reduced_query_dist, query_ind

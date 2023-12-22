@@ -3,10 +3,10 @@ import pytest
 from numpy.testing import assert_array_equal
 
 from kiez.neighbors import NMSLIB
-from kiez.neighbors.util import available_ann_algorithms
+from kiez.neighbors.util import available_nn_algorithms
 
-APPROXIMATE_ALGORITHMS = available_ann_algorithms()
-if NMSLIB not in APPROXIMATE_ALGORITHMS:
+NN_ALGORITHMS = available_nn_algorithms()
+if NMSLIB not in NN_ALGORITHMS:
     skip = True
 else:
     skip = False
@@ -23,44 +23,24 @@ def test_wrong_metric():
 
 
 @pytest.mark.skipif(skip, reason=skip_reason)
-def test_sqeuclidean(n_samples=20, n_features=5, n_neighbors=5):
-    source = rng.rand(n_samples, n_features)
-    target = rng.rand(n_samples, n_features)
+def test_sqeuclidean(source_target, n_neighbors=5):
+    source, target = source_target
     hnsw1 = NMSLIB(n_candidates=n_neighbors, metric="sqeuclidean")
     hnsw1.fit(source, target)
-    d, i = hnsw1.kneighbors(
-        query=source[
-            :5,
-        ]
-    )
+    d, i = hnsw1.kneighbors()
     hnsw2 = NMSLIB(n_candidates=n_neighbors)
     hnsw2.fit(source, target)
-    i2 = hnsw2.kneighbors(
-        query=source[
-            :5,
-        ],
-        return_distance=False,
-    )
+    i2 = hnsw2.kneighbors(return_distance=False)
     assert_array_equal(i, i2)
 
 
 @pytest.mark.skipif(skip, reason=skip_reason)
-def test_cosine(n_samples=20, n_features=5, n_neighbors=5):
-    source = rng.rand(n_samples, n_features)
-    target = rng.rand(n_samples, n_features)
+def test_cosine(source_target, n_neighbors=5):
+    source, target = source_target
     hnsw1 = NMSLIB(n_candidates=n_neighbors, metric="cosine")
     hnsw1.fit(source, target)
-    d, i = hnsw1.kneighbors(
-        query=source[
-            :5,
-        ]
-    )
+    d, i = hnsw1.kneighbors()
     hnsw2 = NMSLIB(n_candidates=n_neighbors, metric="cosinesimil")
     hnsw2.fit(source, target)
-    i2 = hnsw2.kneighbors(
-        query=source[
-            :5,
-        ],
-        return_distance=False,
-    )
+    i2 = hnsw2.kneighbors(return_distance=False)
     assert_array_equal(i, i2)

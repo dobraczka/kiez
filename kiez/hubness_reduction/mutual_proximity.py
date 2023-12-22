@@ -31,6 +31,7 @@ class MutualProximity(HubnessReduction):
         - 'empiric' or 'exact' model distances with the empiric distributions (slow)
     verbose: int, default = 0
         If verbose > 0, show progress bar.
+
     References
     ----------
     .. [1] Schnitzer, D., Flexer, A., Schedl, M., & Widmer, G. (2012).
@@ -38,18 +39,17 @@ class MutualProximity(HubnessReduction):
            Learning Research, 13(1), 2871–2902.
     """
 
-    def __init__(self, method: str = "normal", verbose: int = 0, **kwargs):
+    def __init__(self, method: str = "normal", **kwargs):
         super().__init__(**kwargs)
         if method not in ["exact", "empiric", "normal", "gaussi"]:
             raise ValueError(
                 f'Mutual proximity method "{method}" not recognized. Try "normal"'
                 ' or "empiric".'
             )
-        if method in ["exact", "empiric"]:
+        elif method in ["exact", "empiric"]:
             self.method = "empiric"
         elif method in ["normal", "gaussi"]:
             self.method = "normal"
-        self.verbose = verbose
 
     def __repr__(self):
         return (
@@ -57,15 +57,12 @@ class MutualProximity(HubnessReduction):
             f" {self.verbose})"
         )
 
-    def fit(
+    def _fit(
         self,
         neigh_dist,
         neigh_ind,
         source,
         target,
-        assume_sorted=None,
-        *args,
-        **kwargs,
     ) -> MutualProximity:
         """Fit the model using neigh_dist and neigh_ind as training data.
 
@@ -80,10 +77,9 @@ class MutualProximity(HubnessReduction):
             Ignored
         target
             Ignored
-        assume_sorted
-            Ignored
+
         Returns
-        ------
+        -------
         MutualProximity
 
         Raises
@@ -91,17 +87,9 @@ class MutualProximity(HubnessReduction):
         ValueError
             If self.method is unknown
         """
-        # Check equal number of rows and columns
-        check_consistent_length(neigh_ind, neigh_dist)
-        check_consistent_length(neigh_ind.T, neigh_dist.T)
-        check_array(neigh_dist, force_all_finite=False)
-        check_array(neigh_ind)
-
         self.n_train = neigh_dist.shape[0]
 
-        if self.method not in ["normal", "empiric"]:
-            raise ValueError(f"Internal: Invalid method {self.method}.")
-        elif self.method == "empiric":
+        if self.method == "empiric":
             self.neigh_dist_t_to_s_ = neigh_dist
             self.neigh_ind_t_to_s_ = neigh_ind
         elif self.method == "normal":
@@ -109,9 +97,7 @@ class MutualProximity(HubnessReduction):
             self.sd_t_to_s_ = np.nanstd(neigh_dist, axis=1, ddof=0)
         return self
 
-    def transform(
-        self, neigh_dist, neigh_ind, query, assume_sorted=None, *args, **kwargs
-    ):
+    def transform(self, neigh_dist, neigh_ind, query):
         """Transform distance between test and training data with Mutual Proximity.
 
         Parameters
@@ -123,16 +109,17 @@ class MutualProximity(HubnessReduction):
             Neighbor indices corresponding to the values in neigh_dist
         query
             Ignored
-        assume_sorted
-            Ignored
+
         Returns
         -------
         hub_reduced_dist, neigh_ind
             Mutual Proximity distances, and corresponding neighbor indices
+
         Raises
         ------
         ValueError
             if self.method is unknown
+
         Notes
         -----
         The returned distances are NOT sorted! If you use this class directly,
@@ -148,17 +135,7 @@ class MutualProximity(HubnessReduction):
             ],
             all_or_any=any,
         )
-        check_array(neigh_dist, force_all_finite="allow-nan")
-        check_array(neigh_ind)
-
         n_test, n_indexed = neigh_dist.shape
-
-        if n_indexed == 1:
-            warnings.warn(
-                "Cannot perform hubness reduction with a single neighbor per query. "
-                "Skipping hubness reduction, and returning untransformed distances."
-            )
-            return neigh_dist, neigh_ind
 
         hub_reduced_dist = np.empty_like(neigh_dist)
 
@@ -171,9 +148,7 @@ class MutualProximity(HubnessReduction):
         )
 
         # Calculate MP with independent Gaussians
-        if self.method not in ["normal", "empiric"]:
-            raise ValueError(f"Internal: Invalid method {self.method}.")
-        elif self.method == "normal":
+        if self.method == "normal":
             mu_t_to_s = self.mu_t_to_s_
             sd_t_to_s_ = self.sd_t_to_s_
             for i in range_n_test:

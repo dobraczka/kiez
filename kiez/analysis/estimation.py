@@ -45,6 +45,7 @@ def _calc_skewness_truncnorm(k_occurrence: np.ndarray) -> float:
     ----------
     k_occurrence: ndarray
         Reverse nearest neighbor count for each object.
+
     Returns
     -------
     skew_truncnorm
@@ -62,7 +63,8 @@ def _calc_skewness_truncnorm(k_occurrence: np.ndarray) -> float:
 def _calc_gini_index(
     k_occurrence: np.ndarray, limiting="memory", verbose: int = 0
 ) -> float:
-    """Hubness measure; Gini index
+    """Hubness measure; Gini index.
+
     Parameters
     ----------
     k_occurrence: ndarray
@@ -73,6 +75,7 @@ def _calc_gini_index(
         otherwise use naive implementation (slow, low memory usage)
     verbose: int
         control verbosity
+
     Returns
     -------
     gini_index
@@ -103,6 +106,7 @@ def _calc_robinhood_index(k_occurrence: np.ndarray) -> float:
     ----------
     k_occurrence: ndarray
         Reverse nearest neighbor count for each object.
+
     Returns
     -------
     robinhood_index
@@ -135,6 +139,7 @@ def _calc_atkinson_index(k_occurrence: np.ndarray, eps: float = 0.5) -> float:
         Reverse nearest neighbor count for each object.
     eps: float
         'Income' weight. Turns the index into a normative measure.
+
     Returns
     -------
     atkinson_index
@@ -156,6 +161,7 @@ def _calc_antihub_occurrence(k_occurrence: np.ndarray) -> Tuple[np.ndarray, floa
     ----------
     k_occurrence: ndarray
         Reverse nearest neighbor count for each object.
+
     Returns
     -------
     antihubs, antihub_occurrence
@@ -180,6 +186,7 @@ def _calc_hub_occurrence(
         Number of queries (or objects in a test set)
     hub_size: float
         Factor to determine hubs
+
     Returns
     -------
     hubs, hub_occurrence
@@ -201,7 +208,7 @@ def hubness_score(
     return_value: str = "all_but_gini",
     store_k_occurrence: bool = False,
 ) -> Union[float, dict]:
-    """Calculates hubness scores from given neighbor indices
+    """Calculate hubness scores from given neighbor indices.
 
     Utilizes findings from [1]_ and [2]_.
 

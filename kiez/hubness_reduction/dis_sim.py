@@ -22,12 +22,11 @@ class DisSimLocal(HubnessReduction):
 
     Parameters
     ----------
-    k: int, default = 5
-        Number of neighbors to consider for the local centroids
     squared: bool, default = True
         DisSimLocal operates on squared Euclidean distances.
         If True, return (quasi) squared Euclidean distances;
         if False, return (quasi) Eucldean distances.
+
     References
     ----------
     .. [1] Hara K, Suzuki I, Kobayashi K, Fukumizu K, Radovanović M (2016)
@@ -36,23 +35,35 @@ class DisSimLocal(HubnessReduction):
            https://www.aaai.org/ocs/index.php/AAAI/AAAI16/paper/viewPaper/12055
     """
 
-    def __init__(self, k: int = 5, squared: bool = True, *args, **kwargs):
-        super().__init__()
-        self.k = k
+    def __init__(self, squared: bool = True, **kwargs):
+        super().__init__(**kwargs)
         self.squared = squared
+        if self.nn_algo.metric in ["euclidean", "minkowski"]:
+            self.squared = False
+            if hasattr(self.nn_algo, "p"):
+                if self.nn_algo.p != 2:
+                    raise ValueError(
+                        "DisSimLocal only supports squared Euclidean distances. If"
+                        " the provided NNAlgorithm has a `p` parameter it must be"
+                        f" set to p=2. Now it is p={self.nn_algo.p}"
+                    )
+        elif self.nn_algo.metric in ["sqeuclidean"]:
+            self.squared = True
+        else:
+            raise ValueError(
+                "DisSimLocal only supports squared Euclidean distances, not"
+                f" metric={self.nn_algo.metric}."
+            )
 
     def __repr__(self):
-        return f"{self.__class__.__name__}(k={self.k}, squared = {self.squared})"
+        return f"{self.__class__.__name__}(squared = {self.squared})"
 
-    def fit(
+    def _fit(
         self,
         neigh_dist: np.ndarray,
         neigh_ind: np.ndarray,
         source: np.ndarray,
         target: np.ndarray,
-        assume_sorted: bool = True,
-        *args,
-        **kwargs,
     ) -> DisSimLocal:
         """Fit the model using target, neigh_dist, and neigh_ind as training data.
 
@@ -69,47 +80,14 @@ class DisSimLocal(HubnessReduction):
         target: np.ndarray, shape (n_samples, n_features)
             Target embedding, where n_samples is the number of vectors,
             and n_features their dimensionality (number of features).
-        assume_sorted: bool, default=True #noqa: DAR103
-            Assume input matrices are sorted according to neigh_dist.
-            If False, these are sorted here.
-        *args: Ignored
-            Ignored
-        **kwargs: Ignored
-            Ignored
+
         Returns
         -------
         DisSimLocal
             Fitted DisSimLocal
-        Raises
-        ------
-        ValueError
-            If self.k < 0
-        TypeError
-            If self.k not int
         """
-        # Check equal number of rows and columns
-        check_consistent_length(neigh_ind, neigh_dist)
-        check_consistent_length(neigh_ind.T, neigh_dist.T)
-        try:
-            if self.k <= 0:
-                raise ValueError(f"Expected k > 0. Got {self.k}")
-        except TypeError as exc:
-            raise TypeError(f"Expected k: int > 0. Got {self.k}") from exc
-
-        k = self.k
-        if k > neigh_ind.shape[1]:
-            warnings.warn(
-                "Neighborhood parameter k larger than provided neighbors in"
-                f" neigh_dist, neigh_ind. Will reduce to k={neigh_ind.shape[1]}."
-            )
-            k = neigh_ind.shape[1]
-
         # Calculate local neighborhood centroids among the training points
-        if assume_sorted:
-            knn = neigh_ind[:, :k]
-        else:
-            mask = np.argpartition(neigh_dist, kth=k - 1)[:, :k]
-            knn = np.take_along_axis(neigh_ind, mask, axis=1)
+        knn = neigh_ind
         centroids = source[knn].mean(axis=1)
         dist_to_cent = row_norms(target - centroids, squared=True)
 
@@ -117,7 +95,6 @@ class DisSimLocal(HubnessReduction):
         self.target_ = target
         self.target_centroids_ = centroids
         self.target_dist_to_centroids_ = dist_to_cent
-
         return self
 
     def transform(
@@ -125,9 +102,6 @@ class DisSimLocal(HubnessReduction):
         neigh_dist: np.ndarray,
         neigh_ind: np.ndarray,
         query: np.ndarray,
-        assume_sorted: bool = True,
-        *args,
-        **kwargs,
     ) -> Tuple[np.ndarray, np.ndarray]:
         """Transform distance between test and training data with DisSimLocal.
 
@@ -141,13 +115,12 @@ class DisSimLocal(HubnessReduction):
         query: np.ndarray, shape (n_query, n_features)
             Query entities that were used to obtain neighbors
             If none is provided use source that was provided in fit step
-        assume_sorted: bool
-            ignored
 
         Returns
         -------
         hub_reduced_dist, neigh_ind
             DisSimLocal distances, and corresponding neighbor indices
+
         Notes
         -----
         The returned distances are NOT sorted! If you use this class directly,
@@ -157,27 +130,10 @@ class DisSimLocal(HubnessReduction):
             self,
             ["target_", "target_centroids_", "target_dist_to_centroids_"],
         )
-        if query is None:
-            query = self.source_
-
         n_test, n_indexed = neigh_dist.shape
 
-        if n_indexed == 1:
-            warnings.warn(
-                "Cannot perform hubness reduction with a single neighbor per query. "
-                "Skipping hubness reduction, and returning untransformed distances."
-            )
-            return neigh_dist, neigh_ind
-
-        k = self.k
-        if k > neigh_ind.shape[1]:
-            warnings.warn(
-                "Neighborhood parameter k larger than provided neighbors in"
-                f" neigh_dist, neigh_ind. Will reduce to k={neigh_ind.shape[1]}."
-            )
-            k = neigh_ind.shape[1]
-
         # Calculate local neighborhood centroids for source objects among target objects
+        k = neigh_ind.shape[1]
         mask = np.argpartition(neigh_dist, kth=k - 1)
         for i, ind in enumerate(neigh_ind):
             neigh_dist[i, :] = euclidean_distances(

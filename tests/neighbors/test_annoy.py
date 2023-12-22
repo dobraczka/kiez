@@ -6,10 +6,7 @@ from kiez.neighbors import Annoy
 from kiez.neighbors.util import available_nn_algorithms
 
 NN_ALGORITHMS = available_nn_algorithms()
-if Annoy not in NN_ALGORITHMS:
-    skip = True
-else:
-    skip = False
+skip = Annoy not in NN_ALGORITHMS
 skip_reason = "Annoy not installed"
 
 

@@ -30,7 +30,7 @@ class LocalScaling(HubnessReduction):
     ----------
     .. [1] Schnitzer, D., Flexer, A., Schedl, M., & Widmer, G. (2012).
            Local and global scaling reduce hubs in space. The Journal of Machine
-           Learning Research, 13(1), 2871–2902.
+           Learning Research, 13(1), 2871-2902.
     """
 
     def __init__(self, method: str = "standard", **kwargs):

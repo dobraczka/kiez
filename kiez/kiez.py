@@ -88,7 +88,8 @@ class Kiez:
                 f"n_neighbors does not take {type(n_candidates)} value, enter"
                 " integer value"
             )
-        elif n_candidates <= 0:
+
+        if n_candidates <= 0:
             raise ValueError(f"Expected n_candidates > 0. Got {n_candidates}")
         if algorithm_kwargs is None:
             algorithm_kwargs = {"n_candidates": n_candidates}

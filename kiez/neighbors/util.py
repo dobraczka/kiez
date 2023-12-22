@@ -17,6 +17,6 @@ def available_nn_algorithms() -> List[Type[NNAlgorithm]]:
         try:
             nn_algorithm_resolver.make(ann)
             available.append(nn_algorithm_resolver.lookup(ann))
-        except ImportError:
+        except ImportError:  # noqa: PERF203
             pass
     return available

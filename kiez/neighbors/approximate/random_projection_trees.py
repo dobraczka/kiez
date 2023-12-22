@@ -54,14 +54,14 @@ class Annoy(NNAlgorithmWithJoblib):
     See more details in the annoy documentation: https://github.com/spotify/annoy#full-python-api
     """
 
-    valid_metrics = [
+    valid_metrics = (
         "angular",
         "euclidean",
         "manhattan",
         "hamming",
         "dot",
         "minkowski",
-    ]
+    )
 
     def __init__(
         self,
@@ -239,5 +239,4 @@ class Annoy(NNAlgorithmWithJoblib):
 
         if return_distance:
             return neigh_dist, neigh_ind
-        else:
-            return neigh_ind
+        return neigh_ind

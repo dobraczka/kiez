@@ -27,7 +27,7 @@ def test_no_hub(source_target):
     # check only created target index
     assert not hasattr(k_inst.algorithm, "source_index")
     k_inst.algorithm = SklearnNN()
-    assert "f{k_inst}"
+    assert "f{k_inst}"  # noqa: PLW0129
     assert (
         Kiez(
             n_candidates=n_cand,
@@ -127,8 +127,7 @@ def test_from_config():
 def mock_make(name, algorithm_kwargs):
     if name == "Faiss":
         raise ImportError
-    else:
-        return SklearnNN()
+    return SklearnNN()
 
 
 @mock.patch("kiez.kiez.nn_algorithm_resolver.make", mock_make)

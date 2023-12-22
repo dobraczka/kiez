@@ -6,10 +6,7 @@ from kiez.neighbors import NNG
 from kiez.neighbors.util import available_nn_algorithms
 
 NN_ALGORITHMS = available_nn_algorithms()
-if NNG not in NN_ALGORITHMS:
-    skip = True
-else:
-    skip = False
+skip = NNG not in NN_ALGORITHMS
 skip_reason = "NNG not installed"
 
 

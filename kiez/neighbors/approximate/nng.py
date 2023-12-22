@@ -6,6 +6,7 @@
 from __future__ import annotations
 
 import logging
+from types import MappingProxyType
 
 import numpy as np
 from tqdm.auto import tqdm
@@ -62,7 +63,7 @@ class NNG(NNAlgorithmWithJoblib):
     when required.
     """
 
-    valid_metrics = [
+    valid_metrics = (
         "manhattan",
         "L1",
         "euclidean",
@@ -75,13 +76,15 @@ class NNG(NNAlgorithmWithJoblib):
         "Normalized Cosine",
         "Hamming",
         "Jaccard",
-    ]
-    _internal_distance_type = {
-        "manhattan": "L1",
-        "euclidean": "L2",
-        "minkowski": "L2",
-        "sqeuclidean": "L2",
-    }
+    )
+    _internal_distance_type = MappingProxyType(
+        {
+            "manhattan": "L1",
+            "euclidean": "L2",
+            "minkowski": "L2",
+            "sqeuclidean": "L2",
+        }
+    )
 
     def __init__(
         self,
@@ -147,10 +150,7 @@ class NNG(NNAlgorithmWithJoblib):
             )
 
     def _fit(self, data, is_source: bool):
-        if is_source:
-            prefix = "kiez_source"
-        else:
-            prefix = "kiez_target"
+        prefix = "kiez_source" if is_source else "kiez_target"
 
         index_path = None
         # Set up a directory to save the index to
@@ -264,5 +264,4 @@ class NNG(NNAlgorithmWithJoblib):
 
         if return_distance:
             return neigh_dist, neigh_ind
-        else:
-            return neigh_ind
+        return neigh_ind

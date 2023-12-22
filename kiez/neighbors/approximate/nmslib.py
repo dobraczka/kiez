@@ -14,6 +14,8 @@ try:
 except ImportError:  # pragma: no cover
     nmslib = None
 
+_VERBOSE_THRESH = 2
+
 
 class NMSLIB(NNAlgorithm):
     """Wrapper for hierarchical navigable small world graphs based approximate nearest neighbor search implementation from NMSLIB.
@@ -44,7 +46,7 @@ class NMSLIB(NNAlgorithm):
     See the nmslib documentation for more details: https://github.com/nmslib/nmslib/blob/master/manual/methods.md
     """
 
-    valid_metrics = [
+    valid_metrics = (
         "euclidean",
         "l2",
         "minkowski",
@@ -52,14 +54,14 @@ class NMSLIB(NNAlgorithm):
         "sqeuclidean",
         "cosine",
         "cosinesimil",
-    ]
+    )
 
     def __init__(
         self,
         n_candidates: int = 5,
         metric: str = "euclidean",
         method: str = "hnsw",
-        M: int = 16,  # noqa: N803
+        M: int = 16,
         post_processing: int = 2,
         ef_construction: int = 200,
         n_jobs: int = 1,
@@ -97,7 +99,7 @@ class NMSLIB(NNAlgorithm):
         super().__init__(n_candidates=n_candidates, metric=metric, n_jobs=n_jobs)
         self.verbose = verbose
         self.method = method
-        self.M = M  # noqa: N803
+        self.M = M
         self.post_processing = post_processing
         self.ef_construction = ef_construction
 
@@ -128,7 +130,7 @@ class NMSLIB(NNAlgorithm):
                 "post": post_processing,
                 "indexThreadQty": self.n_jobs,
             },
-            print_progress=(self.verbose >= 2),
+            print_progress=(self.verbose >= _VERBOSE_THRESH),
         )
         return hnsw_index
 
@@ -158,5 +160,4 @@ class NMSLIB(NNAlgorithm):
 
         if return_distance:
             return neigh_dist, neigh_ind
-        else:
-            return neigh_ind
+        return neigh_ind

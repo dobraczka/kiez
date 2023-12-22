@@ -54,8 +54,8 @@ class Faiss(NNAlgorithm):
     For details about configuring faiss consult their wiki: https://github.com/facebookresearch/faiss/wiki
     """
 
-    valid_metrics = ["l2", "euclidean"]
-    valid_spaces = ["l2"]
+    valid_metrics = ("l2", "euclidean")
+    valid_spaces = "l2"
 
     def __init__(
         self,
@@ -117,5 +117,4 @@ class Faiss(NNAlgorithm):
             if self.metric == "euclidean":
                 dist = np.sqrt(dist)
             return dist, ind
-        else:
-            return ind
+        return ind

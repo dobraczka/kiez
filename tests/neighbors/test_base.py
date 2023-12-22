@@ -19,11 +19,12 @@ def test_str_rep(algo_cls, source_target):
 
 
 def test_check_k_value():
+    space = 2
     with pytest.raises(ValueError, match="Expected"):
-        SklearnNN()._check_k_value(k=-1, needed_space=2)
+        SklearnNN()._check_k_value(k=-1, needed_space=space)
 
     with pytest.raises(TypeError, match="integer"):
-        SklearnNN()._check_k_value(k="test", needed_space=2)
+        SklearnNN()._check_k_value(k="test", needed_space=space)
 
-    checked = SklearnNN()._check_k_value(k=3, needed_space=2)
-    assert checked == 2
+    checked = SklearnNN()._check_k_value(k=3, needed_space=space)
+    assert checked == space

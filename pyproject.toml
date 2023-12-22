@@ -68,8 +68,8 @@ indent-width = 4
 target-version = "py38"
 
 [tool.ruff.lint]
-ignore = ["E111", "E114", "E117", "E501", "D1", "D203", "D213", "D206", "D300", "Q000", "Q001", "Q002", "Q003", "COM812", "COM819", "ISC001","ISC002", "B905", "W191"]
-select = ["B", "C", "E", "F", "W", "B", "I", "D", "UP", "A", "C4", "T10", "ICN", "PIE", "PYI", "PT"]
+ignore = ["E111", "E114", "E117", "E501", "D1", "D203", "D213", "D206", "D300", "Q000", "Q001", "Q002", "Q003", "COM812", "COM819", "ISC001","ISC002", "B905", "W191", "PLR0913", "PLR0912"]
+select = ["B", "C", "E", "F", "W", "B", "I", "D", "UP", "A", "C4", "T10", "ICN", "PIE", "PYI", "PT", "RET", "SIM", "ERA", "PD", "PGH", "PL", "NPY", "PERF", "RUF"]
 
 [tool.ruff.lint.mccabe]
 max-complexity = 18

@@ -109,7 +109,6 @@ def lint(session: Session) -> None:
         "pre-commit",
         "run",
         "--all-files",
-        "--show-diff-on-failure",
         "--hook-stage=manual",
         *session.posargs,
     )
@@ -118,18 +117,15 @@ def lint(session: Session) -> None:
 @session()
 def style_checking(session: Session) -> None:
     args = session.posargs or locations
-    session.install(
-        "pyproject-flake8",
-        "flake8-eradicate",
-        "flake8-isort",
-        "flake8-debugger",
-        "flake8-comprehensions",
-        "flake8-print",
-        "flake8-black",
-        "flake8-bugbear",
-        "pydocstyle",
-    )
-    session.run("pflake8", *args)
+    session.install("ruff")
+    session.run("ruff", "check", *args)
+
+
+@session()
+def pedantic_checking(session: Session) -> None:
+    args = session.posargs or locations
+    session.install("ruff")
+    session.run("ruff", "check", '--extend-select="ARG,TID,PLR0913,PLR0912"', *args)
 
 
 @session()

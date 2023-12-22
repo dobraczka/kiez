@@ -6,10 +6,7 @@ from kiez.neighbors import NMSLIB
 from kiez.neighbors.util import available_nn_algorithms
 
 NN_ALGORITHMS = available_nn_algorithms()
-if NMSLIB not in NN_ALGORITHMS:
-    skip = True
-else:
-    skip = False
+skip = NMSLIB not in NN_ALGORITHMS
 skip_reason = "NMSLIB not installed"
 
 rng = np.random.RandomState(2)

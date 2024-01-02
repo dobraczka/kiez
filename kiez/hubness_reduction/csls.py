@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import numpy as np
 from sklearn.utils.validation import check_is_fitted
-from tqdm.auto import tqdm
 
 from .base import HubnessReduction
 
@@ -84,27 +83,13 @@ class CSLS(HubnessReduction):
         """
         check_is_fitted(self, "r_dist_train_")
 
-        n_test, n_indexed = neigh_dist.shape
-
         # Find average distances to the k nearest neighbors
         r_dist_test = neigh_dist
 
-        hub_reduced_dist = np.empty_like(neigh_dist)
-
-        # Optionally show progress of local scaling loop
-        disable_tqdm = not self.verbose
-        range_n_test = tqdm(
-            range(n_test),
-            desc="CSLS",
-            disable=disable_tqdm,
-        )
-
         r_train = self.r_dist_train_.mean(axis=1)
-        r_test = r_dist_test.mean(axis=1)
-        for i in range_n_test:
-            hub_reduced_dist[i, :] = (
-                2 * neigh_dist[i] - r_test[i] - r_train[neigh_ind[i]]
-            )
+        r_test = r_dist_test.mean(axis=1).reshape(-1, 1)
+
+        hub_reduced_dist = 2 * neigh_dist - r_test - r_train[neigh_ind]
         # Return the hubness reduced distances
         # These must be sorted downstream
         return hub_reduced_dist, neigh_ind

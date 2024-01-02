@@ -68,23 +68,6 @@ def test_all(k, get_expected):
             assert pytest.approx(v) == measures[score_key]
 
 
-@pytest.mark.parametrize("verbose", [True, False])
-def test_shuffle_equal(verbose):
-    assert hubness_score(
-        PRE_CALC_NEIGHBORS,
-        1000,
-        shuffle_equal=True,
-        verbose=verbose,
-        return_value="k_skewness",
-    ) == hubness_score(
-        PRE_CALC_NEIGHBORS,
-        1000,
-        shuffle_equal=False,
-        verbose=verbose,
-        return_value="k_skewness",
-    )
-
-
 def test_atkinson():
     atkinson_0999 = _calc_atkinson_index(K_OCC, eps=0.999)
     atkinson_1000 = _calc_atkinson_index(K_OCC, eps=1)

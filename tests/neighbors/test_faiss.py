@@ -12,7 +12,7 @@ except ImportError:
 
 NN_ALGORITHMS = available_nn_algorithms()
 skip = Faiss not in NN_ALGORITHMS
-skip2 = not skip and torch and torch.cuda.is_available()
+skip2 = skip or not torch or not torch.cuda.is_available()
 
 
 @pytest.mark.skipif(skip, reason="Faiss not installed")

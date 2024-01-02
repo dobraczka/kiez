@@ -25,6 +25,7 @@ def test_faiss(session: Session) -> None:
     session.conda_install(
         "-c", "pytorch", "faiss-cpu=1.7.4", "mkl=2021", "blas=1.0=mkl"
     )
+    session.conda_install("-c", "pytorch", "pytorch=2.1.2", "cpuonly")
     session.install(".")
     session.install("autofaiss")
     session.install("pytest")

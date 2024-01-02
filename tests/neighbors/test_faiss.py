@@ -54,13 +54,16 @@ def test_different_instantiations(single_source, source_target):
 )
 def test_torch_gpu(hubness, source_target):
     k = 3
-    source = torch.tensor(source_target[0])
-    target = torch.tensor(source_target[1])
+    source = torch.tensor(source_target[0]).cuda()
+    target = torch.tensor(source_target[1]).cuda()
+    device_type = source.device.type
     nn_inst = Faiss(metric="l2", index_key="Flat")
     kiez_inst = Kiez(n_candidates=5, algorithm=nn_inst, hubness=hubness)
     kiez_inst.fit(source, target)
     dist, ind = kiez_inst.kneighbors(k)
     assert type(dist) == torch.Tensor
     assert type(ind) == torch.Tensor
+    assert dist.device.type == device_type
+    assert ind.device.type == device_type
     assert dist.shape == (len(source), k)
     assert ind.shape == (len(source), k)

@@ -57,7 +57,7 @@ def test_torch_gpu(hubness, source_target):
     source = torch.tensor(source_target[0]).cuda()
     target = torch.tensor(source_target[1]).cuda()
     device_type = source.device.type
-    nn_inst = Faiss(metric="l2", index_key="Flat")
+    nn_inst = Faiss(metric="l2", index_key="Flat", use_gpu=True)
     kiez_inst = Kiez(n_candidates=5, algorithm=nn_inst, hubness=hubness)
     kiez_inst.fit(source, target)
     dist, ind = kiez_inst.kneighbors(k)

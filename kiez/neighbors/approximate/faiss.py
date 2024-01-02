@@ -97,6 +97,11 @@ class Faiss(NNAlgorithm):
             + f"use_gpu={self.use_gpu})"
         )
 
+    def _to_float32(self, data):
+        if data.dtype != "float32":
+            return data.astype("float32")
+        return data
+
     def _fit(self, data, is_source: bool):
         dim = data.shape[1]
         index = faiss.index_factory(dim, self.index_key)
@@ -106,14 +111,14 @@ class Faiss(NNAlgorithm):
             params = faiss.GpuParameterSpace()
         if self.index_param is not None:
             params.set_index_parameters(index, self.index_param)
-        index.add(data)
+        index.add(self._to_float32(data))
         return index
 
     def _kneighbors(self, k, query, index, return_distance, is_self_querying):
         if is_self_querying:
-            dist, ind = index.search(self.source_, k)
-        else:
-            dist, ind = index.search(query, k)
+            query = self.source_
+        query = self._to_float32(query)
+        dist, ind = index.search(query, k)
         if return_distance:
             if self.metric == "euclidean":
                 dist = np.sqrt(dist)

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # SPDX-License-Identifier: BSD-3-Clause
 # Author: Roman Feldbauer (adaptions for scikit-hubness)
 #         Daniel Obraczka (adaptions for kiez)
@@ -7,6 +6,7 @@
 from __future__ import annotations
 
 import logging
+from types import MappingProxyType
 
 import numpy as np
 from tqdm.auto import tqdm
@@ -15,7 +15,7 @@ from kiez.io.temp_file_handling import create_tempfile_preferably_in_dir
 from kiez.neighbors.neighbor_algorithm_base import NNAlgorithmWithJoblib
 
 try:
-    import ngtpy  # noqa: autoimport
+    import ngtpy
 
 except ImportError:  # pragma: no cover
     ngtpy = None
@@ -27,8 +27,7 @@ __all__ = [
 
 
 class NNG(NNAlgorithmWithJoblib):
-    """
-    Wrapper for NGT's graph based approximate nearest neighbor search
+    """Wrapper for NGT's graph based approximate nearest neighbor search.
 
     Parameters
     ----------
@@ -64,7 +63,7 @@ class NNG(NNAlgorithmWithJoblib):
     when required.
     """
 
-    valid_metrics = [
+    valid_metrics = (
         "manhattan",
         "L1",
         "euclidean",
@@ -77,13 +76,15 @@ class NNG(NNAlgorithmWithJoblib):
         "Normalized Cosine",
         "Hamming",
         "Jaccard",
-    ]
-    _internal_distance_type = {
-        "manhattan": "L1",
-        "euclidean": "L2",
-        "minkowski": "L2",
-        "sqeuclidean": "L2",
-    }
+    )
+    _internal_distance_type = MappingProxyType(
+        {
+            "manhattan": "L1",
+            "euclidean": "L2",
+            "minkowski": "L2",
+            "sqeuclidean": "L2",
+        }
+    )
 
     def __init__(
         self,
@@ -96,7 +97,6 @@ class NNG(NNAlgorithmWithJoblib):
         n_jobs: int = 1,
         verbose: int = 0,
     ):
-
         if ngtpy is None:  # pragma: no cover
             raise ImportError(
                 "Please install the `ngt` package, before using this class.\n"
@@ -150,10 +150,7 @@ class NNG(NNAlgorithmWithJoblib):
             )
 
     def _fit(self, data, is_source: bool):
-        if is_source:
-            prefix = "kiez_source"
-        else:
-            prefix = "kiez_target"
+        prefix = "kiez_source" if is_source else "kiez_target"
 
         index_path = None
         # Set up a directory to save the index to
@@ -232,7 +229,7 @@ class NNG(NNAlgorithmWithJoblib):
                     epsilon=self.epsilon,
                 )
                 if return_distance:
-                    ind, dist = [np.array(arr) for arr in zip(*response)]
+                    ind, dist = (np.array(arr) for arr in zip(*response))
                 else:
                     ind = response
                 ind = ind[start:]
@@ -253,7 +250,7 @@ class NNG(NNAlgorithmWithJoblib):
                     epsilon=self.epsilon,
                 )
                 if return_distance:
-                    ind, dist = [np.array(arr) for arr in zip(*response)]
+                    ind, dist = (np.array(arr) for arr in zip(*response))
                 else:
                     ind = response
                 ind = ind[start:]
@@ -267,5 +264,4 @@ class NNG(NNAlgorithmWithJoblib):
 
         if return_distance:
             return neigh_dist, neigh_ind
-        else:
-            return neigh_ind
+        return neigh_ind

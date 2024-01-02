@@ -4,7 +4,8 @@ from kiez.neighbors import NNAlgorithm, nn_algorithm_resolver
 
 
 def available_nn_algorithms() -> List[Type[NNAlgorithm]]:
-    """Get available (approximate) nearest neighbor algorithms
+    """Get available (approximate) nearest neighbor algorithms.
+
     Returns
     -------
     algorithms: List[Type[NNAlgorithm]]
@@ -16,6 +17,6 @@ def available_nn_algorithms() -> List[Type[NNAlgorithm]]:
         try:
             nn_algorithm_resolver.make(ann)
             available.append(nn_algorithm_resolver.lookup(ann))
-        except ImportError:
+        except ImportError:  # noqa: PERF203
             pass
     return available

@@ -6,7 +6,7 @@ from kiez.io.data_loading import _seperate_common_embedding
 
 
 @pytest.mark.parametrize(
-    "input,expected",
+    ("values", "expected"),
     [
         (
             (
@@ -40,8 +40,8 @@ from kiez.io.data_loading import _seperate_common_embedding
         ),
     ],
 )
-def test_seperate_common_embedding(input, expected):
-    emb1, emb2, ids1, ids2, ent_links = _seperate_common_embedding(*input)
+def test_seperate_common_embedding(values, expected):
+    emb1, emb2, ids1, ids2, ent_links = _seperate_common_embedding(*values)
     assert_array_equal(expected[0], emb1)
     assert_array_equal(expected[1], emb2)
     assert expected[2] == ids1

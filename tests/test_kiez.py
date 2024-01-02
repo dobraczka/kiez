@@ -10,9 +10,9 @@ from kiez.neighbors.util import available_nn_algorithms
 
 NN_ALGORITHMS = available_nn_algorithms()
 
-MP = [("MutualProximity", dict(method=method)) for method in ["normal", "empiric"]]
-LS = [("LocalScaling", dict(method=method)) for method in ["standard", "nicdm"]]
-DSL = [("DisSimLocal", dict(squared=val)) for val in [True, False]]
+MP = [("MutualProximity", {"method": method}) for method in ["normal", "empiric"]]
+LS = [("LocalScaling", {"method": method}) for method in ["standard", "nicdm"]]
+DSL = [("DisSimLocal", {"squared": val}) for val in [True, False]]
 HUBNESS_AND_KWARGS = [(None, {}), ("CSLS", {}), *MP, *LS, *DSL]
 
 
@@ -27,12 +27,12 @@ def test_no_hub(source_target):
     # check only created target index
     assert not hasattr(k_inst.algorithm, "source_index")
     k_inst.algorithm = SklearnNN()
-    assert "f{k_inst}"
+    assert "f{k_inst}"  # noqa: PLW0129
     assert (
         Kiez(
             n_candidates=n_cand,
             algorithm="SklearnNN",
-            algorithm_kwargs=dict(metric="minkowski"),
+            algorithm_kwargs={"metric": "minkowski"},
         ).algorithm.n_candidates
         == n_cand
     )
@@ -63,7 +63,7 @@ def test_algo_resolver(source_target, algo, n_cand=5):
     assert_different_neighbors(k_inst, n_cand)
 
 
-@pytest.mark.parametrize("hub,hubkwargs", HUBNESS_AND_KWARGS)
+@pytest.mark.parametrize(("hub", "hubkwargs"), HUBNESS_AND_KWARGS)
 def test_hubness_resolver(hub, hubkwargs, source_target, n_cand=5):
     source, target = source_target
     k_inst = Kiez(
@@ -77,38 +77,33 @@ def test_hubness_resolver(hub, hubkwargs, source_target, n_cand=5):
     assert_different_neighbors(k_inst, n_cand)
     k_inst.fit(source, None)
     assert_different_neighbors(k_inst, n_cand)
-    with pytest.raises(ValueError) as exc_info:
+    with pytest.raises(ValueError, match="Cannot"):
         k_inst = Kiez(
             algorithm="SklearnNN",
             n_candidates=1,
             hubness=hub,
             hubness_kwargs=hubkwargs,
         )
-    assert "Cannot" in str(exc_info.value)
 
 
 def test_n_candidates_wrong():
-    with pytest.raises(ValueError) as exc_info:
+    with pytest.raises(ValueError, match="Expected"):
         Kiez(n_candidates=-1)
-    assert "Expected" in str(exc_info.value)
 
 
 def test_n_candidates_wrong_type():
-    with pytest.raises(TypeError) as exc_info:
+    with pytest.raises(TypeError, match="does not"):
         Kiez(n_candidates="1")
-    assert "does not" in str(exc_info.value)
 
 
 def test_dis_sim_local_wrong():
-    with pytest.raises(ValueError) as exc_info:
+    with pytest.raises(ValueError, match="only supports"):
         Kiez(algorithm=SklearnNN(p=1), hubness="DisSimLocal")
-    assert "only supports" in str(exc_info.value)
 
 
 def test_dis_sim_local_wrong_metric():
-    with pytest.raises(ValueError) as exc_info:
+    with pytest.raises(ValueError, match="only supports"):
         Kiez(algorithm=SklearnNN(metric="cosine"), hubness="DisSimLocal")
-    assert "only supports" in str(exc_info.value)
 
 
 def test_dis_sim_local_squaring():
@@ -132,8 +127,7 @@ def test_from_config():
 def mock_make(name, algorithm_kwargs):
     if name == "Faiss":
         raise ImportError
-    else:
-        return SklearnNN()
+    return SklearnNN()
 
 
 @mock.patch("kiez.kiez.nn_algorithm_resolver.make", mock_make)

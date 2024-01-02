@@ -1,17 +1,14 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # SPDX-License-Identifier: BSD-3-Clause
 # adapted from skhubness: https://github.com/VarIr/scikit-hubness/
-"""
-Estimate hubness in datasets
-"""
+"""Estimate hubness in datasets."""
 
 
 from __future__ import annotations
 
 import logging
 import warnings
-from typing import Optional, Tuple, Union
+from typing import Optional, Union
 
 import numpy as np
 from scipy import stats
@@ -33,6 +30,8 @@ VALID_HUBNESS_MEASURES = [
     "groupie_ratio",
     "k_occurrence",
 ]
+
+_SPACE_LIMIT = 10000
 
 
 def _calc_skewness_truncnorm(k_occurrence: np.ndarray) -> float:
@@ -56,8 +55,7 @@ def _calc_skewness_truncnorm(k_occurrence: np.ndarray) -> float:
     k_occurrence_std = k_occurrence.std(ddof=1)
     a = (clip_left - k_occurrence_mean) / k_occurrence_std
     b = (clip_right - k_occurrence_mean) / k_occurrence_std
-    skew_truncnorm = stats.truncnorm(a, b).moment(3)
-    return skew_truncnorm
+    return stats.truncnorm(a, b).moment(3)
 
 
 def _calc_gini_index(
@@ -151,7 +149,7 @@ def _calc_atkinson_index(k_occurrence: np.ndarray, eps: float = 0.5) -> float:
     return float(1.0 - 1.0 / k_occurrence.mean() * term)
 
 
-def _calc_antihub_occurrence(k_occurrence: np.ndarray) -> Tuple[np.ndarray, float]:
+def _calc_antihub_occurrence(k_occurrence: np.ndarray) -> tuple[np.ndarray, float]:
     """Proportion of antihubs in data set.
 
     Antihubs are objects that are never among the nearest neighbors
@@ -173,7 +171,7 @@ def _calc_antihub_occurrence(k_occurrence: np.ndarray) -> Tuple[np.ndarray, floa
 
 def _calc_hub_occurrence(
     k: int, k_occurrence: np.ndarray, n_test: int, hub_size: float = 2
-) -> Tuple[np.ndarray, float]:
+) -> tuple[np.ndarray, float]:
     """Proportion of nearest neighbor slots occupied by hubs.
 
     Parameters
@@ -202,8 +200,6 @@ def hubness_score(
     *,
     k: Optional[int] = None,
     hub_size: float = 2.0,
-    shuffle_equal: bool = True,
-    random_state=None,
     verbose: int = 0,
     return_value: str = "all_but_gini",
     store_k_occurrence: bool = False,
@@ -222,16 +218,6 @@ def hubness_score(
         number of k for k-nearest neighbor
     hub_size : float
         Hubs are defined as objects with k-occurrence > hub_size * k.
-    shuffle_equal : bool
-        If true shuffle neighbors with identical distances
-        to avoid artifact hubness.
-        NOTE: This is especially useful for secondary distance measures
-        with a finite number of possible values
-    random_state: int, RandomState instance or None, optional
-        If int, random_state is the seed used by the random number generator;
-        If RandomState instance, random_state is the random number generator;
-        If None, the random number generator is the RandomState instance used
-        by `np.random`.
     verbose : int
         Level of output messages
     return_value : str
@@ -288,12 +274,11 @@ def hubness_score(
     k_neighbors = nn_ind.copy()
     if k is None:
         k = nn_ind.shape[1]
-    else:
-        if k < k_neighbors.shape[1]:
-            k_neighbors = k_neighbors[:, :k]
-        elif k > k_neighbors.shape[1]:
-            k = nn_ind.shape[1]
-            warnings.warn(f"k > nn_ind.shape[1], k will be set to {k}")
+    elif k < k_neighbors.shape[1]:
+        k_neighbors = k_neighbors[:, :k]
+    elif k > k_neighbors.shape[1]:
+        k = nn_ind.shape[1]
+        warnings.warn(f"k > nn_ind.shape[1], k will be set to {k}", stacklevel=2)
     assert k is not None
 
     # Negative indices can occur, when ANN does not find enough neighbors,
@@ -317,7 +302,7 @@ def hubness_score(
 
     # Gini index
     if return_value in ["gini", "all"]:
-        limiting = "space" if k_occurrence.shape[0] > 10_000 else "time"
+        limiting = "space" if k_occurrence.shape[0] > _SPACE_LIMIT else "time"
         gini_index = _calc_gini_index(k_occurrence, limiting, verbose=verbose)
     else:
         gini_index = np.nan
@@ -360,8 +345,7 @@ def hubness_score(
         hubness_measures["k_occurrence"] = k_occurrence
     if return_value == "all":
         return hubness_measures
-    elif return_value == "all_but_gini":
+    if return_value == "all_but_gini":
         del hubness_measures["gini"]
         return hubness_measures
-    else:
-        return hubness_measures[return_value]
+    return hubness_measures[return_value]

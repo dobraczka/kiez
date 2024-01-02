@@ -2,7 +2,7 @@ from nox import session as nox_session
 from nox_poetry import Session, session
 
 
-@session()
+@session(tags=["tests"])
 def tests(session: Session) -> None:
     args = session.posargs or ["tests/"]
     session.install(".")
@@ -15,11 +15,11 @@ def tests(session: Session) -> None:
         "--data-file=.coverage.base",
         "-m",
         "pytest",
-        *args
+        *args,
     )
 
 
-@nox_session(python="3.10", venv_backend="conda")
+@nox_session(python="3.10", venv_backend="conda", tags=["tests"])
 def test_faiss(session: Session) -> None:
     args = session.posargs or ["tests/"]
     session.conda_install(
@@ -36,11 +36,11 @@ def test_faiss(session: Session) -> None:
         "--data-file=.coverage.faiss",
         "-m",
         "pytest",
-        *args
+        *args,
     )
 
 
-@session(python="3.10")
+@session(python="3.10", tags=["tests"])
 def test_ngt(session: Session) -> None:
     args = session.posargs or ["tests/"]
     session.install(".[ngt]")
@@ -53,11 +53,11 @@ def test_ngt(session: Session) -> None:
         "--data-file=.coverage.ngt",
         "-m",
         "pytest",
-        *args
+        *args,
     )
 
 
-@session(python="3.10")
+@session(python="3.10", tags=["tests"])
 def test_nmslib(session: Session) -> None:
     args = session.posargs or ["tests/"]
     session.install(".[nmslib]")
@@ -70,11 +70,11 @@ def test_nmslib(session: Session) -> None:
         "--data-file=.coverage.nmslib",
         "-m",
         "pytest",
-        *args
+        *args,
     )
 
 
-@session(python="3.10")
+@session(python="3.10", tags=["tests"])
 def test_annoy(session: Session) -> None:
     args = session.posargs or ["tests/"]
     session.install(".[annoy]")
@@ -87,8 +87,16 @@ def test_annoy(session: Session) -> None:
         "--data-file=.coverage.annoy",
         "-m",
         "pytest",
-        *args
+        *args,
     )
+
+
+@session(python="3.10", tags=["tests"])
+def coverage(session: Session) -> None:
+    session.install("pytest")
+    session.install("pytest-cov")
+    session.run("coverage", "combine")
+    session.run("coverage", "html")
 
 
 locations = ["kiez", "tests", "noxfile.py"]
@@ -96,27 +104,28 @@ locations = ["kiez", "tests", "noxfile.py"]
 
 @session()
 def lint(session: Session) -> None:
-    args = session.posargs or locations
-    session.install("black", "isort")
-    session.run("black", *args)
-    session.run("isort", *args)
+    session.install("pre-commit")
+    session.run(
+        "pre-commit",
+        "run",
+        "--all-files",
+        "--hook-stage=manual",
+        *session.posargs,
+    )
 
 
 @session()
 def style_checking(session: Session) -> None:
     args = session.posargs or locations
-    session.install(
-        "pyproject-flake8",
-        "flake8-eradicate",
-        "flake8-isort",
-        "flake8-debugger",
-        "flake8-comprehensions",
-        "flake8-print",
-        "flake8-black",
-        "flake8-bugbear",
-        "pydocstyle",
-    )
-    session.run("pflake8", *args)
+    session.install("ruff")
+    session.run("ruff", "check", *args)
+
+
+@session()
+def pedantic_checking(session: Session) -> None:
+    args = session.posargs or locations
+    session.install("ruff")
+    session.run("ruff", "check", '--extend-select="ARG,TID,PLR0913,PLR0912"', *args)
 
 
 @session()

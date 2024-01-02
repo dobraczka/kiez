@@ -13,8 +13,9 @@
 import os
 import sys
 
-from kiez import __version__
 from sphinx.ext.autodoc import between
+
+from kiez import __version__
 
 sys.path.insert(0, os.path.abspath("."))
 
@@ -30,7 +31,7 @@ def setup(app):
 # -- Project information -----------------------------------------------------
 
 project = "kiez"
-copyright = "2021, Daniel Obraczka"
+copyright = "2021, Daniel Obraczka"  # noqa: A001
 author = "Daniel Obraczka"
 
 # The full version, including alpha/beta/rc tags

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # SPDX-License-Identifier: BSD-3-Clause
 # Author: Tom Dupre la Tour (original work)
 #         Roman Feldbauer (adaptions for scikit-hubness)
@@ -17,15 +16,14 @@ from kiez.io.temp_file_handling import create_tempfile_preferably_in_dir
 from kiez.neighbors.neighbor_algorithm_base import NNAlgorithmWithJoblib
 
 try:
-    import annoy  # noqa: autoimport
+    import annoy
 
 except ImportError:  # pragma: no cover
     annoy = None
 
 
 class Annoy(NNAlgorithmWithJoblib):
-    """
-    Wrapper for Spotify's approximate nearest neighbor library
+    """Wrapper for Spotify's approximate nearest neighbor library.
 
     Parameters
     ----------
@@ -56,14 +54,14 @@ class Annoy(NNAlgorithmWithJoblib):
     See more details in the annoy documentation: https://github.com/spotify/annoy#full-python-api
     """
 
-    valid_metrics = [
+    valid_metrics = (
         "angular",
         "euclidean",
         "manhattan",
         "hamming",
         "dot",
         "minkowski",
-    ]
+    )
 
     def __init__(
         self,
@@ -75,7 +73,6 @@ class Annoy(NNAlgorithmWithJoblib):
         n_jobs: int = 1,
         verbose: int = 0,
     ):
-
         if annoy is None:  # pragma: no cover
             raise ImportError(
                 "Please install the `annoy` package, before using this class.\n"
@@ -242,5 +239,4 @@ class Annoy(NNAlgorithmWithJoblib):
 
         if return_distance:
             return neigh_dist, neigh_ind
-        else:
-            return neigh_ind
+        return neigh_ind

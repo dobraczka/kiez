@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # SPDX-License-Identifier: BSD-3-Clause
 # Author: Roman Feldbauer
 
@@ -16,6 +15,7 @@ def create_tempfile_preferably_in_dir(
     persistent: Optional[bool] = False,
 ):
     """Create a temporary file with precedence for directory if possible, in TMP otherwise.
+
     For example, this is useful to try to save into /dev/shm.
 
     Parameters
@@ -36,10 +36,10 @@ def create_tempfile_preferably_in_dir(
     """
     temp_file = mkstemp if persistent else NamedTemporaryFile
     try:
-        handle = temp_file(suffix=suffix, prefix=prefix, dir=directory)  # type: ignore
+        handle = temp_file(suffix=suffix, prefix=prefix, dir=directory)  # type: ignore[operator]
         warn = False
     except FileNotFoundError:
-        handle = temp_file(suffix=suffix, prefix=prefix, dir=None)  # type: ignore
+        handle = temp_file(suffix=suffix, prefix=prefix, dir=None)  # type: ignore[operator]
         warn = True
 
     # Extract the path (as string)

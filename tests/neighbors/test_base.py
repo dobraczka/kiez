@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from kiez.neighbors import NMSLIB, NNG, Annoy, Faiss, SklearnNN
+from kiez.neighbors import SklearnNN
 from kiez.neighbors.util import available_nn_algorithms
 
 NN_ALGORITHMS = available_nn_algorithms()
@@ -19,13 +19,12 @@ def test_str_rep(algo_cls, source_target):
 
 
 def test_check_k_value():
-    with pytest.raises(ValueError) as exc_info:
-        SklearnNN()._check_k_value(k=-1, needed_space=2)
-    assert "Expected" in str(exc_info.value)
+    space = 2
+    with pytest.raises(ValueError, match="Expected"):
+        SklearnNN()._check_k_value(k=-1, needed_space=space)
 
-    with pytest.raises(TypeError) as exc_info:
-        SklearnNN()._check_k_value(k="test", needed_space=2)
-    assert "integer" in str(exc_info.value)
+    with pytest.raises(TypeError, match="integer"):
+        SklearnNN()._check_k_value(k="test", needed_space=space)
 
-    checked = SklearnNN()._check_k_value(k=3, needed_space=2)
-    assert checked == 2
+    checked = SklearnNN()._check_k_value(k=3, needed_space=space)
+    assert checked == space

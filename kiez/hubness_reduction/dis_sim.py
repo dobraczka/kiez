@@ -1,18 +1,17 @@
-# -*- coding: utf-8 -*-
 # SPDX-License-Identifier: BSD-3-Clause
 # adapted from skhubness: https://github.com/VarIr/scikit-hubness/
 
 from __future__ import annotations
 
-import warnings
-from typing import Tuple
-
 import numpy as np
 from sklearn.metrics import euclidean_distances
 from sklearn.utils.extmath import row_norms
-from sklearn.utils.validation import check_consistent_length, check_is_fitted
+from sklearn.utils.validation import check_is_fitted
 
 from .base import HubnessReduction
+
+_DESIRED_P_VALUE = 2
+_MINIMUM_DIST = 0.0
 
 
 class DisSimLocal(HubnessReduction):
@@ -31,7 +30,7 @@ class DisSimLocal(HubnessReduction):
     ----------
     .. [1] Hara K, Suzuki I, Kobayashi K, Fukumizu K, Radovanović M (2016)
            Flattening the density gradient for eliminating spatial centrality to reduce hubness.
-           In: Proceedings of the 30th AAAI conference on artificial intelligence, pp 1659–1665.
+           In: Proceedings of the 30th AAAI conference on artificial intelligence, pp 1659-1665.
            https://www.aaai.org/ocs/index.php/AAAI/AAAI16/paper/viewPaper/12055
     """
 
@@ -40,13 +39,12 @@ class DisSimLocal(HubnessReduction):
         self.squared = squared
         if self.nn_algo.metric in ["euclidean", "minkowski"]:
             self.squared = False
-            if hasattr(self.nn_algo, "p"):
-                if self.nn_algo.p != 2:
-                    raise ValueError(
-                        "DisSimLocal only supports squared Euclidean distances. If"
-                        " the provided NNAlgorithm has a `p` parameter it must be"
-                        f" set to p=2. Now it is p={self.nn_algo.p}"
-                    )
+            if hasattr(self.nn_algo, "p") and self.nn_algo.p != _DESIRED_P_VALUE:
+                raise ValueError(
+                    "DisSimLocal only supports squared Euclidean distances. If"
+                    " the provided NNAlgorithm has a `p` parameter it must be"
+                    f" set to p=2. Now it is p={self.nn_algo.p}"
+                )
         elif self.nn_algo.metric in ["sqeuclidean"]:
             self.squared = True
         else:
@@ -102,7 +100,7 @@ class DisSimLocal(HubnessReduction):
         neigh_dist: np.ndarray,
         neigh_ind: np.ndarray,
         query: np.ndarray,
-    ) -> Tuple[np.ndarray, np.ndarray]:
+    ) -> tuple[np.ndarray, np.ndarray]:
         """Transform distance between test and training data with DisSimLocal.
 
         Parameters
@@ -156,7 +154,7 @@ class DisSimLocal(HubnessReduction):
         # certain scikit-learn routines (e.g. in metric='precomputed' usages).
         # We, therefore, shift dissimilarities to non-negative values, if necessary.
         min_dist = hub_reduced_dist.min()
-        if min_dist < 0.0:
+        if min_dist < _MINIMUM_DIST:
             hub_reduced_dist += -min_dist
 
         # Return Euclidean or squared Euclidean distances?

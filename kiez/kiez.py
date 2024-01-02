@@ -1,15 +1,14 @@
 from __future__ import annotations
 
 import json
-import warnings
 from pathlib import Path
-from typing import Any, Dict, Optional, Tuple, Union
+from typing import Any, Optional, Union
 
 import numpy as np
 from class_resolver import HintOrType
 
 from kiez.hubness_reduction import hubness_reduction_resolver
-from kiez.hubness_reduction.base import HubnessReduction, NoHubnessReduction
+from kiez.hubness_reduction.base import HubnessReduction
 from kiez.neighbors import NNAlgorithm, nn_algorithm_resolver
 
 
@@ -80,16 +79,17 @@ class Kiez:
         self,
         n_candidates: int = 10,
         algorithm: HintOrType[NNAlgorithm] = None,
-        algorithm_kwargs: Optional[Dict[str, Any]] = None,
+        algorithm_kwargs: Optional[dict[str, Any]] = None,
         hubness: HintOrType[HubnessReduction] = None,
-        hubness_kwargs: Optional[Dict[str, Any]] = None,
+        hubness_kwargs: Optional[dict[str, Any]] = None,
     ):
         if not np.issubdtype(type(n_candidates), np.integer):
             raise TypeError(
                 f"n_neighbors does not take {type(n_candidates)} value, enter"
                 " integer value"
             )
-        elif n_candidates <= 0:
+
+        if n_candidates <= 0:
             raise ValueError(f"Expected n_candidates > 0. Got {n_candidates}")
         if algorithm_kwargs is None:
             algorithm_kwargs = {"n_candidates": n_candidates}
@@ -104,7 +104,7 @@ class Kiez:
             algorithm = nn_algorithm_resolver.make(algorithm, algorithm_kwargs)
         assert algorithm
         if hubness_kwargs is None:
-            hubness_kwargs = dict()
+            hubness_kwargs = {}
         hubness_kwargs["nn_algo"] = algorithm
         self.hubness = hubness_reduction_resolver.make(hubness, hubness_kwargs)
 
@@ -151,7 +151,7 @@ class Kiez:
         self,
         k: Optional[int] = None,
         return_distance=True,
-    ) -> Union[np.ndarray, Tuple[np.ndarray, np.ndarray]]:
+    ) -> Union[np.ndarray, tuple[np.ndarray, np.ndarray]]:
         """Retrieve the k-nearest neighbors using the supplied nearest neighbor algorithm and hubness reduction method.
 
         Parameters

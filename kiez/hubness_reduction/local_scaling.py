@@ -1,14 +1,10 @@
-# -*- coding: utf-8 -*-
 # SPDX-License-Identifier: BSD-3-Clause
 # adapted from skhubness: https://github.com/VarIr/scikit-hubness/
 
 from __future__ import annotations
 
-import warnings
-from typing import Tuple
-
 import numpy as np
-from sklearn.utils.validation import check_consistent_length, check_is_fitted
+from sklearn.utils.validation import check_is_fitted
 from tqdm.auto import tqdm
 
 from .base import HubnessReduction
@@ -34,7 +30,7 @@ class LocalScaling(HubnessReduction):
     ----------
     .. [1] Schnitzer, D., Flexer, A., Schedl, M., & Widmer, G. (2012).
            Local and global scaling reduce hubs in space. The Journal of Machine
-           Learning Research, 13(1), 2871–2902.
+           Learning Research, 13(1), 2871-2902.
     """
 
     def __init__(self, method: str = "standard", **kwargs):
@@ -86,7 +82,7 @@ class LocalScaling(HubnessReduction):
         neigh_dist,
         neigh_ind,
         query=None,
-    ) -> Tuple[np.ndarray, np.ndarray]:
+    ) -> tuple[np.ndarray, np.ndarray]:
         """Transform distance between test and training data with Mutual Proximity.
 
         Parameters
@@ -146,7 +142,7 @@ class LocalScaling(HubnessReduction):
             r_s_to_t = r_dist_s_to_t.mean(axis=1)
             for i in range_n_test:
                 hub_reduced_dist[i, :] = neigh_dist[i] / np.sqrt(
-                    (r_s_to_t[i] * r_t_to_s[neigh_ind[i]])
+                    r_s_to_t[i] * r_t_to_s[neigh_ind[i]]
                 )
 
         # Return the hubness reduced distances

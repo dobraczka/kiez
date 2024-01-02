@@ -1,18 +1,11 @@
-# -*- coding: utf-8 -*-
 # SPDX-License-Identifier: BSD-3-Clause
 # adapted from skhubness: https://github.com/VarIr/scikit-hubness/
 
 from __future__ import annotations
 
-import warnings
-
 import numpy as np
 from scipy import stats
-from sklearn.utils.validation import (
-    check_array,
-    check_consistent_length,
-    check_is_fitted,
-)
+from sklearn.utils.validation import check_is_fitted
 from tqdm.auto import tqdm
 
 from .base import HubnessReduction
@@ -36,7 +29,7 @@ class MutualProximity(HubnessReduction):
     ----------
     .. [1] Schnitzer, D., Flexer, A., Schedl, M., & Widmer, G. (2012).
            Local and global scaling reduce hubs in space. The Journal of Machine
-           Learning Research, 13(1), 2871–2902.
+           Learning Research, 13(1), 2871-2902.
     """
 
     def __init__(self, method: str = "normal", **kwargs):
@@ -46,7 +39,8 @@ class MutualProximity(HubnessReduction):
                 f'Mutual proximity method "{method}" not recognized. Try "normal"'
                 ' or "empiric".'
             )
-        elif method in ["exact", "empiric"]:
+
+        if method in ["exact", "empiric"]:
             self.method = "empiric"
         elif method in ["normal", "gaussi"]:
             self.method = "normal"

@@ -1,4 +1,3 @@
-import numpy as np
 import pytest
 from numpy.testing import assert_array_equal
 
@@ -6,10 +5,7 @@ from kiez.neighbors import Faiss
 from kiez.neighbors.util import available_nn_algorithms
 
 NN_ALGORITHMS = available_nn_algorithms()
-if Faiss not in NN_ALGORITHMS:
-    skip = True
-else:
-    skip = False
+skip = Faiss not in NN_ALGORITHMS
 
 
 @pytest.mark.skipif(skip, reason="Faiss not installed")

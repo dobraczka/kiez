@@ -26,7 +26,7 @@ K_OCC = np.array([3, 0, 5, 3, 0, 5, 4, 1, 0, 1, 1, 0, 0, 2, 0, 1, 0,
 rng = np.random.RandomState(2)
 
 
-@pytest.fixture
+@pytest.fixture()
 def get_expected():
     expected = {}
     for k in [2, 5, 10, 50]:
@@ -66,23 +66,6 @@ def test_all(k, get_expected):
             assert_array_equal(v, measures[score_key])
         else:
             assert pytest.approx(v) == measures[score_key]
-
-
-@pytest.mark.parametrize("verbose", [True, False])
-def test_shuffle_equal(verbose):
-    assert hubness_score(
-        PRE_CALC_NEIGHBORS,
-        1000,
-        shuffle_equal=True,
-        verbose=verbose,
-        return_value="k_skewness",
-    ) == hubness_score(
-        PRE_CALC_NEIGHBORS,
-        1000,
-        shuffle_equal=False,
-        verbose=verbose,
-        return_value="k_skewness",
-    )
 
 
 def test_atkinson():
@@ -129,5 +112,5 @@ def test_k_too_large():
 
 
 def test_wrong_neighbors():
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match="no negative"):
         hubness_score(np.array([[np.inf], [0]]), 1)

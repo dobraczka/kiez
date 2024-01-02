@@ -7,6 +7,7 @@ from kiez.neighbors.neighbor_algorithm_base import NNAlgorithm
 
 try:
     import faiss
+    import faiss.contrib.torch_utils
 except ImportError:  # pragma: no cover
     faiss = None
 

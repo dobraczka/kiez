@@ -8,6 +8,12 @@ from tqdm.auto import tqdm
 
 from .base import HubnessReduction
 
+try:
+    import torch
+    from torch.distributions.normal import Normal
+except ImportError:
+    torch = None
+
 
 class MutualProximity(HubnessReduction):
     """Hubness reduction with Mutual Proximity.
@@ -132,12 +138,20 @@ class MutualProximity(HubnessReduction):
         if self.method == "normal":
             mu_t_to_s = self.mu_t_to_s_
             sd_t_to_s_ = self.sd_t_to_s_
-            mu = np.nanmean(neigh_dist, axis=1).reshape(-1, 1)
-            sd = np.nanstd(neigh_dist, ddof=0, axis=1).reshape(-1, 1)
-            p1 = stats.norm.sf(neigh_dist, mu, sd)
-            p2 = stats.norm.sf(
-                neigh_dist, mu_t_to_s[neigh_dist], sd_t_to_s_[neigh_dist]
-            )
+            if torch and isinstance(neigh_dist, torch.Tensor):
+                mu = torch.nanmean(neigh_dist, axis=1).reshape(-1, 1)
+                sd = torch.nanstd(neigh_dist, ddof=0, axis=1).reshape(-1, 1)
+                p1 = 1 - Normal(mu, sd).cdf(neigh_dist)
+                p2 = 1 - Normal(mu_t_to_s[neigh_dist], sd_t_to_s_[neigh_dist]).cdf(
+                    neigh_dist
+                )
+            else:
+                mu = np.nanmean(neigh_dist, axis=1).reshape(-1, 1)
+                sd = np.nanstd(neigh_dist, ddof=0, axis=1).reshape(-1, 1)
+                p1 = stats.norm.sf(neigh_dist, mu, sd)
+                p2 = stats.norm.sf(
+                    neigh_dist, mu_t_to_s[neigh_dist], sd_t_to_s_[neigh_dist]
+                )
             hub_reduced_dist = 1 - p1 * p2
         # Calculate MP empiric (slow)
         elif self.method == "empiric":

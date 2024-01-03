@@ -54,7 +54,7 @@ def test_different_instantiations(single_source, source_target):
         ("NoHubnessReduction", {}),
         ("LocalScaling", {"method": "ls"}),
         ("LocalScaling", {"method": "nicdm"}),
-        ("MutualProximity", {"method": "norma"}),
+        ("MutualProximity", {"method": "normal"}),
         ("CSLS", {}),
     ],
 )

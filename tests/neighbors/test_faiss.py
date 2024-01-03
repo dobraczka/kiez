@@ -70,6 +70,8 @@ def test_torch_gpu(hubness, hubness_kwargs, source_target):
     )
     kiez_inst.fit(source, target)
     np_dist, np_ind = kiez_inst.kneighbors(k)
+    print(np_dist)
+    print(np_ind)
 
     source = torch.tensor(source).to(torch.float32).cuda()
     target = torch.tensor(target).to(torch.float32).cuda()

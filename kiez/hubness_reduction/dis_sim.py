@@ -142,7 +142,7 @@ class DisSimLocal(HubnessReduction):
 
             # pairwise squared euclidean distance between each query vector and knn
             # unsqueeze to enable batching
-            neigh_dist = torch.cdist(
+            hub_reduced_dist = torch.cdist(
                 torch.unsqueeze(query, 0), self.target_[neigh_ind]
             ).pow(2)
 
@@ -153,7 +153,6 @@ class DisSimLocal(HubnessReduction):
             source_dist_to_centroids = source_minus_centroids.sum(axis=1)
             target_dist_to_centroids = self.target_dist_to_centroids_[neigh_ind]
 
-            hub_reduced_dist = neigh_dist.copy()
             hub_reduced_dist -= source_dist_to_centroids.reshape(-1, 1)
             hub_reduced_dist -= target_dist_to_centroids
         else:

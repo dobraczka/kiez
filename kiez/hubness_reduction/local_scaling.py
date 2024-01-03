@@ -135,7 +135,7 @@ class LocalScaling(HubnessReduction):
             if torch and isinstance(inner_sqrt, torch.Tensor):
                 sqrt = torch.sqrt(inner_sqrt)
             else:
-                exp = np.sqrt(inner_sqrt)
+                sqrt = np.sqrt(inner_sqrt)
             hub_reduced_dist = neigh_dist / sqrt
 
         # Return the hubness reduced distances

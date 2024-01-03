@@ -62,7 +62,8 @@ def test_different_instantiations(single_source, source_target):
 def test_torch_gpu(hubness, hubness_kwargs, source_target):
     k = 3
     source, target = source_target
-    nn_inst_np = Faiss(metric="euclidean", index_key="Flat")
+    metric = "euclidean"
+    nn_inst_np = Faiss(metric=metric, index_key="Flat")
     kiez_inst = Kiez(
         n_candidates=5,
         algorithm=nn_inst_np,
@@ -75,7 +76,7 @@ def test_torch_gpu(hubness, hubness_kwargs, source_target):
     source = torch.tensor(source).to(torch.float32).cuda()
     target = torch.tensor(target).to(torch.float32).cuda()
     device_type = source.device.type
-    nn_inst = Faiss(metric="l2", index_key="Flat", use_gpu=True)
+    nn_inst = Faiss(metric=metric, index_key="Flat", use_gpu=True)
     kiez_inst = Kiez(
         n_candidates=5,
         algorithm=nn_inst,

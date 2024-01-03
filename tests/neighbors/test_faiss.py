@@ -62,7 +62,7 @@ def test_different_instantiations(single_source, source_target):
 def test_torch_gpu(hubness, hubness_kwargs, source_target):
     k = 3
     source, target = source_target
-    nn_inst_np = Faiss(metric="l2", index_key="Flat")
+    nn_inst_np = Faiss(metric="euclidean", index_key="Flat")
     kiez_inst = Kiez(
         n_candidates=5,
         algorithm=nn_inst_np,

@@ -6,6 +6,11 @@ from sklearn.utils.validation import check_is_fitted
 
 from .base import HubnessReduction
 
+try:
+    import torch
+except ImportError:
+    torch = None
+
 
 class LocalScaling(HubnessReduction):
     """Hubness reduction with Local Scaling.
@@ -116,14 +121,22 @@ class LocalScaling(HubnessReduction):
         if self.method in ["ls", "standard"]:
             r_t_to_s = self.r_dist_t_to_s_[:, -1]
             r_s_to_t = r_dist_s_to_t[:, -1].reshape(-1, 1)
-            hub_reduced_dist = 1.0 - np.exp(
-                -1 * neigh_dist**2 / (r_s_to_t * r_t_to_s[neigh_ind])
-            )
+            inner_exp = -1 * neigh_dist**2 / (r_s_to_t * r_t_to_s[neigh_ind])
+            if torch and isinstance(inner_exp, torch.Tensor):
+                exp = torch.exp(inner_exp)
+            else:
+                exp = np.exp(inner_exp)
+            hub_reduced_dist = 1.0 - exp
         # ...or use non-iterative contextual dissimilarity measure
         elif self.method == "nicdm":
             r_t_to_s = self.r_dist_t_to_s_.mean(axis=1)
             r_s_to_t = r_dist_s_to_t.mean(axis=1).reshape(-1, 1)
-            hub_reduced_dist = neigh_dist / np.sqrt(r_s_to_t * r_t_to_s[neigh_ind])
+            inner_sqrt = r_s_to_t * r_t_to_s[neigh_ind]
+            if torch and isinstance(inner_sqrt, torch.Tensor):
+                sqrt = torch.sqrt(inner_sqrt)
+            else:
+                exp = np.sqrt(inner_sqrt)
+            hub_reduced_dist = neigh_dist / sqrt
 
         # Return the hubness reduced distances
         # These must be sorted downstream

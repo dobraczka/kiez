@@ -7,9 +7,14 @@ from kiez.neighbors.neighbor_algorithm_base import NNAlgorithm
 
 try:
     import faiss
-    import faiss.contrib.torch_utils
 except ImportError:  # pragma: no cover
     faiss = None
+
+try:
+    import torch  # noqa: I001
+    import faiss.contrib.torch_utils
+except ImportError:  # pragma: no cover
+    torch = None
 
 
 class Faiss(NNAlgorithm):
@@ -115,6 +120,9 @@ class Faiss(NNAlgorithm):
         dist, ind = index.search(query, k)
         if return_distance:
             if self.metric == "euclidean":
-                dist = np.sqrt(dist)
+                if torch and isinstance(dist, torch.Tensor):
+                    dist = torch.sqrt(dist)
+                else:
+                    dist = np.sqrt(dist)
             return dist, ind
         return ind

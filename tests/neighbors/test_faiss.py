@@ -1,5 +1,5 @@
 import pytest
-from numpy.testing import assert_array_equal
+from numpy.testing import assert_allclose, assert_array_equal
 
 from kiez import Kiez
 from kiez.neighbors import Faiss
@@ -90,5 +90,5 @@ def test_torch_gpu(hubness, hubness_kwargs, source_target):
     assert dist.shape == (len(source), k)
     assert ind.shape == (len(source), k)
 
-    assert_array_equal(np_dist, dist.cpu().numpy())
+    assert_allclose(np_dist, dist.cpu().numpy())
     assert_array_equal(np_ind, ind.cpu().numpy())

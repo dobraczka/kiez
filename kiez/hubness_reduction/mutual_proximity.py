@@ -91,8 +91,12 @@ class MutualProximity(HubnessReduction):
             self.neigh_dist_t_to_s_ = neigh_dist
             self.neigh_ind_t_to_s_ = neigh_ind
         elif self.method == "normal":
-            self.mu_t_to_s_ = np.nanmean(neigh_dist, axis=1)
-            self.sd_t_to_s_ = np.nanstd(neigh_dist, axis=1, ddof=0)
+            if torch and isinstance(neigh_dist, torch.Tensor):
+                self.mu_t_to_s_ = torch.nanmean(neigh_dist, axis=1)
+                self.sd_t_to_s_ = torch.nanstd(neigh_dist, ddof=0, axis=1)
+            else:
+                self.mu_t_to_s_ = np.nanmean(neigh_dist, axis=1)
+                self.sd_t_to_s_ = np.nanstd(neigh_dist, axis=1, ddof=0)
         return self
 
     def transform(self, neigh_dist, neigh_ind, query):

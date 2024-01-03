@@ -93,10 +93,10 @@ class MutualProximity(HubnessReduction):
         elif self.method == "normal":
             if torch and isinstance(neigh_dist, torch.Tensor):
                 self.mu_t_to_s_ = torch.nanmean(neigh_dist, axis=1)
-                self.sd_t_to_s_ = torch.std(neigh_dist, ddof=0, axis=1)
+                self.sd_t_to_s_ = torch.std(neigh_dist, axis=1)
             else:
                 self.mu_t_to_s_ = np.nanmean(neigh_dist, axis=1)
-                self.sd_t_to_s_ = np.nanstd(neigh_dist, axis=1, ddof=0)
+                self.sd_t_to_s_ = np.nanstd(neigh_dist, axis=1)
         return self
 
     def transform(self, neigh_dist, neigh_ind, query):
@@ -144,14 +144,14 @@ class MutualProximity(HubnessReduction):
             sd_t_to_s_ = self.sd_t_to_s_
             if torch and isinstance(neigh_dist, torch.Tensor):
                 mu = torch.nanmean(neigh_dist, axis=1).reshape(-1, 1)
-                sd = torch.std(neigh_dist, ddof=0, axis=1).reshape(-1, 1)
+                sd = torch.std(neigh_dist, axis=1).reshape(-1, 1)
                 p1 = 1 - Normal(mu, sd).cdf(neigh_dist)
                 p2 = 1 - Normal(mu_t_to_s[neigh_ind], sd_t_to_s_[neigh_ind]).cdf(
                     neigh_dist
                 )
             else:
                 mu = np.nanmean(neigh_dist, axis=1).reshape(-1, 1)
-                sd = np.nanstd(neigh_dist, ddof=0, axis=1).reshape(-1, 1)
+                sd = np.nanstd(neigh_dist, axis=1).reshape(-1, 1)
                 p1 = stats.norm.sf(neigh_dist, mu, sd)
                 p2 = stats.norm.sf(
                     neigh_dist, mu_t_to_s[neigh_ind], sd_t_to_s_[neigh_ind]

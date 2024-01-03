@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import numpy as np
 from sklearn.utils.validation import check_is_fitted
 
@@ -29,7 +27,7 @@ class CSLS(HubnessReduction):
         neigh_ind,
         source=None,
         target=None,
-    ) -> CSLS:
+    ) -> "CSLS":
         """Fit the model using target, neigh_dist, and neigh_ind as training data.
 
         Parameters

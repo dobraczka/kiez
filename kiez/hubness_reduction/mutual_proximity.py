@@ -10,6 +10,8 @@ from tqdm.auto import tqdm
 
 from .base import HubnessReduction
 
+USE_NEW = True
+
 
 class MutualProximity(HubnessReduction):
     """Hubness reduction with Mutual Proximity.
@@ -129,33 +131,30 @@ class MutualProximity(HubnessReduction):
             ],
             all_or_any=any,
         )
-        n_test, n_indexed = neigh_dist.shape
-
-        hub_reduced_dist = np.empty_like(neigh_dist)
-
-        # Show progress in hubness reduction loop
-        disable_tqdm = not self.verbose
-        range_n_test = tqdm(
-            range(n_test),
-            desc=f"MP ({self.method})",
-            disable=disable_tqdm,
-        )
 
         # Calculate MP with independent Gaussians
         if self.method == "normal":
             mu_t_to_s = self.mu_t_to_s_
             sd_t_to_s_ = self.sd_t_to_s_
-            for i in range_n_test:
-                j_mom = neigh_ind[i]
-                mu = np.nanmean(neigh_dist[i])
-                sd = np.nanstd(neigh_dist[i], ddof=0)
-                p1 = stats.norm.sf(neigh_dist[i, :], mu, sd)
-                p2 = stats.norm.sf(
-                    neigh_dist[i, :], mu_t_to_s[j_mom], sd_t_to_s_[j_mom]
-                )
-                hub_reduced_dist[i, :] = (1 - p1 * p2).ravel()
+            mu = np.nanmean(neigh_dist, axis=1).reshape(-1, 1)
+            sd = np.nanstd(neigh_dist, ddof=0, axis=1).reshape(-1, 1)
+            p1 = stats.norm.sf(neigh_dist, mu, sd)
+            p2 = stats.norm.sf(
+                neigh_dist, mu_t_to_s[neigh_dist], sd_t_to_s_[neigh_dist]
+            )
+            hub_reduced_dist = 1 - p1 * p2
         # Calculate MP empiric (slow)
         elif self.method == "empiric":
+            hub_reduced_dist = np.empty_like(neigh_dist)
+            n_test, n_indexed = neigh_dist.shape
+            # Show progress in hubness reduction loop
+            disable_tqdm = not self.verbose
+            range_n_test = tqdm(
+                range(n_test),
+                desc=f"MP ({self.method})",
+                disable=disable_tqdm,
+            )
+
             max_ind = max(self.neigh_ind_t_to_s_.max(), neigh_ind.max())
             for i in range_n_test:
                 d_i = neigh_dist[i, :][np.newaxis, :]  # broadcasted afterwards

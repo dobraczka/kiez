@@ -138,7 +138,7 @@ class DisSimLocal(HubnessReduction):
         )
         if torch and isinstance(neigh_ind, torch.Tensor):
             # Calculate local neighborhood centroids for source objects among target objects
-            knn = neigh_ind
+            knn = neigh_ind[:, : neigh_ind.shape[1]]
 
             # pairwise squared euclidean distance between each query vector and knn
             # unsqueeze to enable batching

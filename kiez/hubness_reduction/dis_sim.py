@@ -128,8 +128,6 @@ class DisSimLocal(HubnessReduction):
             self,
             ["target_", "target_centroids_", "target_dist_to_centroids_"],
         )
-        n_test, n_indexed = neigh_dist.shape
-
         # Calculate local neighborhood centroids for source objects among target objects
         k = neigh_ind.shape[1]
         mask = np.argpartition(neigh_dist, kth=k - 1)
@@ -137,6 +135,7 @@ class DisSimLocal(HubnessReduction):
             neigh_dist[i, :] = euclidean_distances(
                 query[i].reshape(1, -1), self.target_[ind], squared=True
             )
+
         neigh_ind = np.take_along_axis(neigh_ind, mask, axis=1)
         knn = neigh_ind[:, :k]
         centroids = self.target_[knn].mean(axis=1)

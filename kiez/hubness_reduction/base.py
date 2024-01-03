@@ -6,6 +6,11 @@ import numpy as np
 
 from ..neighbors import NNAlgorithm
 
+try:
+    import torch
+except ImportError:
+    torch = None
+
 
 class HubnessReduction(ABC):
     """Base class for hubness reduction."""
@@ -59,7 +64,26 @@ class HubnessReduction(ABC):
             return self.nn_algo.n_candidates
         return k
 
-    def kneighbors(self, k: Optional[int] = None) -> Tuple[np.ndarray, np.ndarray]:
+    @staticmethod
+    def _sort(
+        hubness_reduced_query_dist, query_ind, n_neighbors: int
+    ) -> tuple[np.ndarray, np.ndarray]:
+        if torch and isinstance(hubness_reduced_query_dist, torch.Tensor):
+            mask = torch.argsort(hubness_reduced_query_dist)[:, :n_neighbors]
+            hubness_reduced_query_dist = torch.take_along_dim(
+                hubness_reduced_query_dist, mask, dim=1
+            )
+            query_ind = torch.take_along_dim(query_ind, mask, dim=1)
+        else:
+            kth = np.arange(n_neighbors)
+            mask = np.argpartition(hubness_reduced_query_dist, kth=kth)[:, :n_neighbors]
+            hubness_reduced_query_dist = np.take_along_axis(
+                hubness_reduced_query_dist, mask, axis=1
+            )
+            query_ind = np.take_along_axis(query_ind, mask, axis=1)
+        return hubness_reduced_query_dist, query_ind
+
+    def kneighbors(self, k: Optional[int] = None) -> tuple[np.ndarray, np.ndarray]:
         n_neighbors = self._set_k_if_needed(k)
         # First obtain candidate neighbors
         query_dist, query_ind = self.nn_algo.kneighbors(
@@ -73,13 +97,9 @@ class HubnessReduction(ABC):
             self.nn_algo.source_,
         )
         # Third, sort hubness reduced candidate neighbors to get the final k neighbors
-        kth = np.arange(n_neighbors)
-        mask = np.argpartition(hubness_reduced_query_dist, kth=kth)[:, :n_neighbors]
-        hubness_reduced_query_dist = np.take_along_axis(
-            hubness_reduced_query_dist, mask, axis=1
+        return HubnessReduction._sort(
+            hubness_reduced_query_dist, query_ind, n_neighbors
         )
-        query_ind = np.take_along_axis(query_ind, mask, axis=1)
-        return hubness_reduced_query_dist, query_ind
 
 
 class NoHubnessReduction(HubnessReduction):

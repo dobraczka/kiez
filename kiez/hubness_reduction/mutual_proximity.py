@@ -1,16 +1,12 @@
 # SPDX-License-Identifier: BSD-3-Clause
 # adapted from skhubness: https://github.com/VarIr/scikit-hubness/
 
-from __future__ import annotations
-
 import numpy as np
 from scipy import stats
 from sklearn.utils.validation import check_is_fitted
 from tqdm.auto import tqdm
 
 from .base import HubnessReduction
-
-USE_NEW = True
 
 
 class MutualProximity(HubnessReduction):
@@ -59,7 +55,7 @@ class MutualProximity(HubnessReduction):
         neigh_ind,
         source,
         target,
-    ) -> MutualProximity:
+    ) -> "MutualProximity":
         """Fit the model using neigh_dist and neigh_ind as training data.
 
         Parameters

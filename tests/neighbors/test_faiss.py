@@ -49,16 +49,38 @@ def test_different_instantiations(single_source, source_target):
 
 @pytest.mark.skipif(skip2, reason="Faiss or PyTorch not installed or no GPU")
 @pytest.mark.parametrize(
-    "hubness",
-    ["NoHubnessReduction", "LocalScaling", "MutualProximity", "CSLS"],
+    ("hubness", "hubness_kwargs"),
+    [
+        ("NoHubnessReduction", {}),
+        ("LocalScaling", {"method": "ls"}),
+        ("LocalScaling", {"method": "nicdm"}),
+        ("MutualProximity", {"method": "norma"}),
+        ("CSLS", {}),
+    ],
 )
-def test_torch_gpu(hubness, source_target):
+def test_torch_gpu(hubness, hubness_kwargs, source_target):
     k = 3
-    source = torch.tensor(source_target[0]).to(torch.float32).cuda()
-    target = torch.tensor(source_target[1]).to(torch.float32).cuda()
+    source, target = source_target
+    nn_inst_np = Faiss(metric="l2", index_key="Flat")
+    kiez_inst = Kiez(
+        n_candidates=5,
+        algorithm=nn_inst_np,
+        hubness=hubness,
+        hubness_kwargs=hubness_kwargs,
+    )
+    kiez_inst.fit(source, target)
+    np_dist, np_ind = kiez_inst.kneighbors(k)
+
+    source = torch.tensor(source).to(torch.float32).cuda()
+    target = torch.tensor(target).to(torch.float32).cuda()
     device_type = source.device.type
     nn_inst = Faiss(metric="l2", index_key="Flat", use_gpu=True)
-    kiez_inst = Kiez(n_candidates=5, algorithm=nn_inst, hubness=hubness)
+    kiez_inst = Kiez(
+        n_candidates=5,
+        algorithm=nn_inst,
+        hubness=hubness,
+        hubness_kwargs=hubness_kwargs,
+    )
     kiez_inst.fit(source, target)
     dist, ind = kiez_inst.kneighbors(k)
     assert type(dist) == torch.Tensor
@@ -67,3 +89,6 @@ def test_torch_gpu(hubness, source_target):
     assert ind.device.type == device_type
     assert dist.shape == (len(source), k)
     assert ind.shape == (len(source), k)
+
+    assert_array_equal(np_dist, dist.cpu().numpy())
+    assert_array_equal(np_ind, ind.cpu().numpy())

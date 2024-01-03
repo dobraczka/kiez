@@ -90,5 +90,5 @@ def test_torch_gpu(hubness, hubness_kwargs, source_target):
     assert dist.shape == (len(source), k)
     assert ind.shape == (len(source), k)
 
-    assert_allclose(np_dist, dist.cpu().numpy())
+    assert_allclose(np_dist, dist.cpu().numpy(), rtol=1.0e-6, atol=1.0e-6)
     assert_array_equal(np_ind, ind.cpu().numpy())

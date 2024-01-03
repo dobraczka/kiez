@@ -55,6 +55,7 @@ def test_different_instantiations(single_source, source_target):
         ("LocalScaling", {"method": "ls"}),
         ("LocalScaling", {"method": "nicdm"}),
         ("MutualProximity", {"method": "normal"}),
+        ("DisSimLocal", {}),
         ("CSLS", {}),
     ],
 )
@@ -70,8 +71,6 @@ def test_torch_gpu(hubness, hubness_kwargs, source_target):
     )
     kiez_inst.fit(source, target)
     np_dist, np_ind = kiez_inst.kneighbors(k)
-    print(np_dist)
-    print(np_ind)
 
     source = torch.tensor(source).to(torch.float32).cuda()
     target = torch.tensor(target).to(torch.float32).cuda()
@@ -95,3 +94,42 @@ def test_torch_gpu(hubness, hubness_kwargs, source_target):
     tolerance = 1.0e-6 if hubness != "MutualProximity" else 1.0e-1
     assert_allclose(np_dist, dist.cpu().numpy(), rtol=tolerance, atol=tolerance)
     assert_array_equal(np_ind, ind.cpu().numpy())
+
+
+@pytest.mark.skipif(skip2, reason="Faiss or PyTorch not installed or no GPU")
+@pytest.mark.parametrize(
+    ("hubness", "hubness_kwargs"),
+    [
+        ("MutualProximity", {"method": "empiric"}),
+    ],
+)
+def test_torch_gpu_use_np(hubness, hubness_kwargs, source_target):
+    k = 3
+    source, target = source_target
+    nn_inst_np = Faiss(metric="l2", index_key="Flat")
+    kiez_inst = Kiez(
+        n_candidates=5,
+        algorithm=nn_inst_np,
+        hubness=hubness,
+        hubness_kwargs=hubness_kwargs,
+    )
+    kiez_inst.fit(source, target)
+    np_dist, np_ind = kiez_inst.kneighbors(k)
+
+    source = torch.tensor(source).to(torch.float32).cuda()
+    target = torch.tensor(target).to(torch.float32).cuda()
+    nn_inst = Faiss(metric="l2", index_key="Flat", use_gpu=True)
+    kiez_inst = Kiez(
+        n_candidates=5,
+        algorithm=nn_inst,
+        hubness=hubness,
+        hubness_kwargs=hubness_kwargs,
+    )
+    kiez_inst.fit(source, target)
+    dist, ind = kiez_inst.kneighbors(k)
+    assert dist.shape == (len(source), k)
+    assert ind.shape == (len(source), k)
+
+    tolerance = 1.0e-6
+    assert_allclose(np_dist, dist, rtol=tolerance, atol=tolerance)
+    assert_array_equal(np_ind, ind)

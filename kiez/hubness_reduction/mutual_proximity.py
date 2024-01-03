@@ -142,7 +142,7 @@ class MutualProximity(HubnessReduction):
                 mu = torch.nanmean(neigh_dist, axis=1).reshape(-1, 1)
                 sd = torch.nanstd(neigh_dist, ddof=0, axis=1).reshape(-1, 1)
                 p1 = 1 - Normal(mu, sd).cdf(neigh_dist)
-                p2 = 1 - Normal(mu_t_to_s[neigh_dist], sd_t_to_s_[neigh_dist]).cdf(
+                p2 = 1 - Normal(mu_t_to_s[neigh_ind], sd_t_to_s_[neigh_ind]).cdf(
                     neigh_dist
                 )
             else:
@@ -150,7 +150,7 @@ class MutualProximity(HubnessReduction):
                 sd = np.nanstd(neigh_dist, ddof=0, axis=1).reshape(-1, 1)
                 p1 = stats.norm.sf(neigh_dist, mu, sd)
                 p2 = stats.norm.sf(
-                    neigh_dist, mu_t_to_s[neigh_dist], sd_t_to_s_[neigh_dist]
+                    neigh_dist, mu_t_to_s[neigh_ind], sd_t_to_s_[neigh_ind]
                 )
             hub_reduced_dist = 1 - p1 * p2
         # Calculate MP empiric (slow)

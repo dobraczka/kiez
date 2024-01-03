@@ -90,7 +90,12 @@ class DisSimLocal(HubnessReduction):
         # Calculate local neighborhood centroids among the training points
         knn = neigh_ind
         centroids = source[knn].mean(axis=1)
-        dist_to_cent = row_norms(target - centroids, squared=True)
+        if torch and isinstance(centroids, torch.Tensor):
+            # see https://github.com/scikit-learn/scikit-learn/blob/main/sklearn/utils/extmath.py#L87C21-L87C48
+            X = target - centroids
+            dist_to_cent = torch.einsum("ij,ij->i", X, X)
+        else:
+            dist_to_cent = row_norms(target - centroids, squared=True)
 
         self.source_ = source
         self.target_ = target

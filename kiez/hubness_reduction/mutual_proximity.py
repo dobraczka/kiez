@@ -1,6 +1,8 @@
 # SPDX-License-Identifier: BSD-3-Clause
 # adapted from skhubness: https://github.com/VarIr/scikit-hubness/
 
+import warnings
+
 import numpy as np
 from scipy import stats
 from sklearn.utils.validation import check_is_fitted
@@ -88,6 +90,13 @@ class MutualProximity(HubnessReduction):
         self.n_train = neigh_dist.shape[0]
 
         if self.method == "empiric":
+            if torch and isinstance(neigh_dist, torch.Tensor):
+                warnings.warn(
+                    "No Torch implementation for `method=empiric`. Will cast to and return numpy arrays!",
+                    stacklevel=2,
+                )
+                neigh_dist = neigh_dist.cpu().numpy()
+                neigh_ind = neigh_ind.cpu().numpy()
             self.neigh_dist_t_to_s_ = neigh_dist
             self.neigh_ind_t_to_s_ = neigh_ind
         elif self.method == "normal":
@@ -159,6 +168,11 @@ class MutualProximity(HubnessReduction):
             hub_reduced_dist = 1 - p1 * p2
         # Calculate MP empiric (slow)
         elif self.method == "empiric":
+            if torch and isinstance(neigh_dist, torch.Tensor):
+                # already fired warning during fit
+                neigh_dist = neigh_dist.cpu().numpy()
+                neigh_ind = neigh_ind.cpu().numpy()
+                query = query.cpu().numpy()
             hub_reduced_dist = np.empty_like(neigh_dist)
             n_test, n_indexed = neigh_dist.shape
             # Show progress in hubness reduction loop

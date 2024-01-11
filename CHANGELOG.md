@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## [0.5.0] - 2024-01-11
+
+### Added
+
+- Support for torch, when using Faiss
+- More metrics for Faiss
+
+### Changed
+
+- Simplified kneighbors API, i.e. no queries can be supplied anymore, since they need to come from the source anyway
+
+### Removed
+
+- Autofaiss support was removed
+
+### Fixed
+
+- Several efficiency problems when not using Hubness Reduction were addressed
+
 ## [0.4.4] - 2023-10-18
 
 ### Changed

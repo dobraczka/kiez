@@ -1,8 +1,6 @@
-from __future__ import annotations
-
 import json
 from pathlib import Path
-from typing import Any, Optional, Union
+from typing import Any, Literal, Optional, Tuple, TypeVar, Union, overload
 
 import numpy as np
 from class_resolver import HintOrType
@@ -10,6 +8,8 @@ from class_resolver import HintOrType
 from kiez.hubness_reduction import hubness_reduction_resolver
 from kiez.hubness_reduction.base import HubnessReduction
 from kiez.neighbors import NNAlgorithm, nn_algorithm_resolver
+
+T = TypeVar("T")
 
 
 class Kiez:
@@ -124,12 +124,12 @@ class Kiez:
         )
 
     @classmethod
-    def from_path(cls, path: Union[str, Path]) -> Kiez:
+    def from_path(cls, path: Union[str, Path]) -> "Kiez":
         """Load a Kiez instance from configuration in a JSON file, based on its path."""
         with open(path) as file:
             return cls(**json.load(file))
 
-    def fit(self, source, target=None) -> Kiez:
+    def fit(self, source: T, target: Optional[T] = None) -> "Kiez":
         """Fits the algorithm and hubness reduction method.
 
         Parameters
@@ -147,11 +147,27 @@ class Kiez:
         self.hubness.fit(source, target)
         return self
 
+    @overload
     def kneighbors(
         self,
         k: Optional[int] = None,
-        return_distance=True,
-    ) -> Union[np.ndarray, tuple[np.ndarray, np.ndarray]]:
+        return_distance: Literal[True] = True,
+    ) -> Tuple[T, T]:
+        ...
+
+    @overload
+    def kneighbors(
+        self,
+        k: Optional[int] = None,
+        return_distance: Literal[False] = False,
+    ) -> Any:
+        ...
+
+    def kneighbors(
+        self,
+        k: Optional[int] = None,
+        return_distance: bool = True,
+    ) -> Union[T, Tuple[T, T]]:
         """Retrieve the k-nearest neighbors using the supplied nearest neighbor algorithm and hubness reduction method.
 
         Parameters

@@ -12,12 +12,14 @@ skip_reason = "NMSLIB not installed"
 rng = np.random.RandomState(2)
 
 
+@pytest.mark.nmslib()
 @pytest.mark.skipif(skip, reason=skip_reason)
 def test_wrong_metric():
     with pytest.raises(ValueError, match="Unknown"):
         NMSLIB(metric="jibberish")
 
 
+@pytest.mark.nmslib()
 @pytest.mark.skipif(skip, reason=skip_reason)
 def test_sqeuclidean(source_target, n_neighbors=5):
     source, target = source_target
@@ -30,6 +32,7 @@ def test_sqeuclidean(source_target, n_neighbors=5):
     assert_array_equal(i, i2)
 
 
+@pytest.mark.nmslib()
 @pytest.mark.skipif(skip, reason=skip_reason)
 def test_cosine(source_target, n_neighbors=5):
     source, target = source_target

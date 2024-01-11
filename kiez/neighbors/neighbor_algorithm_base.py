@@ -1,15 +1,19 @@
 import warnings
 from abc import ABC, abstractmethod
-from typing import Optional
+from typing import Any, Tuple, TypeVar
 
 import numpy as np
 from joblib import Parallel, delayed, effective_n_jobs
 from sklearn.utils import gen_even_slices
 from sklearn.utils.validation import check_is_fitted
 
+T = TypeVar("T")
+
 
 class NNAlgorithm(ABC):
     """Base class for nearest neighbor algorithms."""
+
+    _ALLOWED_INPUT_TYPES: Tuple[Any, ...] = (np.ndarray,)
 
     def __init__(self, n_candidates, metric, n_jobs):
         self.n_candidates = n_candidates
@@ -30,13 +34,26 @@ class NNAlgorithm(ABC):
         pass  # pragma: no cover
 
     @abstractmethod
-    def _fit(self, data, is_source: bool):
+    def _fit(self, data, is_source: bool) -> Any:
         pass  # pragma: no cover
+
+    def _check_input_types(self, value):
+        if not isinstance(value, tuple):
+            value = (value,)
+        if not all(
+            isinstance(x, self.__class__._ALLOWED_INPUT_TYPES)
+            for x in value
+            if x is not None
+        ):
+            found_types = [type(x) for x in value]
+            raise ValueError(
+                f"Not implemented for input type(s) {found_types}! Only {self.__class__._ALLOWED_INPUT_TYPES} allowed!"
+            )
 
     def fit(
         self,
-        source: np.ndarray,
-        target: Optional[np.ndarray] = None,
+        source,
+        target=None,
         only_fit_target: bool = False,
     ):
         """Indexes the given data using the underlying algorithm.
@@ -57,6 +74,7 @@ class NNAlgorithm(ABC):
         ValueError
             If source and target have a different number of features
         """
+        self._check_input_types((source, target))
         self.source_equals_target = target is None
         if self.source_equals_target:
             self.source_index = self._fit(source, True)
@@ -77,7 +95,7 @@ class NNAlgorithm(ABC):
         self.source_ = source
         self.target_ = target
 
-    def _check_k_value(self, k, needed_space):
+    def _check_k_value(self, k: int, needed_space) -> int:
         if not np.issubdtype(type(k), np.integer):
             raise TypeError(f"k does not take {type(k)} value, enter integer value")
         if k <= 0:
@@ -92,10 +110,10 @@ class NNAlgorithm(ABC):
         return k
 
     @abstractmethod
-    def _kneighbors(self, query, k, index, return_distance, is_self_querying):
+    def _kneighbors(self, k, query, index, return_distance, is_self_querying):
         pass  # pragma: no cover
 
-    def kneighbors(self, query=None, k=None, s_to_t=True, return_distance=True):
+    def kneighbors(self, k=None, query=None, s_to_t=True, return_distance=True):
         check_is_fitted(self, ["source_index", "target_index"], all_or_any=any)
         k = self.n_candidates if k is None else k
         is_self_querying = query is None and self.source_equals_target

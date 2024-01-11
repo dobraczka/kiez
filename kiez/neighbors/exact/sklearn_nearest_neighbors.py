@@ -93,7 +93,7 @@ class SklearnNN(NNAlgorithm):
         nn.fit(data)
         return nn
 
-    def _kneighbors(self, k, query, index, return_distance, is_self_querying):
+    def _kneighbors(self, query, k, index, return_distance, is_self_querying):
         if is_self_querying:
             return index.kneighbors(
                 X=None, n_neighbors=k, return_distance=return_distance

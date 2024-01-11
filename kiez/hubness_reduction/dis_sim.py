@@ -1,12 +1,16 @@
 # SPDX-License-Identifier: BSD-3-Clause
 # adapted from skhubness: https://github.com/VarIr/scikit-hubness/
 
+from typing import Tuple, TypeVar
+
 import numpy as np
 from sklearn.metrics import euclidean_distances
 from sklearn.utils.extmath import row_norms
 from sklearn.utils.validation import check_is_fitted
 
 from .base import HubnessReduction
+
+T = TypeVar("T")
 
 _DESIRED_P_VALUE = 2
 _MINIMUM_DIST = 0.0
@@ -90,7 +94,7 @@ class DisSimLocal(HubnessReduction):
         # Calculate local neighborhood centroids among the training points
         knn = neigh_ind
         centroids = source[knn].mean(axis=1)
-        if torch and isinstance(centroids, torch.Tensor):
+        if self._use_torch:
             # see https://github.com/scikit-learn/scikit-learn/blob/main/sklearn/utils/extmath.py#L87C21-L87C48
             X = target - centroids
             dist_to_cent = torch.einsum("ij,ij->i", X, X)
@@ -108,7 +112,7 @@ class DisSimLocal(HubnessReduction):
         neigh_dist,
         neigh_ind,
         query,
-    ) -> tuple[np.ndarray, np.ndarray]:
+    ) -> Tuple[T, T]:
         """Transform distance between test and training data with DisSimLocal.
 
         Parameters
@@ -137,7 +141,7 @@ class DisSimLocal(HubnessReduction):
             ["target_", "target_centroids_", "target_dist_to_centroids_"],
         )
         # Calculate local neighborhood centroids for source objects among target objects
-        if torch and isinstance(neigh_ind, torch.Tensor):
+        if self._use_torch:
             # pairwise squared euclidean distance between each query vector and knn
             # unsqueeze to enable batching
             hub_reduced_dist = (

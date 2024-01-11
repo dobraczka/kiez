@@ -13,18 +13,21 @@ skip_reason = "Annoy not installed"
 rng = np.random.RandomState(2)
 
 
+@pytest.mark.annoy()
 @pytest.mark.skipif(skip, reason=skip_reason)
 def test_wrong_metric():
     with pytest.raises(ValueError, match="Unknown"):
         Annoy(metric="jibberish")
 
 
+@pytest.mark.annoy()
 @pytest.mark.skipif(skip, reason=skip_reason)
 def test_minkowski_metric():
     annoy = Annoy(metric="minkowski")
     assert annoy.metric == "euclidean"
 
 
+@pytest.mark.annoy()
 @pytest.mark.skipif(skip, reason=skip_reason)
 def test_self_query(source_target, n_neighbors=5):
     source, _ = source_target
@@ -35,6 +38,7 @@ def test_self_query(source_target, n_neighbors=5):
     assert_array_equal(i, i2)
 
 
+@pytest.mark.annoy()
 @pytest.mark.skipif(skip, reason=skip_reason)
 def test_query(tmp_path, source_target, n_neighbors=5):
     source, target = source_target
@@ -55,6 +59,7 @@ def test_query(tmp_path, source_target, n_neighbors=5):
     assert_array_equal(i, i4)
 
 
+@pytest.mark.annoy()
 @pytest.mark.skipif(skip, reason=skip_reason)
 def test_inner_kneighbors(tmp_path, source_target, n_neighbors=5):
     source, target = source_target

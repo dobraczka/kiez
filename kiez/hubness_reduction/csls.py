@@ -1,7 +1,10 @@
-import numpy as np
+from typing import Tuple, TypeVar
+
 from sklearn.utils.validation import check_is_fitted
 
 from .base import HubnessReduction
+
+T = TypeVar("T")
 
 
 class CSLS(HubnessReduction):
@@ -56,7 +59,7 @@ class CSLS(HubnessReduction):
         neigh_dist,
         neigh_ind,
         query,
-    ) -> tuple[np.ndarray, np.ndarray]:
+    ) -> Tuple[T, T]:
         """Transform distance between test and training data with CSLS.
 
         Parameters

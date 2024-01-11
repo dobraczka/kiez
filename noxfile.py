@@ -37,6 +37,32 @@ def test_faiss(session: Session) -> None:
         "--data-file=.coverage.faiss",
         "-m",
         "pytest",
+        "-m",
+        "faiss",
+        *args,
+    )
+
+
+@nox_session(python="3.10", venv_backend="conda", tags=["tests"])
+def test_all(session: Session) -> None:
+    args = session.posargs or ["tests/"]
+    session.conda_install(
+        "-c", "pytorch", "faiss-cpu=1.7.4", "mkl=2021", "blas=1.0=mkl"
+    )
+    session.conda_install("-c", "pytorch", "pytorch=2.1.2", "cpuonly")
+    session.install(".[all]")
+    session.install("autofaiss")
+    session.install("pytest")
+    session.install("pytest-cov")
+    session.run(
+        "coverage",
+        "run",
+        "--source=kiez",
+        "--data-file=.coverage.faiss",
+        "-m",
+        "pytest",
+        "-m",
+        "all",
         *args,
     )
 
@@ -54,6 +80,8 @@ def test_ngt(session: Session) -> None:
         "--data-file=.coverage.ngt",
         "-m",
         "pytest",
+        "-m",
+        "nng",
         *args,
     )
 
@@ -71,6 +99,8 @@ def test_nmslib(session: Session) -> None:
         "--data-file=.coverage.nmslib",
         "-m",
         "pytest",
+        "-m",
+        "nmslib",
         *args,
     )
 
@@ -88,6 +118,8 @@ def test_annoy(session: Session) -> None:
         "--data-file=.coverage.annoy",
         "-m",
         "pytest",
+        "-m",
+        "annoy",
         *args,
     )
 
@@ -120,13 +152,6 @@ def style_checking(session: Session) -> None:
     args = session.posargs or locations
     session.install("ruff")
     session.run("ruff", "check", *args)
-
-
-@session()
-def pedantic_checking(session: Session) -> None:
-    args = session.posargs or locations
-    session.install("ruff")
-    session.run("ruff", "check", '--extend-select="ARG,TID,PLR0913,PLR0912"', *args)
 
 
 @session()

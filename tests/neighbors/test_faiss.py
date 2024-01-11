@@ -15,6 +15,7 @@ skip = Faiss not in NN_ALGORITHMS
 skip2 = skip or not torch or not torch.cuda.is_available()
 
 
+@pytest.mark.faiss()
 @pytest.mark.skipif(skip, reason="Faiss not installed")
 @pytest.mark.parametrize("single_source", [True, False])
 def test_different_instantiations(single_source, source_target):
@@ -47,6 +48,22 @@ def test_different_instantiations(single_source, source_target):
         print(manual.__repr__())
 
 
+@pytest.mark.faiss()
+@pytest.mark.skipif(skip, reason="Faiss not installed")
+@pytest.mark.parametrize("metric", Faiss.valid_metrics)
+def test_metrics_smoketest(metric, source_target):
+    k = 3
+    source, target = source_target
+    nn_inst_np = Faiss(metric=metric, index_key="Flat")
+    kiez_inst = Kiez(
+        n_candidates=5,
+        algorithm=nn_inst_np,
+    )
+    kiez_inst.fit(source, target)
+    np_dist, np_ind = kiez_inst.kneighbors(k)
+
+
+@pytest.mark.faiss()
 @pytest.mark.skipif(skip2, reason="Faiss or PyTorch not installed or no GPU")
 @pytest.mark.parametrize(
     ("hubness", "hubness_kwargs"),
@@ -59,10 +76,12 @@ def test_different_instantiations(single_source, source_target):
         ("CSLS", {}),
     ],
 )
-def test_torch_gpu(hubness, hubness_kwargs, source_target):
+@pytest.mark.parametrize("metric", Faiss.valid_metrics)
+def test_torch_gpu(hubness, hubness_kwargs, metric, source_target):
+    if metric != "euclidean" and hubness == "DisSimLocal":
+        return
     k = 3
     source, target = source_target
-    metric = "euclidean"
     nn_inst_np = Faiss(metric=metric, index_key="Flat")
     kiez_inst = Kiez(
         n_candidates=5,
@@ -97,6 +116,7 @@ def test_torch_gpu(hubness, hubness_kwargs, source_target):
     assert_array_equal(np_ind, ind.cpu().numpy())
 
 
+@pytest.mark.faiss()
 @pytest.mark.skipif(skip2, reason="Faiss or PyTorch not installed or no GPU")
 @pytest.mark.parametrize(
     ("hubness", "hubness_kwargs"),

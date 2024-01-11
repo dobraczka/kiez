@@ -1,10 +1,14 @@
 # SPDX-License-Identifier: BSD-3-Clause
 # adapted from skhubness: https://github.com/VarIr/scikit-hubness/
 
+from typing import Tuple, TypeVar
+
 import numpy as np
 from sklearn.utils.validation import check_is_fitted
 
 from .base import HubnessReduction
+
+T = TypeVar("T")
 
 try:
     import torch
@@ -79,12 +83,22 @@ class LocalScaling(HubnessReduction):
         self.r_ind_t_to_s_ = neigh_ind
         return self
 
+    def _exp(self, inner_exp):
+        if self._use_torch:
+            return torch.exp(inner_exp)
+        return np.exp(inner_exp)
+
+    def _sqrt(self, value):
+        if self._use_torch:
+            return torch.sqrt(value)
+        return np.sqrt(value)
+
     def transform(
         self,
         neigh_dist,
         neigh_ind,
         query=None,
-    ) -> tuple[np.ndarray, np.ndarray]:
+    ) -> Tuple[T, T]:
         """Transform distance between test and training data with Mutual Proximity.
 
         Parameters
@@ -122,20 +136,14 @@ class LocalScaling(HubnessReduction):
             r_t_to_s = self.r_dist_t_to_s_[:, -1]
             r_s_to_t = r_dist_s_to_t[:, -1].reshape(-1, 1)
             inner_exp = -1 * neigh_dist**2 / (r_s_to_t * r_t_to_s[neigh_ind])
-            if torch and isinstance(inner_exp, torch.Tensor):
-                exp = torch.exp(inner_exp)
-            else:
-                exp = np.exp(inner_exp)
+            exp = self._exp(inner_exp)
             hub_reduced_dist = 1.0 - exp
         # ...or use non-iterative contextual dissimilarity measure
         elif self.method == "nicdm":
             r_t_to_s = self.r_dist_t_to_s_.mean(axis=1)
             r_s_to_t = r_dist_s_to_t.mean(axis=1).reshape(-1, 1)
             inner_sqrt = r_s_to_t * r_t_to_s[neigh_ind]
-            if torch and isinstance(inner_sqrt, torch.Tensor):
-                sqrt = torch.sqrt(inner_sqrt)
-            else:
-                sqrt = np.sqrt(inner_sqrt)
+            sqrt = self._sqrt(inner_sqrt)
             hub_reduced_dist = neigh_dist / sqrt
 
         # Return the hubness reduced distances

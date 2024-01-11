@@ -31,7 +31,6 @@ If you have a GPU you can make kiez faster by installing [faiss](https://github.
 conda env create -n kiez-faiss python=3.10
 conda activate kiez-faiss
 conda install -c pytorch -c nvidia faiss-gpu=1.7.4 mkl=2021 blas=1.0=mkl
-pip install autofaiss
 pip install kiez
 ```
 
@@ -66,14 +65,34 @@ rng = np.random.RandomState(0)
 source = rng.rand(100,50)
 target = rng.rand(100,50)
 # prepare algorithm and hubness reduction
-from kiez.neighbors import Faiss
-faiss = Faiss(n_candidates=10)
-from kiez.hubness_reduction import CSLS
-hr = CSLS()
+algo_kwargs = {"n_candidates": 10}
+k_inst = Kiez(n_neighbors=5, algorithm="Faiss" algorithm_kwargs=algo_kwargs, hubness="CSLS")
 # fit and get neighbors
-k_inst = Kiez(n_neighbors=5, algorithm=faiss, hubness=hr)
 k_inst.fit(source, target)
 nn_dist, nn_ind = k_inst.kneighbors()
+```
+
+## Torch Support
+Beginning with version 0.5.0 torch can be used, when using `Faiss` as NN library:
+
+```python
+
+    from kiez import Kiez
+    import torch
+    source = torch.randn((100,10))
+    target = torch.randn((200,10))
+    k_inst = Kiez(algorithm="Faiss", hubness="CSLS")
+    k_inst.fit(source, target)
+    nn_dist, nn_ind = k_inst.kneighbors()
+```
+
+You can also utilize tensor on the GPU:
+
+```python
+
+    k_inst = Kiez(algorithm="Faiss", algorithm_kwargs={"use_gpu":True}, hubness="CSLS")
+    k_inst.fit(source.cuda(), target.cuda())
+    nn_dist, nn_ind = k_inst.kneighbors()
 ```
 
 ## Documentation

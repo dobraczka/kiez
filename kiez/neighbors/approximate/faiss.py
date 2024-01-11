@@ -1,4 +1,5 @@
 import logging
+from types import MappingProxyType
 from typing import Optional
 
 import numpy as np
@@ -9,6 +10,12 @@ try:
     import faiss
 except ImportError:  # pragma: no cover
     faiss = None
+
+try:
+    import torch  # noqa: I001
+    import faiss.contrib.torch_utils
+except ImportError:  # pragma: no cover
+    torch = None
 
 
 class Faiss(NNAlgorithm):
@@ -54,8 +61,28 @@ class Faiss(NNAlgorithm):
     For details about configuring faiss consult their wiki: https://github.com/facebookresearch/faiss/wiki
     """
 
-    valid_metrics = ("l2", "euclidean")
-    valid_spaces = "l2"
+    if torch:
+        _ALLOWED_INPUT_TYPES = (np.ndarray, torch.Tensor)
+
+    _METRIC_MAP = MappingProxyType({})  # type: ignore [var-annotated]
+    if faiss:
+        _METRIC_MAP = MappingProxyType(
+            {
+                "euclidean": faiss.METRIC_L2,
+                "l2": faiss.METRIC_L2,
+                "l1": faiss.METRIC_L1,
+                "ip": faiss.METRIC_INNER_PRODUCT,
+                "innerproduct": faiss.METRIC_INNER_PRODUCT,
+                "cosine": faiss.METRIC_INNER_PRODUCT,
+                "braycurtis": faiss.METRIC_BrayCurtis,
+                "canberra": faiss.METRIC_Canberra,
+                "jensenshannon": faiss.METRIC_JensenShannon,
+                "chebyshev": faiss.METRIC_Linf,
+                "linf": faiss.METRIC_Linf,
+            }
+        )
+
+    valid_metrics = tuple(_METRIC_MAP.keys())
 
     def __init__(
         self,
@@ -76,16 +103,12 @@ class Faiss(NNAlgorithm):
             raise ValueError(
                 f"Unknown metric {metric}, please use one of {self.valid_metrics}"
             )
-        if metric not in self.__class__.valid_spaces:
-            if metric == "euclidean":
-                self.space = "l2"
-        else:
-            self.space = metric
         super().__init__(n_candidates=n_candidates, metric=metric, n_jobs=None)
         self.index_key = index_key
         self.index_param = index_param
         self.use_gpu = use_gpu
         self.verbose = verbose
+        self._faiss_metric = self.__class__._METRIC_MAP[metric]
 
     def __repr__(self):
         return (
@@ -96,25 +119,40 @@ class Faiss(NNAlgorithm):
             + f"use_gpu={self.use_gpu})"
         )
 
+    def _normalize_if_needed(self, vec):
+        if self.metric == "cosine":
+            # see https://github.com/facebookresearch/faiss/wiki/MetricType-and-distances#how-can-i-index-vectors-for-cosine-similarity
+            if torch and isinstance(vec, torch.Tensor):
+                return torch.nn.functional.normalize(vec)
+            if vec.dtype != "float32":
+                vec = vec.astype("float32")
+            # normalizes in-place!
+            faiss.normalize_L2(vec)
+        return vec
+
     def _fit(self, data, is_source: bool):
         dim = data.shape[1]
-        index = faiss.index_factory(dim, self.index_key)
+        index = faiss.index_factory(dim, self.index_key, self._faiss_metric)
         params = faiss.ParameterSpace()
         if self.use_gpu:
             index = faiss.index_cpu_to_all_gpus(index)
             params = faiss.GpuParameterSpace()
         if self.index_param is not None:
             params.set_index_parameters(index, self.index_param)
+        data = self._normalize_if_needed(data)
         index.add(data)
         return index
 
-    def _kneighbors(self, k, query, index, return_distance, is_self_querying):
+    def _kneighbors(self, query, k, index, return_distance, is_self_querying):
         if is_self_querying:
-            dist, ind = index.search(self.source_, k)
-        else:
-            dist, ind = index.search(query, k)
+            query = self.source_
+        query = self._normalize_if_needed(query)
+        dist, ind = index.search(query, k)
         if return_distance:
             if self.metric == "euclidean":
-                dist = np.sqrt(dist)
+                if torch and isinstance(dist, torch.Tensor):
+                    dist = torch.sqrt(dist)
+                else:
+                    dist = np.sqrt(dist)
             return dist, ind
         return ind

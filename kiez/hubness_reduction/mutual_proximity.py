@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: BSD-3-Clause
 # adapted from skhubness: https://github.com/VarIr/scikit-hubness/
 
-from __future__ import annotations
+from typing import Tuple, TypeVar
 
 import numpy as np
 from scipy import stats
@@ -9,6 +9,14 @@ from sklearn.utils.validation import check_is_fitted
 from tqdm.auto import tqdm
 
 from .base import HubnessReduction
+
+T = TypeVar("T")
+
+try:
+    import torch
+    from torch.distributions.normal import Normal
+except ImportError:
+    torch = None
 
 
 class MutualProximity(HubnessReduction):
@@ -57,7 +65,7 @@ class MutualProximity(HubnessReduction):
         neigh_ind,
         source,
         target,
-    ) -> MutualProximity:
+    ) -> "MutualProximity":
         """Fit the model using neigh_dist and neigh_ind as training data.
 
         Parameters
@@ -87,11 +95,35 @@ class MutualProximity(HubnessReduction):
             self.neigh_dist_t_to_s_ = neigh_dist
             self.neigh_ind_t_to_s_ = neigh_ind
         elif self.method == "normal":
-            self.mu_t_to_s_ = np.nanmean(neigh_dist, axis=1)
-            self.sd_t_to_s_ = np.nanstd(neigh_dist, axis=1, ddof=0)
+            if self._use_torch:
+                self.mu_t_to_s_ = torch.nanmean(neigh_dist, axis=1)
+                self.sd_t_to_s_ = torch.std(neigh_dist, axis=1)
+            else:
+                self.mu_t_to_s_ = np.nanmean(neigh_dist, axis=1)
+                self.sd_t_to_s_ = np.nanstd(neigh_dist, axis=1)
         return self
 
-    def transform(self, neigh_dist, neigh_ind, query):
+    def _zeros(self, value):
+        if self._use_torch:
+            return torch.zeros(value)
+        return np.zeros(value)
+
+    def _empty_like(self, value):
+        if self._use_torch:
+            return torch.empty_like(value)
+        return np.empty_like(value)
+
+    def _sum(self, value, axis):
+        if self._use_torch:
+            return torch.sum(value, axis=axis)
+        return np.sum(value, axis=axis)
+
+    def _numel(self, value):
+        if self._use_torch:
+            return value.numel()
+        return value.size
+
+    def transform(self, neigh_dist, neigh_ind, query) -> Tuple[T, T]:
         """Transform distance between test and training data with Mutual Proximity.
 
         Parameters
@@ -129,39 +161,45 @@ class MutualProximity(HubnessReduction):
             ],
             all_or_any=any,
         )
-        n_test, n_indexed = neigh_dist.shape
-
-        hub_reduced_dist = np.empty_like(neigh_dist)
-
-        # Show progress in hubness reduction loop
-        disable_tqdm = not self.verbose
-        range_n_test = tqdm(
-            range(n_test),
-            desc=f"MP ({self.method})",
-            disable=disable_tqdm,
-        )
 
         # Calculate MP with independent Gaussians
         if self.method == "normal":
             mu_t_to_s = self.mu_t_to_s_
             sd_t_to_s_ = self.sd_t_to_s_
-            for i in range_n_test:
-                j_mom = neigh_ind[i]
-                mu = np.nanmean(neigh_dist[i])
-                sd = np.nanstd(neigh_dist[i], ddof=0)
-                p1 = stats.norm.sf(neigh_dist[i, :], mu, sd)
-                p2 = stats.norm.sf(
-                    neigh_dist[i, :], mu_t_to_s[j_mom], sd_t_to_s_[j_mom]
+            if self._use_torch:
+                mu = torch.nanmean(neigh_dist, axis=1).reshape(-1, 1)
+                sd = torch.std(neigh_dist, axis=1).reshape(-1, 1)
+                p1 = 1 - Normal(mu, sd).cdf(neigh_dist)
+                p2 = 1 - Normal(mu_t_to_s[neigh_ind], sd_t_to_s_[neigh_ind]).cdf(
+                    neigh_dist
                 )
-                hub_reduced_dist[i, :] = (1 - p1 * p2).ravel()
+            else:
+                mu = np.nanmean(neigh_dist, axis=1).reshape(-1, 1)
+                sd = np.nanstd(neigh_dist, axis=1).reshape(-1, 1)
+                p1 = stats.norm.sf(neigh_dist, mu, sd)
+                p2 = stats.norm.sf(
+                    neigh_dist, mu_t_to_s[neigh_ind], sd_t_to_s_[neigh_ind]
+                )
+            hub_reduced_dist = 1 - p1 * p2
         # Calculate MP empiric (slow)
         elif self.method == "empiric":
+            # if self._use_torch:
+            hub_reduced_dist = self._empty_like(neigh_dist)
+            n_test, n_indexed = neigh_dist.shape
+            # Show progress in hubness reduction loop
+            disable_tqdm = not self.verbose
+            range_n_test = tqdm(
+                range(n_test),
+                desc=f"MP ({self.method})",
+                disable=disable_tqdm,
+            )
+
             max_ind = max(self.neigh_ind_t_to_s_.max(), neigh_ind.max())
             for i in range_n_test:
-                d_i = neigh_dist[i, :][np.newaxis, :]  # broadcasted afterwards
-                d_j = np.zeros((d_i.size, n_indexed))
+                d_i = neigh_dist[i, :][None, :]  # broadcasted afterwards
+                d_j = self._zeros((self._numel(d_i), n_indexed))
                 for j in range(n_indexed):
-                    tmp = np.zeros(max_ind + 1) + (
+                    tmp = self._zeros(max_ind + 1) + (
                         self.neigh_dist_t_to_s_[neigh_ind[i, j], -1] + 1e-6
                     )
                     tmp[
@@ -170,7 +208,7 @@ class MutualProximity(HubnessReduction):
                     d_j[j, :] = tmp[neigh_ind[i]]
                 d = d_i.T
                 hub_reduced_dist[i, :] = 1.0 - (
-                    np.sum((d_i > d) & (d_j > d), axis=1) / n_indexed
+                    self._sum((d_i > d) & (d_j > d), axis=1) / n_indexed
                 )
 
         # Return the hubness reduced distances

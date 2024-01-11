@@ -90,3 +90,13 @@ skip-magic-trailing-comma = false
 
 # Like Black, automatically detect the appropriate line ending.
 line-ending = "auto"
+
+[tool.pytest.ini_options]
+markers = [
+    "faiss: marks tests as containing faiss",
+    "nng: marks tests as containing nng",
+    "nmslib: marks tests as containing nmslib",
+    "annoy: marks tests as containing annoy",
+    "torch: marks tests as containing torch",
+    "all: marks tests as containing all libs",
+]

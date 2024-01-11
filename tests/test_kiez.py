@@ -134,3 +134,13 @@ def mock_make(name, algorithm_kwargs):
 def test_no_faiss():
     kiez = Kiez()
     assert isinstance(kiez.algorithm, SklearnNN)
+
+
+def test_available_nn_algos():
+    assert "sklearnnn" in Kiez.show_algorithm_options()
+
+
+def test_available_hr_algos():
+    assert {"mutualproximity", "dissimlocal", "localscaling", "no", "csls"} == set(
+        Kiez.show_hubness_options()
+    )

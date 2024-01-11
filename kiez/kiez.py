@@ -1,15 +1,18 @@
-from __future__ import annotations
-
 import json
 from pathlib import Path
-from typing import Any, Optional, Union
+from typing import Any, Dict, List, Literal, Optional, Tuple, TypeVar, Union, overload
 
 import numpy as np
 from class_resolver import HintOrType
 
-from kiez.hubness_reduction import hubness_reduction_resolver
+from kiez.hubness_reduction import (
+    hubness_reduction_resolver,
+)
 from kiez.hubness_reduction.base import HubnessReduction
 from kiez.neighbors import NNAlgorithm, nn_algorithm_resolver
+from kiez.neighbors.util import available_nn_algorithms
+
+T = TypeVar("T")
 
 
 class Kiez:
@@ -70,6 +73,31 @@ class Kiez:
     >>> k_inst.fit(source, target)
     >>> nn_dist, nn_ind = k_inst.kneighbors()
 
+    NN and hubness algorithms can also be supplied via string:
+
+    >>> k_inst = Kiez(algorithm="SklearnNN", hubness="CSLS")
+
+    You can investigate which NN algos are installed and which hubness methods are implemented with:
+
+    >>> Kiez.show_hubness_options()
+    >>> Kiez.show_algorithm_options()
+
+    Beginning with version 0.5.0 torch can be used, when using `Faiss` as NN algorithm:
+
+    >>> from kiez import Kiez
+    >>> import torch
+    >>> source = torch.randn((100,10))
+    >>> target = torch.randn((200,10))
+    >>> k_inst = Kiez(algorithm="Faiss", hubness="CSLS")
+    >>> k_inst.fit(source, target)
+    >>> nn_dist, nn_ind = k_inst.kneighbors()
+
+    You can also utilize tensors and NN calculations on the GPU:
+
+    >>> k_inst = Kiez(algorithm="Faiss", algorithm_kwargs={"use_gpu":True}, hubness="CSLS")
+    >>> k_inst.fit(source.cuda(), target.cuda())
+    >>> nn_dist, nn_ind = k_inst.kneighbors()
+
     You can also initalize Kiez via a json file
 
     >>> kiez = Kiez.from_path("tests/example_conf.json")
@@ -79,9 +107,9 @@ class Kiez:
         self,
         n_candidates: int = 10,
         algorithm: HintOrType[NNAlgorithm] = None,
-        algorithm_kwargs: Optional[dict[str, Any]] = None,
+        algorithm_kwargs: Optional[Dict[str, Any]] = None,
         hubness: HintOrType[HubnessReduction] = None,
-        hubness_kwargs: Optional[dict[str, Any]] = None,
+        hubness_kwargs: Optional[Dict[str, Any]] = None,
     ):
         if not np.issubdtype(type(n_candidates), np.integer):
             raise TypeError(
@@ -108,6 +136,14 @@ class Kiez:
         hubness_kwargs["nn_algo"] = algorithm
         self.hubness = hubness_reduction_resolver.make(hubness, hubness_kwargs)
 
+    @staticmethod
+    def show_algorithm_options() -> List[str]:
+        return available_nn_algorithms(as_string=True)
+
+    @staticmethod
+    def show_hubness_options() -> List[str]:
+        return list(hubness_reduction_resolver.options)
+
     @property
     def algorithm(self):
         return self.hubness.nn_algo
@@ -124,12 +160,12 @@ class Kiez:
         )
 
     @classmethod
-    def from_path(cls, path: Union[str, Path]) -> Kiez:
+    def from_path(cls, path: Union[str, Path]) -> "Kiez":
         """Load a Kiez instance from configuration in a JSON file, based on its path."""
         with open(path) as file:
             return cls(**json.load(file))
 
-    def fit(self, source, target=None) -> Kiez:
+    def fit(self, source: T, target: Optional[T] = None) -> "Kiez":
         """Fits the algorithm and hubness reduction method.
 
         Parameters
@@ -147,11 +183,27 @@ class Kiez:
         self.hubness.fit(source, target)
         return self
 
+    @overload
     def kneighbors(
         self,
         k: Optional[int] = None,
-        return_distance=True,
-    ) -> Union[np.ndarray, tuple[np.ndarray, np.ndarray]]:
+        return_distance: Literal[True] = True,
+    ) -> Tuple[T, T]:
+        ...
+
+    @overload
+    def kneighbors(
+        self,
+        k: Optional[int] = None,
+        return_distance: Literal[False] = False,
+    ) -> Any:
+        ...
+
+    def kneighbors(
+        self,
+        k: Optional[int] = None,
+        return_distance: bool = True,
+    ) -> Union[T, Tuple[T, T]]:
         """Retrieve the k-nearest neighbors using the supplied nearest neighbor algorithm and hubness reduction method.
 
         Parameters

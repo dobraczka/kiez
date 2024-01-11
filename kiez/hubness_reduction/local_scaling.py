@@ -1,13 +1,19 @@
 # SPDX-License-Identifier: BSD-3-Clause
 # adapted from skhubness: https://github.com/VarIr/scikit-hubness/
 
-from __future__ import annotations
+from typing import Tuple, TypeVar
 
 import numpy as np
 from sklearn.utils.validation import check_is_fitted
-from tqdm.auto import tqdm
 
 from .base import HubnessReduction
+
+T = TypeVar("T")
+
+try:
+    import torch
+except ImportError:
+    torch = None
 
 
 class LocalScaling(HubnessReduction):
@@ -53,7 +59,7 @@ class LocalScaling(HubnessReduction):
         neigh_ind,
         source,
         target,
-    ) -> LocalScaling:
+    ) -> "LocalScaling":
         """Fit the model using neigh_dist and neigh_ind as training data.
 
         Parameters
@@ -77,12 +83,22 @@ class LocalScaling(HubnessReduction):
         self.r_ind_t_to_s_ = neigh_ind
         return self
 
+    def _exp(self, inner_exp):
+        if self._use_torch:
+            return torch.exp(inner_exp)
+        return np.exp(inner_exp)
+
+    def _sqrt(self, value):
+        if self._use_torch:
+            return torch.sqrt(value)
+        return np.sqrt(value)
+
     def transform(
         self,
         neigh_dist,
         neigh_ind,
         query=None,
-    ) -> tuple[np.ndarray, np.ndarray]:
+    ) -> Tuple[T, T]:
         """Transform distance between test and training data with Mutual Proximity.
 
         Parameters
@@ -112,38 +128,23 @@ class LocalScaling(HubnessReduction):
         """
         check_is_fitted(self, "r_dist_t_to_s_")
 
-        n_test, n_indexed = neigh_dist.shape
-
         # Find distances to the k-th neighbor (standard LS) or the k neighbors (NICDM)
         r_dist_s_to_t = neigh_dist
-
-        # Calculate LS or NICDM
-        hub_reduced_dist = np.empty_like(neigh_dist)
-
-        # Optionally show progress of local scaling loop
-        disable_tqdm = not self.verbose
-        range_n_test = tqdm(
-            range(n_test),
-            desc=f"LS {self.method}",
-            disable=disable_tqdm,
-        )
 
         # Perform standard local scaling...
         if self.method in ["ls", "standard"]:
             r_t_to_s = self.r_dist_t_to_s_[:, -1]
-            r_s_to_t = r_dist_s_to_t[:, -1]
-            for i in range_n_test:
-                hub_reduced_dist[i, :] = 1.0 - np.exp(
-                    -1 * neigh_dist[i] ** 2 / (r_s_to_t[i] * r_t_to_s[neigh_ind[i]])
-                )
+            r_s_to_t = r_dist_s_to_t[:, -1].reshape(-1, 1)
+            inner_exp = -1 * neigh_dist**2 / (r_s_to_t * r_t_to_s[neigh_ind])
+            exp = self._exp(inner_exp)
+            hub_reduced_dist = 1.0 - exp
         # ...or use non-iterative contextual dissimilarity measure
         elif self.method == "nicdm":
             r_t_to_s = self.r_dist_t_to_s_.mean(axis=1)
-            r_s_to_t = r_dist_s_to_t.mean(axis=1)
-            for i in range_n_test:
-                hub_reduced_dist[i, :] = neigh_dist[i] / np.sqrt(
-                    r_s_to_t[i] * r_t_to_s[neigh_ind[i]]
-                )
+            r_s_to_t = r_dist_s_to_t.mean(axis=1).reshape(-1, 1)
+            inner_sqrt = r_s_to_t * r_t_to_s[neigh_ind]
+            sqrt = self._sqrt(inner_sqrt)
+            hub_reduced_dist = neigh_dist / sqrt
 
         # Return the hubness reduced distances
         # These must be sorted downstream

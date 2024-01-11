@@ -134,7 +134,7 @@ class NMSLIB(NNAlgorithm):
         )
         return hnsw_index
 
-    def _kneighbors(self, k, query, index, return_distance, is_self_querying):
+    def _kneighbors(self, query, k, index, return_distance, is_self_querying):
         # Fetch the neighbor candidates
         neigh_ind_dist = index.knnQueryBatch(query, k=k, num_threads=self.n_jobs)
 

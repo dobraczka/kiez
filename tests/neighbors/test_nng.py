@@ -13,12 +13,14 @@ skip_reason = "NNG not installed"
 rng = np.random.RandomState(2)
 
 
+@pytest.mark.nng()
 @pytest.mark.skipif(skip, reason=skip_reason)
 def test_wrong_metric():
     with pytest.raises(ValueError, match="Unknown"):
         NNG(metric="jibberish")
 
 
+@pytest.mark.nng()
 @pytest.mark.skipif(skip, reason=skip_reason)
 def test_wrong_dir(source_target):
     source, _ = source_target
@@ -26,6 +28,7 @@ def test_wrong_dir(source_target):
         NNG(index_dir=1)
 
 
+@pytest.mark.nng()
 @pytest.mark.skipif(skip, reason=skip_reason)
 def test_right_dir(tmp_path, source_target):
     source, target = source_target
@@ -34,6 +37,7 @@ def test_right_dir(tmp_path, source_target):
     assert nng is not None
 
 
+@pytest.mark.nng()
 @pytest.mark.skipif(skip, reason=skip_reason)
 def test_none_dir(source_target):
     source, target = source_target
@@ -42,6 +46,7 @@ def test_none_dir(source_target):
     assert nng is not None
 
 
+@pytest.mark.nng()
 @pytest.mark.skipif(skip, reason=skip_reason)
 def test_self_query(source_target, n_neighbors=5):
     source, _ = source_target
@@ -52,6 +57,7 @@ def test_self_query(source_target, n_neighbors=5):
     assert_array_equal(i, i2)
 
 
+@pytest.mark.nng()
 @pytest.mark.skipif(skip, reason=skip_reason)
 def test_query(source_target, n_neighbors=5):
     source, target = source_target
@@ -62,6 +68,7 @@ def test_query(source_target, n_neighbors=5):
     assert_array_equal(i, i2)
 
 
+@pytest.mark.nng()
 @pytest.mark.skipif(skip, reason=skip_reason)
 def test_sqeuclidean(source_target, n_neighbors=5):
     source, target = source_target

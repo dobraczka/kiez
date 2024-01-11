@@ -57,7 +57,6 @@ If you have a GPU you can make kiez faster by installing `faiss <https://github.
     conda env create -n kiez-faiss python=3.10
     conda activate kiez-faiss
     conda install -c pytorch -c nvidia faiss-gpu=1.7.4 mkl=2021 blas=1.0=mkl
-    pip install autofaiss
     pip install kiez
 
 For more information see their `installation instructions <https://github.com/facebookresearch/faiss/blob/main/INSTALL.md>`_.

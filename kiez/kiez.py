@@ -1,6 +1,6 @@
 import json
 from pathlib import Path
-from typing import Any, Literal, Optional, Tuple, TypeVar, Union, overload
+from typing import Any, Dict, Literal, Optional, Tuple, TypeVar, Union, overload
 
 import numpy as np
 from class_resolver import HintOrType
@@ -79,9 +79,9 @@ class Kiez:
         self,
         n_candidates: int = 10,
         algorithm: HintOrType[NNAlgorithm] = None,
-        algorithm_kwargs: Optional[dict[str, Any]] = None,
+        algorithm_kwargs: Optional[Dict[str, Any]] = None,
         hubness: HintOrType[HubnessReduction] = None,
-        hubness_kwargs: Optional[dict[str, Any]] = None,
+        hubness_kwargs: Optional[Dict[str, Any]] = None,
     ):
         if not np.issubdtype(type(n_candidates), np.integer):
             raise TypeError(

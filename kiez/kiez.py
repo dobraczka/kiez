@@ -1,13 +1,16 @@
 import json
 from pathlib import Path
-from typing import Any, Dict, Literal, Optional, Tuple, TypeVar, Union, overload
+from typing import Any, Dict, List, Literal, Optional, Tuple, TypeVar, Union, overload
 
 import numpy as np
 from class_resolver import HintOrType
 
-from kiez.hubness_reduction import hubness_reduction_resolver
+from kiez.hubness_reduction import (
+    hubness_reduction_resolver,
+)
 from kiez.hubness_reduction.base import HubnessReduction
 from kiez.neighbors import NNAlgorithm, nn_algorithm_resolver
+from kiez.neighbors.util import available_nn_algorithms
 
 T = TypeVar("T")
 
@@ -70,6 +73,31 @@ class Kiez:
     >>> k_inst.fit(source, target)
     >>> nn_dist, nn_ind = k_inst.kneighbors()
 
+    NN and hubness algorithms can also be supplied via string:
+
+    >>> k_inst = Kiez(algorithm="SklearnNN", hubness="CSLS")
+
+    You can investigate which NN algos are installed and which hubness methods are implemented with:
+
+    >>> Kiez.show_hubness_options()
+    >>> Kiez.show_algorithm_options()
+
+    Beginning with version 0.5.0 torch can be used, when using `Faiss` as NN algorithm:
+
+    >>> from kiez import Kiez
+    >>> import torch
+    >>> source = torch.randn((100,10))
+    >>> target = torch.randn((200,10))
+    >>> k_inst = Kiez(algorithm="Faiss", hubness="CSLS")
+    >>> k_inst.fit(source, target)
+    >>> nn_dist, nn_ind = k_inst.kneighbors()
+
+    You can also utilize tensors and NN calculations on the GPU:
+
+    >>> k_inst = Kiez(algorithm="Faiss", algorithm_kwargs={"use_gpu":True}, hubness="CSLS")
+    >>> k_inst.fit(source.cuda(), target.cuda())
+    >>> nn_dist, nn_ind = k_inst.kneighbors()
+
     You can also initalize Kiez via a json file
 
     >>> kiez = Kiez.from_path("tests/example_conf.json")
@@ -107,6 +135,14 @@ class Kiez:
             hubness_kwargs = {}
         hubness_kwargs["nn_algo"] = algorithm
         self.hubness = hubness_reduction_resolver.make(hubness, hubness_kwargs)
+
+    @staticmethod
+    def show_algorithm_options() -> List[str]:
+        return available_nn_algorithms(as_string=True)
+
+    @staticmethod
+    def show_hubness_options() -> List[str]:
+        return list(hubness_reduction_resolver.options)
 
     @property
     def algorithm(self):

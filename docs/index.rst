@@ -21,7 +21,7 @@ The central class of kiez serves to bundle all necessary steps to obtain nearest
     # fit and get neighbors
     k_inst = Kiez()
     k_inst.fit(source, target)
-    nn_dist, nn_ind = k_inst.kneighbors()
+    nn_dist, nn_ind = k_inst.kneighbors(5)
 
 The main feature of kiez lies in the ability to use hubness reduction methods and approximate nearest neighbor (ANN) algorithms. This enables you to profit from the speed advantage of ANN algorithms, while achieving highly accurate nearest neighbor results:
 
@@ -34,14 +34,10 @@ The main feature of kiez lies in the ability to use hubness reduction methods an
     source = rng.rand(100,50)
     target = rng.rand(100,50)
     # prepare algorithm and hubness reduction
-    from kiez.neighbors import HNSW
-    hnsw = HNSW(n_candidates=10)
-    from kiez.hubness_reduction import CSLS
-    hr = CSLS()
+    k_inst = Kiez(n_candidates=10, algorithm="Faiss", hubness="CSLS")
     # fit and get neighbors
-    k_inst = Kiez(n_neighbors=5, algorithm=hnsw, hubness=hr)
     k_inst.fit(source, target)
-    nn_dist, nn_ind = k_inst.kneighbors()
+    nn_dist, nn_ind = k_inst.kneighbors(5)
 
 You can install kiez via pip:
 

@@ -121,7 +121,9 @@ def test_from_config():
         assert isinstance(kiez.hubness, LocalScaling), f"wrong hubness: {kiez.hubness}"
         assert kiez.algorithm is not None
         assert isinstance(kiez.algorithm, NNAlgorithm)
-        assert isinstance(kiez.algorithm, NMSLIB), f"wrong algorithm: {kiez.algorithm}"
+        assert isinstance(
+            kiez.algorithm, SklearnNN
+        ), f"wrong algorithm: {kiez.algorithm}"
 
 
 def mock_make(name, algorithm_kwargs):

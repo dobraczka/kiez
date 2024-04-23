@@ -9,8 +9,8 @@ The `Kiez` class enables the usage of different nearest neighbor (NN) algorithms
 
     # via string and arguments as dict
     k_inst = Kiez(
-        algorithm="HNSW",
-        algorithm_kwargs={"n_candidates": 10},
+        algorithm="SklearnNN",
+        n_candidates=10,
         hubness="LocalScaling",
         hubness_kwargs={"method": "NICDM"},
     )
@@ -20,8 +20,8 @@ The `Kiez` class enables the usage of different nearest neighbor (NN) algorithms
     from kiez.neighbors import HNSW
 
     k_inst = Kiez(
-        algorithm=HNSW,
-        algorithm_kwargs={"n_candidates": 10},
+        algorithm=SklearnNN,
+        n_candidates=10,
         hubness=LocalScaling,
         hubness_kwargs={"method": "NICDM"},
     )
@@ -35,7 +35,7 @@ The `Kiez` class enables the usage of different nearest neighbor (NN) algorithms
 
     # content of 'conf.json' file
     # {
-    #   "algorithm": "HNSW",
+    #   "algorithm": "SklearnNN",
     #   "algorithm_kwargs": {
     #     "n_candidates": 10
     #   },
@@ -57,17 +57,10 @@ With your initialized kiez instance you are ready to fit your data and retrieve 
     source = rng.rand(100,50)
     target = rng.rand(100,50)
     k_inst.fit(source, target)
-    neigh_dist, neigh_ind = k_inst.kneighbors()
+    neigh_dist, neigh_ind = k_inst.kneighbors(5)
 
 This will retrieve all nearest neighbors of source entities in the target entities.
 
-You can also query for specific entities and a specific number of k neighbors:
-
-.. code-block:: python
-
-    neigh_dist, neigh_ind = k_inst.kneighbors()
-    # get 2 nearest neighbors of the first 5 source entities
-    k_inst.kneighbors(source_query_points=source[:5,:], k=2)
 
 Single source case
 -------------------
@@ -82,8 +75,6 @@ While the main focus of kiez is to be part of an embedding-based entity resoluti
 
     # get the nearest neighbors of all source entities amongst themselves
     k_inst.kneighbors()
-    # get 2 nearest neighbors of the first 5 source entities
-    k_inst.kneighbors(source_query_points=source[:5,:], k=2)
 
 Evaluation
 ----------

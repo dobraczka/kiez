@@ -23,8 +23,8 @@ class Kiez:
 
     Parameters
     ----------
-    n_neighbors : int, default=5
-        number of nearest neighbors used in search
+    n_candidates : int, default=10
+        number of nearest neighbors used for candidate search
     algorithm : :obj:`~kiez.neighbors.NNAlgorithm`, default = None
         initialised `NNAlgorithm` object that will be used for neighbor search
         If no algorithm is provided :obj:`~kiez.neighbors.Faiss` is used if available else
@@ -53,7 +53,7 @@ class Kiez:
     >>> # fit and get neighbors
     >>> k_inst = Kiez()
     >>> k_inst.fit(source, target)
-    >>> nn_dist, nn_ind = k_inst.kneighbors()
+    >>> nn_dist, nn_ind = k_inst.kneighbors(5)
 
     Using a specific algorithm and hubness reduction
 
@@ -64,18 +64,10 @@ class Kiez:
     >>> source = rng.rand(100,50)
     >>> target = rng.rand(100,50)
     >>> # prepare algorithm and hubness reduction
-    >>> from kiez.neighbors import NMSLIB
-    >>> hnsw = NMSLIB(n_candidates=10)
-    >>> from kiez.hubness_reduction import CSLS
-    >>> hr = CSLS()
+    >>> k_inst = Kiez(n_candidates=10, algorithm="Faiss", hubness="CSLS")
     >>> # fit and get neighbors
-    >>> k_inst = Kiez(n_neighbors=5, algorithm=hnsw, hubness=hr)
     >>> k_inst.fit(source, target)
-    >>> nn_dist, nn_ind = k_inst.kneighbors()
-
-    NN and hubness algorithms can also be supplied via string:
-
-    >>> k_inst = Kiez(algorithm="SklearnNN", hubness="CSLS")
+    >>> nn_dist, nn_ind = k_inst.kneighbors(5)
 
     You can investigate which NN algos are installed and which hubness methods are implemented with:
 

@@ -1,5 +1,5 @@
 {
-  "algorithm": "NMSLIB",
+  "algorithm": "SklearnNN",
   "algorithm_kwargs": {
     "n_candidates": 10
   },
